@@ -1,35 +1,73 @@
 from random import shuffle
 
-path = "/Users/juliaaleixo/PycharmProjects/ia-trab1/gr24.tsp"
-file = open(path, "r")
-count = 0
-dimension = 0
-i = 0
-j = 0
+import os
 
-beganReadingMatrix = False
-for line in file:
-    if(not beganReadingMatrix):
-        word = line.split(':')[0]
-        if word == "DIMENSION":
-            dimension = line.split(":")[1]
-            print(dimension)
-            matrix = [[0 for x in range(int(dimension))] for y in range(int(dimension))]
-        elif word == "EDGE_WEIGHT_FORMAT":
-            format = line.split(":")[1]
-        elif word == "EDGE_WEIGHT_SECTION" or word == "EDGE_WEIGHT_SECTION\n":
-            beganReadingMatrix = True
-    else:
-        lineArray = line.split(' ')
-        for word in lineArray:
-            if (word == '' or word == 'EOF' or word == 'EOF\n'):
-                continue
-            matrix[i][j] = int(word)
-            matrix[j][i] = int(word)
-            i += 1
-            if int(word) == 0:
-                i = 0
-                j += 1
+
+def selectTSP(cwd):
+    cwd = cwd + "/TSP/"
+    filesname = os.listdir(cwd)
+
+    i = 1
+
+    print("Select an option: ")
+    for file in filesname:
+        if file.endswith(".tsp"):
+            option = "\t" + str(i) + " - " + file
+            print(option)
+            i = i + 1
+    selectedoption = eval(raw_input())
+    fullpathfile = cwd + filesname[selectedoption]
+    return fullpathfile
+
+
+def readTSP(selectedTSP):
+    file = open(selectedTSP, 'r')
+    lines = []
+    i = 0
+    matrixLine = 0
+    matrixColumn = 0
+
+    for line in file:
+        item = line.strip(' \t\r\n')
+        lines.append(item)
+
+    length = len(lines)
+
+    while (lines[i] != "EDGE_WEIGHT_SECTION"):
+        splitted = lines[i].split(' ')
+        splittedLine = splitted[0]
+        if (splittedLine == "DIMENSION:"):
+            dimension = splitted[1]
+            dimension = int(dimension)
+        i = i + 1
+
+    if 'dimension' in locals():
+        if ( dimension > 0 ):
+            i = i + 1
+            matrix = [[0 for x in range(dimension)] for y in range(dimension)]
+            while (i < length - 1):
+                line = lines[i].split(' ')
+                for word in line:
+                    matrix[matrixLine][matrixColumn] = int ( word )
+                    matrixColumn = matrixColumn + 1
+                    if (word == "0"):
+                        matrixLine = matrixLine + 1
+                        matrixColumn = 0
+                i = i + 1
+    file.close()
+    return matrix, dimension
+
+
+def writeTSP(currentWorkingDirectory, selectedTSP, cost, route):
+    splittedTSP = selectedTSP.split('/')
+    cost = str(cost) + '\n'
+    filename = currentWorkingDirectory + "/result_" + splittedTSP[(len(splittedTSP) - 1)]
+    file = open(filename, 'w')
+    file.write(cost)
+    for city in route:
+        city = str(city) + ' '
+        file.write(city)
+    file.close()
 
 
 def route_distance ( distance_matrix , cities ): # calcula a distancia do percurso
@@ -71,10 +109,10 @@ def swap ( solution, first_city_number , second_city_number ): #funcao que troca
     return solution
 
 
-def create_neighbourhood(initial_solution):
+def create_neighbourhood ( initial_solution ):
 
     length = len(initial_solution) - 1
-    neighbours = []
+    neighbours = [initial_solution]
 
     for number in range ( 0 , length , 1 ):
         if ( number == 0 ): # a cidade inicial precisa continuar na mesma posicao
@@ -98,8 +136,26 @@ def create_initial_solution ( dimension ):
 
     return initial_solution
 
-initial_solution = create_initial_solution( int(dimension) )
-neighbourhood = create_neighbourhood( initial_solution )
-(best_neighbour,distance)= evaluate_neighbours( matrix , neighbourhood )
-print distance
+cwd = os.getcwd()
+selectedTSP = selectTSP(cwd)
+( matrix , dimension ) = readTSP(selectedTSP)
+
+initial_solution = create_initial_solution( int ( dimension ) )
+print initial_solution
+neighbourhood = create_neighbourhood ( initial_solution )
+( best_neighbour , distance ) = evaluate_neighbours( matrix , neighbourhood )
+
+while best_neighbour != initial_solution:
+    print best_neighbour
+    initial_solution = best_neighbour
+    neighbourhood = create_neighbourhood ( initial_solution )
+    ( best_neighbour, distance ) = evaluate_neighbours ( matrix , neighbourhood )
+    print distance
 print best_neighbour
+
+
+route = []
+route.append("1")
+route.append("2")
+route.append("3")
+writeTSP(cwd, selectedTSP, "10", route)
