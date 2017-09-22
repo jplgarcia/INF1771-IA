@@ -1,5 +1,6 @@
-import os
 from random import shuffle
+import os
+
 
 def selectTSP(cwd):
 
@@ -15,7 +16,7 @@ def selectTSP(cwd):
             print(option)
             i = i + 1
     selectedoption = eval(raw_input())
-    fullpathfile = cwd + filesname[selectedoption-1]
+    fullpathfile = cwd + filesname[selectedoption - 1]
 
     return fullpathfile
 
@@ -40,30 +41,48 @@ def readTSP(selectedTSP):
         if (splittedLine == "DIMENSION:"):
             dimension = splitted[1]
             dimension = int(dimension)
+        elif (splittedLine == "EDGE_WEIGHT_FORMAT:"):
+            edge_format = splitted[1]
         i = i + 1
 
     if 'dimension' in locals():
         if (dimension > 0):
             i = i + 1
             matrix = [[0 for x in range(dimension)] for y in range(dimension)]
+            contador_inicial_x = 0
+            contador_inicial_y = 0
+            x = 0
+            y = -1
             while (i < length - 1):
                 line = lines[i].split(' ')
+                print(line)
                 for word in line:
                     if (word == ''):
                         continue
-                    matrix[matrixLine][matrixColumn] = int(word)
-                    matrix[matrixColumn][matrixLine] = int(word)
-                    matrixColumn = matrixColumn + 1
-                    if (word == "0"):
+                    if (edge_format == "UPPER_DIAG_ROW"):
+                        if (int(word) == 0):
+                            y += 1
+                        matrix[x][y] = int(word)
+                        matrix[y][x] = int(word)
+                        x += 1
+                        if (x == dimension):
+                            contador_inicial_x += 1
+                            x = contador_inicial_x
+                    else:
+                        matrix[matrixLine][matrixColumn] = int(word)
+                        matrix[matrixColumn][matrixLine] = int(word)
                         matrixLine = matrixLine + 1
-                        matrixColumn = 0
+                    if (word == "0"):
+                        matrixColumn = matrixColumn + 1
+                        matrixLine = 0
+
                 i = i + 1
     file.close()
 
     return matrix, dimension
 
 
-def writeTSP(currentWorkingDirectory, selectedTSP, cost, route):
+def writeTSP(currentWorkingDirectory, selectedTSP, cost, route) :
 
     splittedTSP = selectedTSP.split('/')
     cost = str(cost) + '\n'
