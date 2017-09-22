@@ -1,9 +1,8 @@
+import os
 from random import shuffle
 
-import os
-
-
 def selectTSP(cwd):
+
     cwd = cwd + "/TSP/"
     filesname = os.listdir(cwd)
 
@@ -16,11 +15,13 @@ def selectTSP(cwd):
             print(option)
             i = i + 1
     selectedoption = eval(raw_input())
-    fullpathfile = cwd + filesname[selectedoption]
+    fullpathfile = cwd + filesname[selectedoption-1]
+
     return fullpathfile
 
 
 def readTSP(selectedTSP):
+
     file = open(selectedTSP, 'r')
     lines = []
     i = 0
@@ -42,23 +43,28 @@ def readTSP(selectedTSP):
         i = i + 1
 
     if 'dimension' in locals():
-        if ( dimension > 0 ):
+        if (dimension > 0):
             i = i + 1
             matrix = [[0 for x in range(dimension)] for y in range(dimension)]
             while (i < length - 1):
                 line = lines[i].split(' ')
                 for word in line:
-                    matrix[matrixLine][matrixColumn] = int ( word )
+                    if (word == ''):
+                        continue
+                    matrix[matrixLine][matrixColumn] = int(word)
+                    matrix[matrixColumn][matrixLine] = int(word)
                     matrixColumn = matrixColumn + 1
                     if (word == "0"):
                         matrixLine = matrixLine + 1
                         matrixColumn = 0
                 i = i + 1
     file.close()
+
     return matrix, dimension
 
 
 def writeTSP(currentWorkingDirectory, selectedTSP, cost, route):
+
     splittedTSP = selectedTSP.split('/')
     cost = str(cost) + '\n'
     filename = currentWorkingDirectory + "/result_" + splittedTSP[(len(splittedTSP) - 1)]
@@ -80,11 +86,11 @@ def route_distance ( distance_matrix , cities ): # calcula a distancia do percur
         city_i = cities [ i ]
         city_j = cities [ j ]
 
-        total += distance_matrix [ city_i ][ city_j ]
+        total = total + distance_matrix [ city_i ][ city_j ]
 
     return total
 
-def evaluate_neighbours ( distance_matrix , neighbours ): #seleciona o melhor vizinho (com a menor distancia)
+def evaluate_neighbours ( distance_matrix , neighbours ): # seleciona o melhor vizinho (com a menor distancia)
 
     shortest_distance = 0
     best_neighbour = []
@@ -93,6 +99,7 @@ def evaluate_neighbours ( distance_matrix , neighbours ): #seleciona o melhor vi
         distance = route_distance( distance_matrix , neighbour )
         if shortest_distance == 0:
             shortest_distance = distance
+            best_neighbour = neighbour
         elif distance < shortest_distance:
             shortest_distance = distance
             best_neighbour = neighbour
@@ -109,14 +116,12 @@ def swap ( solution, first_city_number , second_city_number ): #funcao que troca
     return solution
 
 
-def create_neighbourhood ( initial_solution ):
+def create_neighbourhood ( initial_solution ) : # gera a vizinhanca de solucoes a partir de uma solucao inicial
 
-    length = len(initial_solution) - 1
-    neighbours = [initial_solution]
+    length = len ( initial_solution ) - 1
+    neighbours = [ initial_solution ]
 
-    for number in range ( 0 , length , 1 ):
-        if ( number == 0 ): # a cidade inicial precisa continuar na mesma posicao
-            continue
+    for number in range ( 1 , length , 1 ) : # range comeca no 1 pq a cidade inicial precisa continuar na mesma posicao
         if ( number == length ):
             break
         temporary_solution = initial_solution[:]
@@ -136,26 +141,49 @@ def create_initial_solution ( dimension ):
 
     return initial_solution
 
+
+def hill_climbing ( matrix , dimension ) :
+
+    initial_solution = create_initial_solution ( dimension )
+    neighbourhood = create_neighbourhood ( initial_solution )
+    ( best_neighbour , distance ) = evaluate_neighbours( matrix , neighbourhood )
+
+    while best_neighbour != initial_solution : 
+        initial_solution = best_neighbour
+        neighbourhood = create_neighbourhood ( initial_solution )
+        ( best_neighbour, distance ) = evaluate_neighbours ( matrix , neighbourhood )
+
+    return best_neighbour, distance
+
+
+def altered_hill_climbing ( matrix , dimension ): #hill climbing que exige um numero fixo de iteracoes para aceitar a melhor solucao
+
+    iterations = 0
+    best_solution = []
+    shortest_distance = 0
+
+    while iterations < 1000 :
+        if shortest_distance == 0 :
+            ( best_solution , shortest_distance ) = hill_climbing ( matrix , dimension )
+        else :
+            ( new_solution , new_distance ) = hill_climbing ( matrix , dimension )
+            if new_distance < shortest_distance:
+                shortest_distance = new_distance
+                best_solution = new_solution
+        iterations = iterations + 1
+
+    return best_solution, shortest_distance
+
 cwd = os.getcwd()
 selectedTSP = selectTSP(cwd)
-( matrix , dimension ) = readTSP(selectedTSP)
+matrix, dimension = readTSP(selectedTSP)
+for line in matrix:
+    print line
 
-initial_solution = create_initial_solution( int ( dimension ) )
-print initial_solution
-neighbourhood = create_neighbourhood ( initial_solution )
-( best_neighbour , distance ) = evaluate_neighbours( matrix , neighbourhood )
+( best_neighbor, distance ) = hill_climbing ( matrix , dimension )
+print best_neighbor, distance
 
-while best_neighbour != initial_solution:
-    print best_neighbour
-    initial_solution = best_neighbour
-    neighbourhood = create_neighbourhood ( initial_solution )
-    ( best_neighbour, distance ) = evaluate_neighbours ( matrix , neighbourhood )
-    print distance
-print best_neighbour
+( best_neighbor, distance ) = altered_hill_climbing ( matrix , dimension )
+print best_neighbor, distance
 
-
-route = []
-route.append("1")
-route.append("2")
-route.append("3")
-writeTSP(cwd, selectedTSP, "10", route)
+writeTSP(cwd, selectedTSP, distance, best_neighbor)
