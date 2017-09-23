@@ -20,7 +20,7 @@ def p(delta,temp):
 	-exaustion_criteria é o número de vizinhos que o algoritmo tem que avaliar antes de parar
 """
 def simulated_annealing(task,start_temp, alpha):
-	current = task.getStartSolution()
+	current = task.create_initial_solution()
 	best = current
 	"""
 		cooling_schedule representa uma diminuição da temperatura inversamente proporcional ao tempo gasto

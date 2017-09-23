@@ -7,6 +7,6 @@ Simulated Annealing:
 		-cooling_schedule foi emprestado de http://www.psychicorigami.com/2007/06/28/tackling-the-travelling-salesman-problem-simmulated-annealing/
 			um modelo de temperatura = alpha*tempo, onde 0 < alpha < 1, que faz uso do operador yield de python
 	-Precisa de três objetos:
-		-Task: Fornece exaustion_criteria, e getStartSolution()
+		-Task: Fornece exaustion_criteria, e create_initial_solution()
 		-Solution: Fornece getNeighborhood()
 		-Neighborhood: Fornece getRandom()
