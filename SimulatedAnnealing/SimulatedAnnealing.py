@@ -1,4 +1,5 @@
 import random.random as random
+import time
 import math.exp as exp
 """
 	kirkpatrick_cooling(start_temp, alpha)
@@ -19,8 +20,9 @@ def p(delta,temp):
 	-A chance de aceitar um vizinho pior diminui a cada solução que se aceita
 	-exaustion_criteria é o número de vizinhos que o algoritmo tem que avaliar antes de parar
 """
-def simulated_annealing(task,start_temp, alpha):
-	current = task.getStartSolution()
+def simulated_annealing(task,start_temp,alpha):
+	start_time = time.time()
+	current = task.create_initial_solution()
 	best = current
 	"""
 		cooling_schedule representa uma diminuição da temperatura inversamente proporcional ao tempo gasto
@@ -56,4 +58,5 @@ def simulated_annealing(task,start_temp, alpha):
 
 			comparisions+=1
 			if comparisions >= task.exaustion_criteria:
-				return best,best.eval,start_temp,temp,alpha
+				elapsed_time = start_time-time.time()
+				return best,best.eval,start_temp,temp,alpha,elapsed_time
