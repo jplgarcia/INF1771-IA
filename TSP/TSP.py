@@ -1,11 +1,42 @@
 from random import shuffle
 import sys
+import random as rdm
+from copy import deepcopy
+from SimulatedAnnealing import SimulatedAnnealing as SA
+def read_AnnealingParams(paramsfile):
+	path = paramsfile
+	try:
+		file = open(path,"r")
+	except IOError:
+		print("Erro: file not opened --read_AnnealingParams ")
 
+	began_reading_params = False
+	testlist = []
+	for line in file:
+		if not began_reading_params:
+			word = line.split(' ')[0]
+			if word == "NAME":
+				testname =  line.split(" ")[1]
+			elif word == "PARAMS":
+				began_reading_params=True
+		else:
+			word = line.split(' ')[0]
+			if word == "EOF":
+				file.close()
+				return (testname,testlist)
+			else:
+				start_temp = word
+				alpha = line.split(' ')[2]
+				testlist.append((start_temp,alpha.strip('\n')))
+	file.close()
 
 class TSP_Task:
 	def read_TSPmatrix(self,tspfile):
 		path = tspfile
-		file = open(path, "r")
+		try:
+			file = open(path,"r")
+		except IOError:
+			print("Erro: file not opened --read_TSPmatrix ")
 		count = 0
 		dimension = 0
 		i = 0
@@ -41,65 +72,93 @@ class TSP_Task:
 		self.problem_matrix,self.dimension = self.read_TSPmatrix(tspfile)
 	#Classe Solution------------------------------------------------------
 	class Solution:
-		def swap(solution, first_city_number, second_city_number):  # funcao que troca duas cidades
+		def swap(self, first_city_number, second_city_number):  # funcao que troca duas cidades
 
-			aux = solution[first_city_number]
-			solution[first_city_number] = solution[second_city_number]
-			solution[second_city_number] = aux
-
-			return solution
+			aux = self.cities[first_city_number]
+			self.cities[first_city_number] = self.cities[second_city_number]
+			self.cities[second_city_number] = aux
 		#Classe Neighbour-------------------------------------------------
 		class Neighbourhood:
-			def __init__(self, solution):
+			def __init__(self, sol):
+				solution = sol.cities
 				length = len(solution) - 1
-				neighbours = []
+				self.curr = 0
+				self.neighbours = []
 
 				for number in range(0, length, 1):
 					if (number == 0):  # a cidade inicial precisa continuar na mesma posicao
 						continue
 					if (number == length):
 						break
-					temporary_solution = solution[:]
-					new_neighbour = solution.swap(temporary_solution, number, number + 1)
-					neighbours.append(new_neighbour)
+					#temporary_solution = solution[:]
+					new_neighbour = deepcopy(sol)
+					new_neighbour.swap(number, number + 1)
+					self.neighbours.append(new_neighbour)
+			def getNeighborhood(self):
+				return self.neighbours
+			def getRandom(self):
+				return self.neighbours[rdm.randint(0,len(self.neighbours)-1)]
 
-				return neighbours
-		#FIM--Classe Neighbour-------------------------------------------------
-
-		def __init__(self):
-			pass
+		#FIM--Classe Neighbourhood-------------------------------------------------
+		def __init__(self,cities):
+			self.cities = cities
 
 		def create_neighbourhood(self):
 			return self.Neighbourhood(self)
 
-		def random_solution(self,task):
+		def random_solution(self):
 			initial_solution = []
 
-			for i in range(0, task.dimension, 1):
+			for i in range(0, int(self.dimension), 1):
 				initial_solution.append(i)
 
 			shuffle(initial_solution)
 
-			return initial_solution
-	#FIM--Classe Solution------------------------------------------------------
-	def create_initial_solution(self):
-		self.Solution.random_solution(self)
+			return self.Solution(initial_solution)
 
-	def route_distance(self, cities):  # calcula a distancia do percurso
+	#FIM--Classe Solution------------------------------------------------------
+	def eval(self,solution):  # calcula a distancia do percurso
 
 		total = 0
-		num_cities = len(cities)
+		num_cities = len(solution.cities)
 
 		for i in range(num_cities):
 			j = (i + 1) % num_cities
-			city_i = cities[i]
-			city_j = cities[j]
+			city_i = solution.cities[i]
+			city_j = solution.cities[j]
 
 			total += self.problem_matrix[city_i][city_j]
 
 		return total
 
+	def create_initial_solution(self):
+		return self.Solution.random_solution(self)
+
+
+
 
 if __name__=="__main__":
+	exaustion_criteria = 50
+	HasAnnFile = True
 	path = sys.argv[1]
+	print (str(sys.argv[1]))
 	task = TSP_Task(path)
+
+	#SIM_ANN começa aqui --------------------------------------
+	try:
+		print(str(sys.argv[2]))
+	except IndexError:
+		HasAnnFile = False
+		print("No Ann_Params file passed")
+	if HasAnnFile:
+		ann_testname,ann_testparams = read_AnnealingParams(sys.argv[2])
+		print("\n\t"+str(ann_testname))
+		for testparams in ann_testparams:
+			print("\t\t("+testparams[0]+","+testparams[1]+")")
+			(best, best_eval, start_temp, temp, alpha, elapsed_time) =\
+				SA.simulated_annealing(task,int(testparams[0]),float(testparams[1]),exaustion_criteria)
+			print("\t\tBest = "+str(best)+" with eval = "+str(best_eval))
+			print("\t\tStarting Temp = "+str(start_temp)+"End Temp = "+str(temp))
+			print("\t\tElapsed Time"+str(elapsed_time))
+			break
+	# SIM_ANN termina aqui --------------------------------------

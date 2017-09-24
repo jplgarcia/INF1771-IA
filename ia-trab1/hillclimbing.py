@@ -6,10 +6,9 @@ import time
 def evaluate_neighbours ( task, neighbours ): #seleciona o melhor vizinho (com a menor distancia)
 
 	shortest_distance = 0
-	best_neighbour = []
 
-	for neighbour in neighbours:
-		distance = task.route_distance(neighbour)
+	for neighbour in neighbours.getNeighborhood():
+		distance = task.eval(neighbour)
 		if shortest_distance == 0:
 			shortest_distance = distance
 		elif distance < shortest_distance:

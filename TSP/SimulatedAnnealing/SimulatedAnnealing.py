@@ -1,6 +1,6 @@
-import random.random as random
+from random import random
 import time
-import math.exp as exp
+from math import exp
 """
 	kirkpatrick_cooling(start_temp, alpha)
 	0 < alpha < 1
@@ -12,18 +12,22 @@ def kirkpatrick_cooling(start_temp, alpha):
 	while True:
 		yield t
 		t = alpha * t
-
+"""
+	função p() retorna uma probabilidade P 0<P<=1
+"""
 def p(delta,temp):
-	return exp(-delta,temp)
+	return exp(-delta/temp)
 
 """
 	-A chance de aceitar um vizinho pior diminui a cada solução que se aceita
 	-exaustion_criteria é o número de vizinhos que o algoritmo tem que avaliar antes de parar
 """
-def simulated_annealing(task,start_temp,alpha):
+def simulated_annealing(task,start_temp,alpha,exaustion_criteria):
 	start_time = time.time()
 	current = task.create_initial_solution()
+	current_eval = task.eval(current)
 	best = current
+	best_eval = current_eval
 	"""
 		cooling_schedule representa uma diminuição da temperatura inversamente proporcional ao tempo gasto
 		
@@ -37,26 +41,30 @@ def simulated_annealing(task,start_temp,alpha):
 		swaped = False
 
 		comparisions = 1
-		neighborhood = current.getNeighborhood()
+		#Ao otimizar SimAnn, é essa referência que deve ser afetada
+		neighborhood = current.create_neighbourhood()
 
 		#visita a cada vizinho
 		while not swaped:
 			#pede novo vizinho aleatório
 			solution = neighborhood.getRandom()
-
+			solution_eval = task.eval(solution)
 			#avaliação do vizinho com a solução atual
-			delta_eval = solution.eval - current.eval
+			delta_eval = solution_eval - current_eval
 			if delta_eval<=0:
 				current = solution
-				if current>best:
+				current_eval = solution_eval
+				if current_eval>best_eval:
 					best = current
+					best_eval = current_eval
 					swaped = True
 			else:
 				if random() < p(abs(delta_eval),alpha):
 					current = solution
+					current_eval = solution_eval
 					swaped = True
 
 			comparisions+=1
-			if comparisions >= task.exaustion_criteria:
+			if comparisions >= exaustion_criteria:
 				elapsed_time = start_time-time.time()
-				return best,best.eval,start_temp,temp,alpha,elapsed_time
+				return best,task.eval(best),start_temp,temp,alpha,elapsed_time
