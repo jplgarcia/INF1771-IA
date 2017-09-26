@@ -1,8 +1,28 @@
+import sys
 from random import random
 import time
 from math import exp
 import os
-from HillClimbing import hillclimbing as hc
+import hillclimbing as hc
+""""""
+def selectTSP(cwd):
+
+	cwd = cwd + "/TSP/"
+	filesname = os.listdir(cwd)
+
+	i = 1
+
+	print("Select an option: ")
+	for file in filesname:
+		if file.endswith(".tsp"):
+			option = "\t" + str(i) + " - " + file
+			print(option)
+			i = i + 1
+	selectedoption = eval(input())
+	fullpathfile = cwd + filesname[selectedoption - 1]
+
+	return fullpathfile
+
 def read_AnnealingParams(paramsfile):
 	path = paramsfile
 	try:
@@ -28,6 +48,7 @@ def read_AnnealingParams(paramsfile):
 				start_temp = word
 				alpha = line.split(' ')[1]
 				exaust = line.split(' ')[2]
+				#print (start_temp,alpha,exaust)
 				testlist.append((start_temp,alpha,exaust.strip('\n')))
 	file.close()
 
@@ -94,23 +115,26 @@ def simulated_annealing(start_temp,alpha,exaustion_criteria, matrix , dimension)
 					current = solution
 					current_eval = solution_eval
 					swaped = True
-					print("Accepted!!!")
+					#print("Accepted!!!")
 					continue
 
 			comparisions+=1
 			if comparisions >= exaustion_criteria:
 				elapsed_time = time.time()-start_time
-				print("Comparisions = " + str(comparisions))
+				#print("Comparisions = " + str(comparisions))
 				return best,best_eval,start_temp,temp,alpha,elapsed_time
-		print("Comparisions = "+str(comparisions)+"\tEval"+str(current_eval)+"\tTemp:"+str(temp))
+		#print("Comparisions = "+str(comparisions)+"\tEval"+str(current_eval)+"\tTemp:"+str(temp))
 
 if __name__ =="__main__":
 	cwd = os.getcwd()
-	selectedTSP = hc.selectTSP(cwd)
+	selectedTSP = selectTSP(cwd)
 	matrix, dimension = hc.readTSP(selectedTSP)
 	for line in matrix:
 		print (line)
-	cwd = cwd+"/AnnealingParams/"
+	testname,alltestparams = read_AnnealingParams(cwd+"/AnnealingParams/"+sys.argv[1])
 	"""Falta ler o arquivo de params do annealing"""
-	#simulated_annealing(start_temp, alpha, exaustion_criteria, matrix, dimension)
-
+	for testparams in alltestparams:
+		print(testparams)
+		(best, best_eval, start_temp, temp, alpha, elapsed_time) =\
+					simulated_annealing(int(testparams[0]),float(testparams[1]),int(testparams[2]),matrix, dimension)
+		hc.writeTSP(cwd, selectedTSP, best_eval, best)

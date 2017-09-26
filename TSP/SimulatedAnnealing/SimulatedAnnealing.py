@@ -128,7 +128,7 @@ if __name__ =="__main__":
 	matrix, dimension = hc.readTSP(selectedTSP)
 	for line in matrix:
 		print (line)
-		testparams = read_AnnealingParams(selectPARAMS(tcwd))
+	testparams = read_AnnealingParams(selectPARAMS(tcwd))
 	(best, best_eval, start_temp, temp, alpha, elapsed_time) =\
 				simulated_annealing(int(testparams[0]),float(testparams[1]),int(testparams[2]))
 
