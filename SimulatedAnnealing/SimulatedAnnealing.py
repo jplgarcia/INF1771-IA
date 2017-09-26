@@ -3,24 +3,6 @@ import time
 from math import exp
 import os
 from HillClimbing import hillclimbing as hc
-def selectPARAMS(cwd):
-
-	cwd = cwd+"/AnnealingParams/"
-	filesname = os.listdir(cwd)
-
-	i = 1
-
-	print("Select an option: ")
-	for file in filesname:
-		if file.endswith(".txt"):
-			option = "\t" + str(i) + " - " + file
-			print(option)
-			i = i + 1
-	selectedoption = eval(raw_input())
-	fullpathfile = cwd + filesname[selectedoption - 1]
-
-	return fullpathfile
-
 def read_AnnealingParams(paramsfile):
 	path = paramsfile
 	try:
@@ -123,12 +105,12 @@ def simulated_annealing(start_temp,alpha,exaustion_criteria, matrix , dimension)
 		print("Comparisions = "+str(comparisions)+"\tEval"+str(current_eval)+"\tTemp:"+str(temp))
 
 if __name__ =="__main__":
-	tcwd = os.getcwd()
-	selectedTSP = hc.selectTSP(tcwd)
+	cwd = os.getcwd()
+	selectedTSP = hc.selectTSP(cwd)
 	matrix, dimension = hc.readTSP(selectedTSP)
 	for line in matrix:
 		print (line)
-		testparams = read_AnnealingParams(selectPARAMS(tcwd))
-	(best, best_eval, start_temp, temp, alpha, elapsed_time) =\
-				simulated_annealing(int(testparams[0]),float(testparams[1]),int(testparams[2]))
+	cwd = cwd+"/AnnealingParams/"
+	"""Falta ler o arquivo de params do annealing"""
+	#simulated_annealing(start_temp, alpha, exaustion_criteria, matrix, dimension)
 

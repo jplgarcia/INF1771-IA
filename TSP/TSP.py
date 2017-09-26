@@ -3,33 +3,6 @@ import sys
 import random as rdm
 from copy import deepcopy
 from SimulatedAnnealing import SimulatedAnnealing as SA
-def read_AnnealingParams(paramsfile):
-	path = paramsfile
-	try:
-		file = open(path,"r")
-	except IOError:
-		print("Erro: file not opened --read_AnnealingParams ")
-
-	began_reading_params = False
-	testlist = []
-	for line in file:
-		if not began_reading_params:
-			word = line.split(' ')[0]
-			if word == "NAME":
-				testname =  line.split(" ")[1]
-			elif word == "PARAMS":
-				began_reading_params=True
-		else:
-			word = line.split(' ')[0]
-			if word == "EOF":
-				file.close()
-				return (testname,testlist)
-			else:
-				start_temp = word
-				alpha = line.split(' ')[1]
-				exaust = line.split(' ')[2]
-				testlist.append((start_temp,alpha,exaust.strip('\n')))
-	file.close()
 
 class TSP_Task:
 	def read_TSPmatrix(self,tspfile):
