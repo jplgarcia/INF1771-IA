@@ -26,8 +26,9 @@ def read_AnnealingParams(paramsfile):
 				return (testname,testlist)
 			else:
 				start_temp = word
-				alpha = line.split(' ')[2]
-				testlist.append((start_temp,alpha.strip('\n')))
+				alpha = line.split(' ')[1]
+				exaust = line.split(' ')[2]
+				testlist.append((start_temp,alpha,exaust.strip('\n')))
 	file.close()
 
 class TSP_Task:
@@ -138,7 +139,6 @@ class TSP_Task:
 
 
 if __name__=="__main__":
-	exaustion_criteria = 50
 	HasAnnFile = True
 	path = sys.argv[1]
 	print (str(sys.argv[1]))
@@ -154,11 +154,11 @@ if __name__=="__main__":
 		ann_testname,ann_testparams = read_AnnealingParams(sys.argv[2])
 		print("\n\t"+str(ann_testname))
 		for testparams in ann_testparams:
-			print("\t\t("+testparams[0]+","+testparams[1]+")")
+			print("\t\t("+testparams[0]+","+testparams[1]+","+testparams[2]+")")
 			(best, best_eval, start_temp, temp, alpha, elapsed_time) =\
-				SA.simulated_annealing(task,int(testparams[0]),float(testparams[1]),exaustion_criteria)
-			print("\t\tBest = "+str(best)+" with eval = "+str(best_eval))
-			print("\t\tStarting Temp = "+str(start_temp)+"End Temp = "+str(temp))
+				SA.simulated_annealing(task,int(testparams[0]),float(testparams[1]),int(testparams[2]))
+			print("\t\tBest = "+str(best.cities)+" with eval = "+str(best_eval))
+			print("\t\tStarting Temp = "+str(start_temp)+"; End Temp = "+str(temp))
 			print("\t\tElapsed Time"+str(elapsed_time))
 			break
 	# SIM_ANN termina aqui --------------------------------------

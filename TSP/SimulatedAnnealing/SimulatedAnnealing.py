@@ -51,20 +51,25 @@ def simulated_annealing(task,start_temp,alpha,exaustion_criteria):
 			solution_eval = task.eval(solution)
 			#avaliação do vizinho com a solução atual
 			delta_eval = solution_eval - current_eval
-			if delta_eval<=0:
+			if delta_eval<0:
 				current = solution
 				current_eval = solution_eval
-				if current_eval>best_eval:
+				if current_eval<best_eval:
 					best = current
 					best_eval = current_eval
-					swaped = True
-			else:
-				if random() < p(abs(delta_eval),alpha):
+				swaped = True
+				continue
+			elif delta_eval>0:
+				if random() < p(abs(delta_eval),temp):
 					current = solution
 					current_eval = solution_eval
 					swaped = True
+					print("Accepted!!!")
+					continue
 
 			comparisions+=1
 			if comparisions >= exaustion_criteria:
 				elapsed_time = start_time-time.time()
+				print("Comparisions = " + str(comparisions))
 				return best,task.eval(best),start_temp,temp,alpha,elapsed_time
+		print("Comparisions = "+str(comparisions)+"\tEval"+str(current_eval)+"\tTemp:"+str(temp))
