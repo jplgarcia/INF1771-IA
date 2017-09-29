@@ -22,7 +22,7 @@ def selectTSP(cwd, filename):
     return fullpathfile
 
 
-def readTSP(selectedTSP): #le o arquivo do TSP e salva em uma matriz de distancias
+def readTSP(selectedTSP):
 
     file = open(selectedTSP, 'r')
     lines = []
@@ -60,7 +60,7 @@ def readTSP(selectedTSP): #le o arquivo do TSP e salva em uma matriz de distanci
                 for word in line:
                     if (word == ''):
                         continue
-                    if (edge_format == "UPPER_DIAG_ROW"): #trata da matriz upper diagonal
+                    if (edge_format == "UPPER_DIAG_ROW"):
                         if (int(word) == 0):
                             y += 1
                         matrix[x][y] = int(word)
@@ -69,7 +69,7 @@ def readTSP(selectedTSP): #le o arquivo do TSP e salva em uma matriz de distanci
                         if (x == dimension):
                             contador_inicial_x += 1
                             x = contador_inicial_x
-                    else: # lower diagonal
+                    else:
                         matrix[matrixLine][matrixColumn] = int(word)
                         matrix[matrixColumn][matrixLine] = int(word)
                         matrixLine = matrixLine + 1
@@ -83,7 +83,7 @@ def readTSP(selectedTSP): #le o arquivo do TSP e salva em uma matriz de distanci
     return matrix, dimension
 
 
-def writeTSP(currentWorkingDirectory, selectedTSP, cost, route) : #escreve em um novo arquivo a melhor solucao e sua distancia
+def writeTSP(currentWorkingDirectory, selectedTSP, cost, route) :
 
     splittedTSP = selectedTSP.split('/')
     cost = str(cost) + '\n'
@@ -146,11 +146,11 @@ def create_neighbourhood ( initial_solution ) : # gera a vizinhanca de solucoes 
             break
         temporary_solution = initial_solution[:]
         new_neighbour = swap ( temporary_solution, number , number + 1 )
-        neighbours.append ( new_neighbour )
+        neighbours.append(new_neighbour)
 
     return neighbours
 
-def create_initial_solution ( dimension ): #cria uma solucao inicial aleatoria
+def create_initial_solution ( dimension ):
 
     initial_solution = []
 
@@ -182,7 +182,7 @@ def altered_hill_climbing ( matrix , dimension ): #hill climbing que exige um nu
     best_solution = []
     shortest_distance = 0
 
-    while iterations < 1000 :
+    while iterations < 1 :
         if shortest_distance == 0 :
             ( best_solution , shortest_distance ) = hill_climbing ( matrix , dimension )
         else :

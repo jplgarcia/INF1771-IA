@@ -182,7 +182,11 @@ def altered_hill_climbing ( matrix , dimension ): #hill climbing que exige um nu
     best_solution = []
     shortest_distance = 0
 
+<<<<<<< HEAD
+    while iterations < 1 :
+=======
     while iterations < 1000 :
+>>>>>>> 619bb6ea040e23da095386622712a9f28b21ddc1
         if shortest_distance == 0 :
             ( best_solution , shortest_distance ) = hill_climbing ( matrix , dimension )
         else :
@@ -216,6 +220,7 @@ def runForMultipleSeedsHillClimb(chosen_tsp):
     selectedTSP = selectTSP(cwd, chosen_tsp)
     matrix, dimension = readTSP(selectedTSP)
 
+<<<<<<< HEAD
     random_tries_start_time = time.time()
     ( best_neighbor, distance ) = altered_hill_climbing ( matrix , dimension )
     print best_neighbor, distance
@@ -224,3 +229,8 @@ def runForMultipleSeedsHillClimb(chosen_tsp):
     print time_complete
     writeTSP(cwd, selectedTSP, distance, best_neighbor)
     return (distance, best_neighbor, time_complete, matrix)
+=======
+writeTSP(cwd, selectedTSP, distance, best_neighbor)
+
+
+>>>>>>> 619bb6ea040e23da095386622712a9f28b21ddc1

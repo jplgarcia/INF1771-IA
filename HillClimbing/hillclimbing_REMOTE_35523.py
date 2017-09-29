@@ -1,14 +1,14 @@
 from random import shuffle
 import os
-import time
 
 
-def selectTSP(cwd, filename):
+def selectTSP(cwd):
 
     cwd = cwd + "/TSP/"
-    """
     filesname = os.listdir(cwd)
+
     i = 1
+
     print("Select an option: ")
     for file in filesname:
         if file.endswith(".tsp"):
@@ -17,8 +17,7 @@ def selectTSP(cwd, filename):
             i = i + 1
     selectedoption = eval(raw_input())
     fullpathfile = cwd + filesname[selectedoption - 1]
-    """
-    fullpathfile = cwd + filename
+
     return fullpathfile
 
 
@@ -194,33 +193,18 @@ def altered_hill_climbing ( matrix , dimension ): #hill climbing que exige um nu
 
     return best_solution, shortest_distance
 
+cwd = os.getcwd()
+selectedTSP = selectTSP(cwd)
+matrix, dimension = readTSP(selectedTSP)
+for line in matrix:
+    print line
 
-def runForCommomHillClimb(chosen_tsp):
+( best_neighbor, distance ) = hill_climbing ( matrix , dimension )
+print best_neighbor, distance
 
-    cwd = os.getcwd()
-    selectedTSP = selectTSP(cwd, chosen_tsp)
-    matrix, dimension = readTSP(selectedTSP)
+( best_neighbor, distance ) = altered_hill_climbing ( matrix , dimension )
+print best_neighbor, distance
 
-    one_go_start_time = time.time()
-    ( best_neighbor, distance ) = hill_climbing ( matrix , dimension )
-    print best_neighbor, distance
-    time_complete = time.time() - one_go_start_time
-    print "time completed:"
-    print time_complete
-    writeTSP(cwd, selectedTSP, distance, best_neighbor)
-    return (distance, best_neighbor, time_complete, matrix)
+writeTSP(cwd, selectedTSP, distance, best_neighbor)
 
-def runForMultipleSeedsHillClimb(chosen_tsp):
 
-    cwd = os.getcwd()
-    selectedTSP = selectTSP(cwd, chosen_tsp)
-    matrix, dimension = readTSP(selectedTSP)
-
-    random_tries_start_time = time.time()
-    ( best_neighbor, distance ) = altered_hill_climbing ( matrix , dimension )
-    print best_neighbor, distance
-    time_complete = time.time() - random_tries_start_time
-    print "time completed:"
-    print time_complete
-    writeTSP(cwd, selectedTSP, distance, best_neighbor)
-    return (distance, best_neighbor, time_complete, matrix)

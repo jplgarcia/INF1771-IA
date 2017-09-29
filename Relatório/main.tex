@@ -1,0 +1,126 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[a4paper,width=150mm,top=25mm,bottom=25mm,bindingoffset=6mm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese]{babel}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\graphicspath{{images/}}
+
+\begin{document}
+
+\begin{titlepage}
+	\begin{center}
+		\vspace*{1cm}
+
+		\Huge
+		\textbf{Relatório de Inteligência Artificial}
+
+		\vspace{0.5cm}
+		\Large
+		Problema do Caxeiro Viajante - TSP
+
+		\vspace{1.5cm}
+
+		\includegraphics[scale=0.8]{pucrio}
+
+		\vspace{1.5cm}
+
+		\normalsize
+		\textbf{Fernando Homem da Costa - 1211971}\\
+		\textbf{João Pedro Garcia - ???????}\\
+		\textbf{Júlia Aleixo - ???????}\\
+		\textbf{Rodrigo Leite - ???????}
+
+		\vfill
+
+		\Large
+		Departamento de Informática\\
+		Pontifícia Universidade Católica do Rio de Janeiro\\
+		INF1771 - Inteligência Artificial\\
+		\today
+
+	\end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{Introdução}
+O problema do caixeiro viajante consiste em encontrar o menor caminho para percorrer uma coleção de cidades e retornar à cidade inicial, visitando cada cidade somente uma vez. O problema do caixeiro viajante é NP-complexo, e um dos problemas de otimização mais estudados. 
+Suas aplicações abrangem logística, astronomia, fabricação de microchips e sequenciamento de DNA (se modificado ligeiramente).
+
+\section{Definição do Problema}
+	
+	\subsection{Representação das Cidades}
+		Decidimos representar as cidades pelos seus números em um array, e as distâncias entre elas em uma matriz (que, em Python, é uma lista de listas). Todas as soluções possíveis tem a mesma cidade inicial, e, apesar de entrar no calculo da distancia do percurso, a volta à cidade inicial não é incluída no array da solução.
+	
+	\subsection{Geração de vizinhança}
+		Função Swap: A partir de um vizinho, troca duas cidades adjacentes de lugar para gerar um novo vizinho. Para criar uma vizinhança inteira, faremos isso ao longo do vetor, trocando suas posições 1 e 2, 2 e 3, e assim por diante até n-1 até n. Não mudamos a posição inicial pois ele precisa ser sempre o mesmo.
+	
+	\subsection{Avaliação dos vizinhos}
+		A função que avalia os vizinhos calcula a distância de seus percursos de forma circular (depois da ultima cidade ele volta para a cidade inicial para também incluir essa distância) e seleciona o vizinho com a menor distância de percurso.
+	
+	\subsection{Busca}
+		
+		\subsection{Hill Climbing}
+		A população ela precisa da Zona Franca de Manaus, porque na Zona franca de Manaus, não é uma zona de exportação, é uma zona para o Brasil. Portanto ela tem um objetivo, ela evita o desmatamento, que é altamente lucravito. Derrubar arvores da natureza é muito lucrativo!
+
+		Primeiro eu queria cumprimentar os internautas. -Oi Internautas! Depois dizer que o meio ambiente é sem dúvida nenhuma uma ameaça ao desenvolvimento sustentável. E isso significa que é uma ameaça pro futuro do nosso planeta e dos nossos países. O desemprego beira 20 por cento, ou seja, 1 em cada 4 portugueses.
+		
+		\subsection{Simulated Annealing}
+		Ai você fala o seguinte: "- Mas vocês acabaram isso?" Vou te falar: -"Não, está em andamento!" Tem obras que "vai" durar pra depois de 2010. Agora, por isso, nós já não desenhamos, não começamos a fazer projeto do que nós "podêmo fazê"? 11, 12, 13, 14... Por que é que não?
+
+		No meu xinélo da humildade eu gostaria muito de ver o Neymar e o Ganso. Por que eu acho que.... 11 entre 10 brasileiros gostariam. Você veja, eu já vi, parei de ver. Voltei a ver, e acho que o Neymar e o Ganso têm essa capacidade de fazer a gente olhar.
+
+\section{Metodologia}
+Decidimos optar por uma busca local, a hill climbing, e uma meta-heurística, simulated annealing. Assim, poderíamos comparar dois tipos de busca que seriam mais prováveis de nos darem resultados satisfatórios, uma vez que as buscas cegas não contém informação alguma sobre o problema, é feito na força bruta, e as buscas heurísticas não se adequam a esse tipo de problema.
+	
+	\subsection{Hill Climbing}
+	Essa busca local começa com uma possível solução, e a partir dela uma vizinhança é gerada. Os vizinhos gerados são então avaliados por uma função que calcula a distância do percurso de sua solução. O vizinho com a menor função de avaliação é escolhido e comparado com a solução inicial: caso tenha uma distância menor, ele substitui a solução inicial e o processo se repete, caso contrario, a busca termina. O problema com esse método são os máximos locais, dos quais o algoritmo não escapa. 
+	
+	\subsection{Simulated Annealing}
+	Essa busca meta-heurística se baseia em probabilidade, e é fundamentada em uma analogia com a termodinâmica. Annealing é um processo térmico usado na metalurgia para obter estados de baixa energia em um sólido. Esse algoritmo funciona de forma análoga a esse processo: ele substitui a solução atual por uma solução de sua vizinhança, escolhida de acordo com uma função objetivo e de uma variável T (de temperatura, que no algoritmo simboliza o tempo). Quanto maior a T, maior a componente aleatória que será incluída na próxima solução escolhida. Conforme a progressão do algoritmo, o valor de T diminui, e mais perto ele está da solução ótima. A vantagem desse algoritmo é que, como ele permite algumas “pioras” na escolha de soluções, ótimos locais são evitados.
+
+\section{Resultados}
+	\subsection{Distância}
+		\begin{table}[h]
+			\centering
+			\label{my-label}
+				\begin{tabular}{llll}
+				            & Hill Climbing & Hill Climbing Alterado & Simulated Annealing \\ \hline
+				17 Cidades  &               &                        &                     \\ \hline
+				21 Cidades  &               &                        &                     \\ \hline
+				24 Cidades  &               &                        &                     \\ \hline
+				48 Cidades  &               &                        &                     \\ \hline
+				175 Cidades &               &                        &                    
+				\end{tabular}
+				\caption{Tabela - Distância x Algoritmo}
+		\end{table}
+
+	\subsection{Tempo}
+		\begin{table}[h]
+			\centering
+			\label{my-label}
+				\begin{tabular}{llll}
+				            & Hill Climbing & Hill Climbing Alterado & Simulated Annealing \\ \hline
+				17 Cidades  &               &                        &                     \\ \hline
+				21 Cidades  &               &                        &                     \\ \hline
+				24 Cidades  &               &                        &                     \\ \hline
+				48 Cidades  &               &                        &                     \\ \hline
+				175 Cidades &               &                        &                    
+				\end{tabular}
+				\caption{Tabela - Tempo x Algoritmo}
+		\end{table}
+
+\section{Conclusão}
+Se hoje é o dia das crianças... Ontem eu disse: o dia da criança é o dia da mãe, dos pais, das professoras, mas também é o dia dos animais, sempre que você olha uma criança, há sempre uma figura oculta, que é um cachorro atrás. O que é algo muito importante!
+
+A população ela precisa da Zona Franca de Manaus, porque na Zona franca de Manaus, não é uma zona de exportação, é uma zona para o Brasil. Portanto ela tem um objetivo, ela evita o desmatamento, que é altamente lucravito. Derrubar arvores da natureza é muito lucrativo!
+
+A única área que eu acho, que vai exigir muita atenção nossa, e aí eu já aventei a hipótese de até criar um ministério. É na área de... Na área... Eu diria assim, como uma espécie de analogia com o que acontece na área agrícola.
+
+Todos as descrições das pessoas são sobre a humanidade do atendimento, a pessoa pega no pulso, examina, olha com carinho. Então eu acho que vai ter outra coisa, que os médicos cubanos trouxeram pro brasil, um alto grau de humanidade.
+
+
+\end{document}
