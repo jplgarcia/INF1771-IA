@@ -1,14 +1,14 @@
 from random import shuffle
 import os
+import time
 
 
-def selectTSP(cwd):
+def selectTSP(cwd, filename):
 
     cwd = cwd + "/TSP/"
+    """
     filesname = os.listdir(cwd)
-
     i = 1
-
     print("Select an option: ")
     for file in filesname:
         if file.endswith(".tsp"):
@@ -17,7 +17,8 @@ def selectTSP(cwd):
             i = i + 1
     selectedoption = eval(raw_input())
     fullpathfile = cwd + filesname[selectedoption - 1]
-
+    """
+    fullpathfile = cwd + filename
     return fullpathfile
 
 
@@ -181,7 +182,7 @@ def altered_hill_climbing ( matrix , dimension ): #hill climbing que exige um nu
     best_solution = []
     shortest_distance = 0
 
-    while iterations < 10 :
+    while iterations < 1 :
         if shortest_distance == 0 :
             ( best_solution , shortest_distance ) = hill_climbing ( matrix , dimension )
         else :
@@ -193,16 +194,33 @@ def altered_hill_climbing ( matrix , dimension ): #hill climbing que exige um nu
 
     return best_solution, shortest_distance
 
-cwd = os.getcwd()
-selectedTSP = selectTSP(cwd)
-matrix, dimension = readTSP(selectedTSP)
-for line in matrix:
-    print line
 
-( best_neighbor, distance ) = hill_climbing ( matrix , dimension )
-print best_neighbor, distance
+def runForCommomHillClimb(chosen_tsp):
 
-( best_neighbor, distance ) = altered_hill_climbing ( matrix , dimension )
-print best_neighbor, distance
+    cwd = os.getcwd()
+    selectedTSP = selectTSP(cwd, chosen_tsp)
+    matrix, dimension = readTSP(selectedTSP)
 
-writeTSP(cwd, selectedTSP, distance, best_neighbor)
+    one_go_start_time = time.time()
+    ( best_neighbor, distance ) = hill_climbing ( matrix , dimension )
+    print best_neighbor, distance
+    time_complete = time.time() - one_go_start_time
+    print "time completed:"
+    print time_complete
+    writeTSP(cwd, selectedTSP, distance, best_neighbor)
+    return (distance, best_neighbor, time_complete, matrix)
+
+def runForMultipleSeedsHillClimb(chosen_tsp):
+
+    cwd = os.getcwd()
+    selectedTSP = selectTSP(cwd, chosen_tsp)
+    matrix, dimension = readTSP(selectedTSP)
+
+    random_tries_start_time = time.time()
+    ( best_neighbor, distance ) = altered_hill_climbing ( matrix , dimension )
+    print best_neighbor, distance
+    time_complete = time.time() - random_tries_start_time
+    print "time completed:"
+    print time_complete
+    writeTSP(cwd, selectedTSP, distance, best_neighbor)
+    return (distance, best_neighbor, time_complete, matrix)
