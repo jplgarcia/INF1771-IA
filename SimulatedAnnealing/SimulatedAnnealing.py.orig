@@ -4,6 +4,28 @@ import time
 from math import exp
 from copy import deepcopy
 import os
+<<<<<<< HEAD
+import hillclimbing as hc
+
+""""""
+def selectTSP(cwd, filename):
+
+    cwd = cwd + "/TSP/"
+    fullpathfile = cwd + filename
+    return fullpathfile
+
+def readTSP(selectedTSP): #le o arquivo do TSP e salva em uma matriz de distancias
+
+    file = open(selectedTSP, 'r')
+    lines = []
+    i = 0
+    matrixLine = 0
+    matrixColumn = 0
+
+    for line in file:
+        item = line.strip(' \t\r\n')
+        lines.append(item)
+=======
 """"""
 def readTSP(selectedTSP):
 
@@ -78,22 +100,7 @@ def writeTSP(currentWorkingDirectory, selectedTSP, cost, route) :
 	file.close()
 
 def selectTSP(cwd):
-
-    cwd = cwd + "/TSP/"
-    fullpathfile = cwd + filename
-    return fullpathfile
-
-def readTSP(selectedTSP): #le o arquivo do TSP e salva em uma matriz de distancias
-
-    file = open(selectedTSP, 'r')
-    lines = []
-    i = 0
-    matrixLine = 0
-    matrixColumn = 0
-
-    for line in file:
-        item = line.strip(' \t\r\n')
-        lines.append(item)
+>>>>>>> e0ab12cbed616763ca8b36fed1d108d9ed6c5764
 
     length = len(lines)
 
@@ -228,7 +235,7 @@ def route_distance ( distance_matrix , cities ): # calcula a distancia do percur
 
 	return total
 
-def reallocate(cities):
+def swap(cities):
 	l = len(cities)-1
 	n1 = randint(0,l)
 	n2 = randint(0,l)
@@ -249,8 +256,7 @@ def reallocate(cities):
 		i+=1
 	return new"""
 def getRandomNeighbour(solution):
-	return reallocate(solution)
-
+	return swap(solution)
 def simulated_annealing(start_temp,alpha,exaustion_criteria, matrix , dimension):
 	start_time = time.time()
 	current = create_initial_solution(dimension)
@@ -270,6 +276,17 @@ def simulated_annealing(start_temp,alpha,exaustion_criteria, matrix , dimension)
 		swaped = False
 
 		comparisions = 1
+<<<<<<< HEAD
+		#Ao otimizar SimAnn, eh essa referencia que deve ser afetada
+		neighborhood = hc.create_neighbourhood(current)
+
+		#visita a cada vizinho
+		while not swaped:
+			#pede novo vizinho aleatorio
+			solution = hc.getRandomNeighbour(neighborhood)
+			solution_eval = hc.route_distance(matrix,solution)
+			#avaliacao do vizinho com a solucao atual
+=======
 
 		#visita a cada vizinho
 		while not swaped:
@@ -277,6 +294,7 @@ def simulated_annealing(start_temp,alpha,exaustion_criteria, matrix , dimension)
 			solution = getRandomNeighbour(current)
 			solution_eval = route_distance(matrix,solution)
 			#avaliação do vizinho com a solução atual
+>>>>>>> e0ab12cbed616763ca8b36fed1d108d9ed6c5764
 			delta_eval = solution_eval - current_eval
 			if delta_eval<0:
 				current = solution
@@ -304,8 +322,13 @@ def simulated_annealing(start_temp,alpha,exaustion_criteria, matrix , dimension)
 if __name__ =="__main__":
 	seed(1)
 	cwd = os.getcwd()
+<<<<<<< HEAD
+	selectedTSP = hc.selectTSP(cwd)
+	matrix, dimension = hc.readTSP(selectedTSP)
+=======
 	selectedTSP = selectTSP(cwd)
 	matrix, dimension = readTSP(selectedTSP)
+>>>>>>> e0ab12cbed616763ca8b36fed1d108d9ed6c5764
 	for line in matrix:
 		print (line)
 	testname,alltestparams = read_AnnealingParams(cwd+"/AnnealingParams/"+sys.argv[1])
@@ -315,6 +338,15 @@ if __name__ =="__main__":
 		print(testparams)
 		(best, best_eval, start_temp, temp, alpha, elapsed_time) =\
 					simulated_annealing(int(testparams[0]),float(testparams[1]),int(testparams[2]),matrix, dimension)
+<<<<<<< HEAD
+		hc.writeTSP(cwd, selectedTSP, best_eval, best)
+
+def runSimulatedAnneling(chosen_tsp):
+    cwd = os.getcwd()
+    selectedTSP = selectTSP(cwd, chosen_tsp)
+    matrix, dimension = readTSP(selectedTSP)
+=======
 		writeTSP(cwd, selectedTSP, best_eval, best)
 		print(testparams)
 		print(best_eval,"\n", best)
+>>>>>>> e0ab12cbed616763ca8b36fed1d108d9ed6c5764

@@ -1,4 +1,4 @@
-from random import shuffle
+from random import shuffle, seed
 import os
 import time
 
@@ -154,7 +154,7 @@ def hill_climbing ( matrix , dimension ) :
     initial_solution = create_initial_solution ( dimension )
     neighbourhood = create_neighbourhood ( initial_solution )
     ( best_neighbour , distance ) = evaluate_neighbours( matrix , neighbourhood )
-
+    #seed(1) #Para o hillclimb comum basta escolher uma seed arbitraria para termos sempre o mesmo shuffle
     while best_neighbour != initial_solution : 
         initial_solution = best_neighbour
         neighbourhood = create_neighbourhood ( initial_solution )
@@ -162,14 +162,19 @@ def hill_climbing ( matrix , dimension ) :
 
     return best_neighbour, distance
 
+def single_hill_climbing ( matrix , dimension ):
+    seed(432790) #escolha de uma seed arbitraria para o shuffle(criacao da solucao inicial)
+    return hill_climbing( matrix, dimension)
 
-def altered_hill_climbing ( matrix , dimension ): #hill climbing que exige um numero fixo de iteracoes para aceitar a melhor solucao
+def random_starts_hill_climbing ( matrix , dimension ): #hill climbing que exige um numero fixo de iteracoes para aceitar a melhor solucao
 
     iterations = 0
     best_solution = []
     shortest_distance = 0
 
-    while iterations < 1000 :
+    while iterations < (1000/dimension) :
+        #para cada start usamos uma seed diferentes que vai de 0 ate dimension
+        seed(iterations+ 432790) #escolha de uma seed arbitraria para o shuffle(criacao da solucao inicial)
         if shortest_distance == 0 :
             ( best_solution , shortest_distance ) = hill_climbing ( matrix , dimension )
         else :
@@ -177,6 +182,7 @@ def altered_hill_climbing ( matrix , dimension ): #hill climbing que exige um nu
             if new_distance < shortest_distance:
                 shortest_distance = new_distance
                 best_solution = new_solution
+                print seed
         iterations = iterations + 1
 
     return best_solution, shortest_distance
@@ -189,7 +195,7 @@ def runForCommomHillClimb(chosen_tsp):
     matrix, dimension = readTSP(selectedTSP)
 
     one_go_start_time = time.time()
-    ( best_neighbor, distance ) = hill_climbing ( matrix , dimension )
+    ( best_neighbor, distance ) = single_hill_climbing ( matrix , dimension )
     print best_neighbor, distance
     time_complete = time.time() - one_go_start_time
     print "time completed:"
@@ -204,7 +210,7 @@ def runForMultipleSeedsHillClimb(chosen_tsp):
     matrix, dimension = readTSP(selectedTSP)
 
     random_tries_start_time = time.time()
-    ( best_neighbor, distance ) = altered_hill_climbing ( matrix , dimension )
+    ( best_neighbor, distance ) = random_starts_hill_climbing ( matrix , dimension )
     print best_neighbor, distance
     time_complete = time.time() - random_tries_start_time
     print "time completed:"

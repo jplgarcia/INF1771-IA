@@ -30,14 +30,26 @@ option.pack()
 paramsLabel = Label(root, text = "Choose the Params File(for anneling only):")
 paramsLabel.pack()
 
-#Dropdownbox to choose params:
-paramsValue = StringVar(root)
-paramsValue.set("AnnealingParams_HighAlpha.txt") # initial value
-paramsOption = OptionMenu(root, paramsValue, "AnnealingParams_HighAlpha.txt", "AnnealingParams_LowAlpha.txt", "AnnealingParams_MediumAlpha.txt", "AnnealingParams_SingleCase.txt")
-paramsOption.pack()
+#Action
+def runSingleClimbButtonAction():
+    global distance, neighbor, time, matrix #To change out of scope variables
+    (distance, neighbor, time, matrix) = runForCommomHillClimb(dropValue.get())
+    textField.delete(1.0,END)
+    textField.insert(END, "Results for " + dropValue.get())
+    textField.insert(END, ":\nTime: ")
+    textField.insert(END, time)
+    textField.insert(END, "\nDistance: ")
+    textField.insert(END, distance)
+    textField.insert(END, "\nTour: ")
+    textField.insert(END, neighbor)
+    return (distance, neighbor, time, matrix)
+
+#run hillclimb button:
+runSingleClimbButton = Button(root, text ="Run Single Start Hillclimbing", command = lambda: runSingleClimbButtonAction())
+runSingleClimbButton.pack()
 
 #Action
-def runClimbButtonAction():
+def runMultipleClimbButtonAction():
     global distance, neighbor, time, matrix #To change out of scope variables
     (distance, neighbor, time, matrix) = runForMultipleSeedsHillClimb(dropValue.get())
     textField.delete(1.0,END)
@@ -50,15 +62,15 @@ def runClimbButtonAction():
     textField.insert(END, neighbor)
     return (distance, neighbor, time, matrix)
 
-#run hillclimb button:
-runClimbButton = Button(root, text ="Run Random Starts Hillclimbing", command = lambda: runClimbButtonAction())
-runClimbButton.pack()
+#run multi hillclimb button:
+runMultiClimbButton = Button(root, text ="Run Random Starts Hillclimbing", command = lambda: runMultipleClimbButtonAction())
+runMultiClimbButton.pack()
 
 
 #Action
 def runAnnealButtonAction():
     global distance, neighbor, time, matrix #To change out of scope variables
-    (distance, neighbor, time, matrix, start_temp, temp, alpha) = runSimulatedAnneling(dropValue.get(), paramsValue.get())
+    (distance, neighbor, time, matrix, start_temp, temp, alpha) = runSimulatedAnneling(dropValue.get(), "AnnealingParams_SingleCase.txt")
     textField.delete(1.0,END)
     textField.insert(END, "Results for " + dropValue.get())
     textField.insert(END, ":\nTime: ")
