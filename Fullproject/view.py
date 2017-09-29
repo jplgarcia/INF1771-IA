@@ -13,7 +13,7 @@ matrix = []
 #Window definition
 root = Tk()
 root.resizable(width=False, height=False)
-root.title("hillclimbing")
+root.title("TSP")
 root.geometry("500x500")
 
 #Description label:
@@ -25,10 +25,6 @@ dropValue = StringVar(root)
 dropValue.set("gr17.tsp") # initial value
 option = OptionMenu(root, dropValue, "gr17.tsp", "gr21.tsp", "gr24.tsp", "hk48.tsp", "si175.tsp")
 option.pack()
-
-#Description label:
-paramsLabel = Label(root, text = "Choose the Params File(for anneling only):")
-paramsLabel.pack()
 
 #Action
 def runSingleClimbButtonAction():
@@ -107,7 +103,7 @@ def showGraphAction():
     #Create all the dashed edges for a complete graph, so the graph wont simply be a circle
     for n in range(len(Distances)):
         for m in range(len(Distances) - (n + 1)):
-            Graph.add_edge(n, n + m + 1, weight=0.1)
+            Graph.add_edge(n, n + m + 1, weight=0.4)
     #Create the solid edges for the tour(must come after the other)
     for i in range(0, lenght, 1):
         Graph.add_edge(neighbor[i], neighbor[(i + 1) % lenght], weight=0.6)

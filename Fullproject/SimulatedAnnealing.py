@@ -179,19 +179,6 @@ def reallocate(cities):
     new[n2] = cities[n1]
     return new
 
-
-"""def flip(cities):
-	l = len(cities) - 1
-	n1 = randint(0, l-1)
-	n2 = randint(n1, l)
-	new = deepcopy(cities)
-	i =n1
-	for n in range(n2,n1):
-		new[i] = cities[n]
-		i+=1
-	return new"""
-
-
 def getRandomNeighbour(solution):
     return reallocate(solution)
 
@@ -268,7 +255,6 @@ def runSimulatedAnneling(chosen_tsp, chosen_params):
 
     seed(1)
     testname, alltestparams = read_AnnealingParams(cwd + "/AnnealingParams/" + chosen_params)
-    """Falta ler o arquivo de params do annealing"""
     for testparams in alltestparams:
     	print(testparams)
     	(best, best_eval, start_temp, temp, alpha, elapsed_time) = \
