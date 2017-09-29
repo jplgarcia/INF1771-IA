@@ -56,7 +56,6 @@ def readTSP(selectedTSP):
 			y = -1
 			while (i < length - 1):
 				line = lines[i].split(' ')
-				print(line)
 				for word in line:
 					if (word == ''):
 						continue
@@ -125,6 +124,7 @@ def evaluate_neighbours ( distance_matrix , neighbours ): # seleciona o melhor v
 			best_neighbour = neighbour
 
 	return ( best_neighbour, shortest_distance )
+
 def getRandomNeighbour(neighborhood):
 	return neighborhood[randint(0,len(neighborhood)-1)]
 

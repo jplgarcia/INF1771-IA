@@ -25,8 +25,18 @@ dropValue.set("gr17.tsp") # initial value
 option = OptionMenu(root, dropValue, "gr17.tsp", "gr21.tsp", "gr24.tsp", "hk48.tsp", "si175.tsp")
 option.pack()
 
+#Description label:
+paramsLabel = Label(root, text = "Choose the Params File(for anneling only):")
+paramsLabel.pack()
+
+#Dropdownbox to choose params:
+paramsValue = StringVar(root)
+paramsValue.set("AnnealingParams_HighAlpha") # initial value
+paramsOption = OptionMenu(root, paramsValue, "AnnealingParams_HighAlpha", "AnnealingParams_LowAlpha", "AnnealingParams_MediumAlpha", "AnnealingParams_SingleCase")
+paramsOption.pack()
+
 #Action
-def runButtonAction():
+def runClimbButtonAction():
     global distance, neighbor, time, matrix #To change out of scope variables
     (distance, neighbor, time, matrix) = runForMultipleSeedsHillClimb(dropValue.get())
     textField.delete(1.0,END)
@@ -39,9 +49,15 @@ def runButtonAction():
     textField.insert(END, neighbor)
     return (distance, neighbor, time, matrix)
 
-#run tsp button:
-runButton = Button(root, text ="Run Hillclimbing", command = lambda: runButtonAction())
-runButton.pack()
+
+
+#run hillclimb button:
+runClimbButton = Button(root, text ="Run Random Starts Hillclimbing", command = lambda: runClimbButtonAction())
+runClimbButton.pack()
+
+#run annealing butotn:
+runAnnealButton = Button(root, text ="Run Simulated Annealing", command = lambda: runClimbButtonAction())
+runAnnealButton.pack()
 
 #Text Field
 textField = Text(root, height=18, width=490)
