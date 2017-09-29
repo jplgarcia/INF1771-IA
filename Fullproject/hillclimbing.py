@@ -128,7 +128,7 @@ def create_neighbourhood ( initial_solution ) : # gera a vizinhanca de solucoes 
     length = len ( initial_solution ) - 1
     neighbours = [ initial_solution ]
 
-    for number in range ( 1 , length , 1 ) : # range comeca no 1 pq a cidade inicial precisa continuar na mesma posicao
+    for number in range ( 0 , length , 1 ) : # range comeca no 1 pq a cidade inicial precisa continuar na mesma posicao
         if ( number == length ):
             break
         temporary_solution = initial_solution[:]
