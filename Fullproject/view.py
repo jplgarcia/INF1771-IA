@@ -1,4 +1,4 @@
-from tkinter import *
+from Tkinter import *
 from hillclimbing import runForCommomHillClimb, runForMultipleSeedsHillClimb
 from SimulatedAnnealing import runSimulatedAnneling
 import networkx as nx
