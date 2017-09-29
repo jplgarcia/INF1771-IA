@@ -74,8 +74,12 @@ def readTSP(selectedTSP):
 
 def writeTSP(currentWorkingDirectory, selectedTSP, cost, route):
     splittedTSP = selectedTSP.split('/')
+    splittedTSP = splittedTSP[(len(splittedTSP) - 1)]
+    splittedTSP = splittedTSP.split('.')
+    splittedTSP = splittedTSP[0]
+    splittedTSP = splittedTSP + ".sol"
     cost = str(cost) + '\n'
-    filename = currentWorkingDirectory + "/result_" + splittedTSP[(len(splittedTSP) - 1)]
+    filename = currentWorkingDirectory + "/result_simulated_annealing_" + splittedTSP
     file = open(filename, 'w')
     file.write(cost)
     for city in route:

@@ -73,8 +73,12 @@ def readTSP(selectedTSP): #le o arquivo do TSP e salva em uma matriz de distanci
 def writeTSP(currentWorkingDirectory, selectedTSP, cost, route) : #escreve em um novo arquivo a melhor solucao e sua distancia
 
     splittedTSP = selectedTSP.split('/')
+    splittedTSP = splittedTSP[(len(splittedTSP) - 1)]
+    splittedTSP = splittedTSP.split('.')
+    splittedTSP = splittedTSP[0]
+    splittedTSP = splittedTSP + ".sol"
     cost = str(cost) + '\n'
-    filename = currentWorkingDirectory + "/result_" + splittedTSP[(len(splittedTSP) - 1)]
+    filename = currentWorkingDirectory + "/result_hill_climbing_" + splittedTSP
     file = open(filename, 'w')
     file.write(cost)
     for city in route:
@@ -182,7 +186,7 @@ def random_starts_hill_climbing ( matrix , dimension ): #hill climbing que exige
             if new_distance < shortest_distance:
                 shortest_distance = new_distance
                 best_solution = new_solution
-                print seed
+                print (seed)
         iterations = iterations + 1
 
     return best_solution, shortest_distance
@@ -196,10 +200,10 @@ def runForCommomHillClimb(chosen_tsp):
 
     one_go_start_time = time.time()
     ( best_neighbor, distance ) = single_hill_climbing ( matrix , dimension )
-    print best_neighbor, distance
+    print (best_neighbor, distance)
     time_complete = time.time() - one_go_start_time
-    print "time completed:"
-    print time_complete
+    print("time completed:")
+    print(time_complete)
     writeTSP(cwd, selectedTSP, distance, best_neighbor)
     return (distance, best_neighbor, time_complete, matrix)
 
@@ -211,9 +215,9 @@ def runForMultipleSeedsHillClimb(chosen_tsp):
 
     random_tries_start_time = time.time()
     ( best_neighbor, distance ) = random_starts_hill_climbing ( matrix , dimension )
-    print best_neighbor, distance
+    print(best_neighbor, distance)
     time_complete = time.time() - random_tries_start_time
-    print "time completed:"
-    print time_complete
+    print("time completed:")
+    print(time_complete)
     writeTSP(cwd, selectedTSP, distance, best_neighbor)
     return (distance, best_neighbor, time_complete, matrix)
