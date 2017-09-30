@@ -175,8 +175,10 @@ def random_starts_hill_climbing ( matrix , dimension ): #hill climbing que exige
     iterations = 0
     best_solution = []
     shortest_distance = 0
-
-    while iterations < (1000/dimension) :
+    limit = 1000/dimension # numero de iteracoes reduz de acordo com o numero de cidades
+    if limit < 1: # caso teste com um TSP com mais de 1000 cidades ira rodar apenas uma vez
+        limit = 1
+    while iterations < (limit) :
         #para cada start usamos uma seed diferentes que vai de 0 ate dimension
         seed(iterations+ 432790) #escolha de uma seed arbitraria para o shuffle(criacao da solucao inicial)
         if shortest_distance == 0 :
