@@ -71,14 +71,16 @@ def readTSP(selectedTSP): #le o arquivo do TSP e salva em uma matriz de distanci
 
 
 def writeTSP(currentWorkingDirectory, selectedTSP, cost, route) : #escreve em um novo arquivo a melhor solucao e sua distancia
-
     splittedTSP = selectedTSP.split('/')
+    dirResult = currentWorkingDirectory + "/resultados/"
+    if not os.path.exists(dirResult):
+        os.makedirs(dirResult)
     splittedTSP = splittedTSP[(len(splittedTSP) - 1)]
     splittedTSP = splittedTSP.split('.')
     splittedTSP = splittedTSP[0]
     splittedTSP = splittedTSP + ".sol"
     cost = str(cost) + '\n'
-    filename = currentWorkingDirectory + "/result_hill_climbing_" + splittedTSP
+    filename = dirResult + "/result_hill_climbing_" + splittedTSP
     file = open(filename, 'w')
     file.write(cost)
     for city in route:

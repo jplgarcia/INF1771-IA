@@ -74,12 +74,15 @@ def readTSP(selectedTSP):
 
 def writeTSP(currentWorkingDirectory, selectedTSP, cost, route):
     splittedTSP = selectedTSP.split('/')
+    dirResult = currentWorkingDirectory + "/resultados/"
+    if not os.path.exists(dirResult):
+        os.makedirs(dirResult)
     splittedTSP = splittedTSP[(len(splittedTSP) - 1)]
     splittedTSP = splittedTSP.split('.')
     splittedTSP = splittedTSP[0]
     splittedTSP = splittedTSP + ".sol"
     cost = str(cost) + '\n'
-    filename = currentWorkingDirectory + "/result_simulated_annealing_" + splittedTSP
+    filename = dirResult + "/result_simulated_annealing_" + splittedTSP
     file = open(filename, 'w')
     file.write(cost)
     for city in route:
@@ -256,7 +259,7 @@ def runSimulatedAnneling(chosen_tsp, chosen_params):
     selectedTSP = selectTSP(cwd, chosen_tsp)
     matrix, dimension = readTSP(selectedTSP)
 
-
+    random_tries_start_time = time.time()
     seed(1)
     testname, alltestparams = read_AnnealingParams(cwd + "/AnnealingParams/" + chosen_params)
     for testparams in alltestparams:
@@ -264,5 +267,6 @@ def runSimulatedAnneling(chosen_tsp, chosen_params):
     	(best, best_eval, start_temp, temp, alpha, elapsed_time) = \
     		simulated_annealing(int(testparams[0]), float(testparams[1]), int(testparams[2]), matrix, dimension)
     	writeTSP(cwd, selectedTSP, best_eval, best)
-
+    print("time completed:")
+    print(time_complete)
     return (best_eval, best, elapsed_time, matrix, start_temp, temp, alpha)
