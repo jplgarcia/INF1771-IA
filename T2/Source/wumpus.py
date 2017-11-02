@@ -1,11 +1,8 @@
-from pyswip import Prolog, registerForeign
+from pyswip import Prolog
 import monster
 import agent
 import random
-
-def hello(t):
-    print "Hello,", t
-hello.arity = 1
+import os
 
 def getFreeSpace(world):
     x = 0
@@ -15,14 +12,6 @@ def getFreeSpace(world):
         x = random.randint(0,11)
         y = random.randint(0,11)
     return (x,y)
-
-
-registerForeign(hello)
-
-prolog = Prolog()
-prolog.assertz("father(michael,john)")
-prolog.assertz("father(michael,gina)")
-list(prolog.query("father(michael,X), hello(X)"))
 
 dimension = 12
 
@@ -57,6 +46,38 @@ while i < 8:
     world[x][y] = 'PC'
     i = i + 1
 
+def writeFile(currentWorkingDirectory, world) : #escreve em um novo arquivo a melhor solucao e sua distancia
+    filename = currentWorkingDirectory + "/rules.pl"
+    file = open(filename, 'w')
+    file.write("agent(1,1).\n")
+    pos_x = -1
+    pos_y = -1
+    #inserir pocos no prolog
+    for list in world:
+        pos_y = pos_y + 1
+        pos_x = -1
+        for item in list:
+            pos_x = pos_x+1
+            if item == 'PC':
+                file.write("pit("+str(pos_x+1)+","+str(pos_y+1)+").\n")
+    #inserir monstros no prolog
+    for list in world:
+        pos_y = pos_y + 1
+        pos_x = -1
+        for item in list:
+            pos_x = pos_x+1
+            if item == 'M1' or item == 'M2' or item == 'M3' or item == 'M4':
+                file.write("monster(" + str(pos_x + 1) + "," + str(pos_y + 1) + ").\n")
+
+    file.close()
+
+cwd = os.getcwd()
+writeFile(cwd, world)
+
+prolog = Prolog()
+prolog.consult("rules.pl")
+print list(prolog.query("pit(X,Y)"))
+print list(prolog.query("monster(X,Y)"))
+print bool(list(prolog.query("agent(1,1)")))
 for list in world:
     print list
-

@@ -1,0 +1,13 @@
+agent(1,1).
+pit(4,1).
+pit(12,3).
+pit(11,4).
+pit(5,9).
+pit(5,10).
+pit(12,11).
+pit(5,12).
+pit(9,12).
+monster(5,19).
+monster(7,19).
+monster(7,21).
+monster(7,23).
