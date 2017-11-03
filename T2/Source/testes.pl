@@ -2,16 +2,45 @@
 :- dynamic facing/2.
 position(1,1).
 facing(1,0).
+/
+False_Maybe_True é como um booleano com 3 valores
+room_is_edge(coordinate(X,Y),False_Maybe_True).
+room_has_breeze(coordinate(X,Y),False_Maybe_True).
+room_has_hole(coordinate(X,Y),False_Maybe_True).
+room_has_stench(coordinate(X,Y),False_Maybe_True).
+room_has_wumpus(coordinate(X,Y),False_Maybe_True).
+room_has_shine(coordinate(X,Y),False_Maybe_True).
+room_has_gold(coordinate(X,Y),False_Maybe_True).
+EX.:
+room_has_shine(coordinate(X,Y),False_Maybe_True) :-
+	room_has_gold(coordinate(X,Y),False_Maybe_True).
+
+room_has_stentch(coordinate(X,Y),false):-
+	room_has_wumpus(coordinate(X-1,Y),false),
+	room_has_wumpus(coordinate(X+1,Y),false),
+	room_has_wumpus(coordinate(X,Y-1),false),
+	room_has_wumpus(coordinate(X,Y+1),false).
+
+room_has_stentch(coordinate(X,Y),maybe):-
+	assert(room_has_wumpus(coordinate(X-1,Y),maybe)),
+	assert(room_has_wumpus(coordinate(X+1,Y),maybe)),
+	assert(room_has_wumpus(coordinate(X,Y-1),maybe)),
+	assert(room_has_wumpus(coordinate(X,Y+1),maybe)).
+
+
+/
 
 step() :-
 	position(Xaxis,Yaxis),
 	facing(Xunit,Yunit),
 	X is Xaxis+Xunit,
 	Y is Yaxis+Yunit,
-	retract(position(_,_)),
-	assert(position(X,Y)),
+	move(X,Y),
 	format("position(~a,~a)",[X,Y]).
-	
+
+move(X,Y) :-
+	retract(position(_,_)),
+	assert(position(X,Y)).
 
 turn(right) :-
 	facing(Xunit,Yunit),
