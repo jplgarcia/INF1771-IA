@@ -2,39 +2,60 @@
 :- dynamic facing/2.
 position(1,1).
 facing(1,0).
-/
-False_Maybe_True é como um booleano com 3 valores
+
+%% /**
+action_weight(action(grab),1000).
+action_weight(action(pitfall),-1000).
+action_weight(action(die),-1000).
+action_weight(action(shoot),-10).
+action_weight(action(X),-1):-
+	X\==grab,
+	X\==pitfall,
+	X\==die,
+	X\==shoot,
+	X\==take_damage.
+
+take_damage(X) :-
+	retract(action_weight(action(take_damage),_)),
+	assert(action_weight(action(take_damage), -X)).
+	
+%% False_Maybe_True é como um booleano com 3 valores
 room_is_edge(coordinate(X,Y),False_Maybe_True).
 room_has_breeze(coordinate(X,Y),False_Maybe_True).
-room_has_hole(coordinate(X,Y),False_Maybe_True).
+room_has_breeze(coordinate(X,Y),false):-
+	room_has_pit(coordinate(X-1,Y),false),
+	room_has_pit(coordinate(X+1,Y),false),
+	room_has_pit(coordinate(X,Y-1),false),
+	room_has_pit(coordinate(X,Y+1),false).
+room_has_pit(coordinate(X,Y),False_Maybe_True).
 room_has_stench(coordinate(X,Y),False_Maybe_True).
-room_has_wumpus(coordinate(X,Y),False_Maybe_True).
-room_has_shine(coordinate(X,Y),False_Maybe_True).
-room_has_gold(coordinate(X,Y),False_Maybe_True).
-EX.:
-room_has_shine(coordinate(X,Y),False_Maybe_True) :-
-	room_has_gold(coordinate(X,Y),False_Maybe_True).
-
 room_has_stentch(coordinate(X,Y),false):-
 	room_has_wumpus(coordinate(X-1,Y),false),
 	room_has_wumpus(coordinate(X+1,Y),false),
 	room_has_wumpus(coordinate(X,Y-1),false),
 	room_has_wumpus(coordinate(X,Y+1),false).
-
 room_has_stentch(coordinate(X,Y),maybe):-
 	assert(room_has_wumpus(coordinate(X-1,Y),maybe)),
 	assert(room_has_wumpus(coordinate(X+1,Y),maybe)),
 	assert(room_has_wumpus(coordinate(X,Y-1),maybe)),
 	assert(room_has_wumpus(coordinate(X,Y+1),maybe)).
+room_has_wumpus(coordinate(X,Y),False_Maybe_True).
+room_has_shine(coordinate(X,Y),False_Maybe_True).
+room_has_shine(coordinate(X,Y),False_Maybe_True) :-
+	room_has_gold(coordinate(X,Y),False_Maybe_True).
+room_has_gold(coordinate(X,Y),False_Maybe_True).
+%% EX.:
 
 
-/
+
+%% */
+
 
 step() :-
 	position(Xaxis,Yaxis),
 	facing(Xunit,Yunit),
-	X is Xaxis+Xunit,
-	Y is Yaxis+Yunit,
+	X is Xaxis + Xunit,
+	Y is Yaxis + Yunit,
 	move(X,Y),
 	format("position(~a,~a)",[X,Y]).
 
@@ -52,13 +73,13 @@ turn(right) :-
 	
 turn(left) :-
 	facing(Xunit,Yunit),
-	X is -Yunit,
+	X is - Yunit,
 	Y is Xunit,
 	retract(facing(_,_)),
 	assert(facing(X,Y)),
 	format("facing(~a,~a)",[X,Y]).
 
-/turn(X) é para aceitar outras nomenclaturas para left e right/
+%%	turn(X) é para aceitar outras nomenclaturas para left e right
 turn(X) :-
 	(
 		(
@@ -66,15 +87,15 @@ turn(X) :-
 			X==e;
 			X==esquerda;
 			X==cc;
-			X==counter_clockwise),/cc = "counter clockwise"/
-		turn(left),!/"!" é para não continuar a avaliação (como um return)/
+			X==counter_clockwise),	%% cc = "counter clockwise"
+		turn(left),!				%% "!" é para não continuar a avaliação (como um return)
 	);
 	(
 		(
 			X==r;
 			X==d;
 			X==direita;
-			X==c;/c = "clockwise"/
+			X==c;					%% c = "clockwise"
 			X==clockwise),
 		turn(right),!
 	).
