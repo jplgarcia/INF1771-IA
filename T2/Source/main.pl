@@ -13,6 +13,8 @@
                 is_adjacent/2,
                 get_adjacent/3,
                 get_adjacent_list/3,
+                correct_safe/0,
+                pos/2,
                     ]).
 %Obs: Pra que server esse comando module?
 %R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%
