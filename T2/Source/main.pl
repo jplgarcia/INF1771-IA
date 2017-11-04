@@ -1,7 +1,9 @@
 %------------------------------------------------
 % Module: main as m
-% Section: definition
-%
+%------------------------------------------------
+
+%------------------------------------------------
+%Definitions
 %------------------------------------------------
 :- module(m,  [
                 at/2,
@@ -12,12 +14,18 @@
                 get_adjacent/3,
                 get_adjacent_list/3,
                     ]).
+%Obs: Pra que server esse comando module?
+%R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%
+
 :- dynamic([
               at/2,
               visited/1,
               energy/2,
               safe/1,
                   ]).
+%Obs: Pra que server esse comando dynamic?
+%R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
+
 %------------------------------------------------
 %
 % Exported Predicates
@@ -63,7 +71,10 @@
       energy(char, Energy_points),
       Energy_points=<0.
 
-  %Pensar nos casos de testes, buraco, cheiro, brisa e grito%
+  %These cases right below it will explain how do we check if there's any potential danger at adjacent houses.%
+  %If a potential danger appear twice times on the same list we assume that's a real danger%
+  %Nao aguento mais comentar as coisas, meu deus...%
+  %Case: BREEZE%
   check_hole(breeze, Position):-
     at(breeze, Position),
       retract(at(breeze, Position)),
@@ -71,7 +82,7 @@
       ((length(Tail, 0) , assertz(at(hole, Head)));
         danger_adjacent_list(potential_hole, hole, [Head|Tail])
       ).
-      
+  %Case: NOISES%
   check_monster(noises, Position):-
     at(noises, Position),
     retract(at(noises, Position)),
@@ -79,7 +90,7 @@
     ((length(Tail, 0), assertz(at(noises, Head)));
       danger_adjacent_list(potential_monster, monster, [Head|Tail])
     ).
-
+  %Case: STENCH%
   check_monster(stench, Position):-
     at(stench, Position),
     retract(at(stench, Position)),
