@@ -64,13 +64,29 @@
       Energy_points=<0.
 
   %Pensar nos casos de testes, buraco, cheiro, brisa e grito%
-  check_unsafe_hole(breeze, Position):-
+  check_hole(breeze, Position):-
     at(breeze, Position),
       retract(at(breeze, Position)),
       get_adjacent_list(_ , Position, [Head|Tail]),
       ((length(Tail, 0) , assertz(at(hole, Head)));
         danger_adjacent_list(potential_hole, hole, [Head|Tail])
       ).
+      
+  check_monster(noises, Position):-
+    at(noises, Position),
+    retract(at(noises, Position)),
+    get_adjacent_list(_ , Position, [Head|Tail]),
+    ((length(Tail, 0), assertz(at(noises, Head)));
+      danger_adjacent_list(potential_monster, monster, [Head|Tail])
+    ).
+
+  check_monster(stench, Position):-
+    at(stench, Position),
+    retract(at(stench, Position)),
+    get_adjacent_list(_, Position, [Head|Tail]),
+    ((length(Tail, 0), assertz(at(stench, Head)));
+      danger_adjacent_list(potential_monster, monster, [Head|Tail])
+    ).
 
 
 %------------------------------------------------
