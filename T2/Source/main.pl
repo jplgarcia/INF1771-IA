@@ -56,6 +56,10 @@
       energy(char, Energy_points),
       Energy_points=<0.
 
+  %Pensar nos casos de testes, buraco, cheiro, brisa e grito%
+  
+
+
 %------------------------------------------------
 %
 % DEFAULT CONFIG FOR AGENT
