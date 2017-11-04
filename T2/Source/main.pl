@@ -45,7 +45,7 @@
   get_adjacent_list(Direction, Position, List):-
     findall(Adj_p, (get_adjacent(Direction, Adj_p, Position), not(safe(Adj_p)), List), !.
 
-  %Mark each one with elements of the list as Potential_Danger or Danger, depending on the knowledge about the position.
+  %Mark each element of the list as Potential_Danger or Danger, depending on the knowledge about the position.
   danger_adjacent_list(_, _, []).
   danger_adjacent_list(Potential_Danger, Danger, [Head|Tail]):-
     ((not(at(Potential_Danger, Head)), assertz(at(Potential_Danger, Head)));
