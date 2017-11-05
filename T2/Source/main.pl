@@ -14,7 +14,7 @@
                 get_adjacent/3,
                 get_adjacent_list/3,
                 correct_safe/0,
-                pos/2,
+                pos/2
                     ]).
 %Obs: Pra que server esse comando module?
 %R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%
@@ -24,6 +24,7 @@
               visited/1,
               energy/2,
               safe/1,
+			  pos/2
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -52,8 +53,8 @@
         NewX is X-1, pos(NewX , Y).
 
   %Return a list with all, not known to be safe, adjacent postions to the given pos(x,y)
-  get_adjacent_list(Direction, Position, List):-
-    findall(Adj_p, (get_adjacent(Direction, Adj_p, Position), not(safe(Adj_p)), List), !.
+  get_adjacent_list(Direction, Position, List ) :-
+    findall(Adj_p, (get_adjacent(Direction, Adj_p , Position ), not(safe(Adj_p)), List )), ! .
 
   %Mark each element of the list as Potential_Danger or Danger, depending on the knowledge about the position.
   danger_adjacent_list(_, _, []).
@@ -71,7 +72,7 @@
   %Verify if the char is dead
   is_dead(char):-
       energy(char, Energy_points),
-      Energy_points=<0.
+      Energy_points =< 0.
 
   %These cases right below it will explain how do we check if there's any potential danger at adjacent houses.%
   %If a potential danger appear twice times on the same list we assume that's a real danger%
@@ -122,10 +123,10 @@
 %
 %------------------------------------------------
     %By definition the monster01 always starts on the position [coordinate_X,coordinate_Y]%
-    at(monster01, pos(random[ 1, 12), random[ 1, 12))).
+    at(monster01, pos(random( 1, 12), random( 1, 12))).
 
     %By definition the monster02 always starts on the position [coordinate_X, coordinate_Y]%
-    at(monster02, pos(random[ 1, 12), random[ 1, 12))).
+    at(monster02, pos(random( 1, 12), random( 1, 12))).
 
     %By definition the monster01 always starts with 100 points of life %
     energy(monster01, 100).

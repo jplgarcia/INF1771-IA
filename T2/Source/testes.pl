@@ -30,7 +30,7 @@ enter_room_has_breeze(coordinate ( X,Y ) , K )) :-
 			\+ K == maybe
 		),
 		retract ( room_has_breeze ( coordinate( X, Y ), _ ) ),
-		assert  ( room_has_breeze ( coordinate( X, Y ), K ) ),
+		assertz  ( room_has_breeze ( coordinate( X, Y ), K ) ),
 		!
 	);
 	(
@@ -51,7 +51,7 @@ enter_room_has_pit(coordinate ( X,Y ) , K )) :-
 			\+ K == maybe
 		),
 		retract ( room_has_pit ( coordinate( X, Y ), _ ) ),
-		assert  ( room_has_pit ( coordinate( X, Y ), K ) ),
+		assertz  ( room_has_pit ( coordinate( X, Y ), K ) ),
 		!
 	);
 	(
@@ -72,7 +72,7 @@ enter_room_has_stench(coordinate ( X,Y ) , K )) :-
 			\+ K == maybe
 		),
 		retract ( room_has_stench ( coordinate( X, Y ), _ ) ),
-		assert  ( room_has_stench ( coordinate( X, Y ), K ) ),
+		assertz  ( room_has_stench ( coordinate( X, Y ), K ) ),
 		!
 	);
 	(
@@ -93,7 +93,7 @@ enter_room_has_wumpus(coordinate ( X,Y ) , K )) :-
 			\+ K == maybe
 		),
 		retract ( room_has_wumpus ( coordinate( X, Y ), _ ) ),
-		assert  ( room_has_wumpus ( coordinate( X, Y ), K ) ),
+		assertz  ( room_has_wumpus ( coordinate( X, Y ), K ) ),
 		!
 	);
 	(
@@ -114,7 +114,7 @@ enter_room_has_shine(coordinate ( X,Y ) , K )) :-
 			\+ K == maybe
 		),
 		retract ( room_has_shine ( coordinate( X, Y ), _ ) ),
-		assert  ( room_has_shine ( coordinate( X, Y ), K ) ),
+		assertz  ( room_has_shine ( coordinate( X, Y ), K ) ),
 		!
 	);
 	(
@@ -135,7 +135,7 @@ enter_room_has_gold(coordinate ( X,Y ) , K )) :-
 			\+ K == maybe
 		),
 		retract ( room_has_gold ( coordinate( X, Y ), _ ) ),
-		assert  ( room_has_gold ( coordinate( X, Y ), K ) ),
+		assertz  ( room_has_gold ( coordinate( X, Y ), K ) ),
 		!
 	);
 	(
@@ -198,7 +198,6 @@ room_has_shine(coordinate( X,Y ),False_Maybe_True ).
 room_has_shine(coordinate( X,Y ),False_Maybe_True ) :-
 	enter_room_has_gold (room_has_gold(coordinate( X,Y ),False_Maybe_True ).
 room_has_gold(coordinate( X,Y ),False_Maybe_True ).
-%% EX.:
 
 
 
@@ -206,23 +205,23 @@ room_has_gold(coordinate( X,Y ),False_Maybe_True ).
 
 
 step() :-
-	position( Xaxis,Yaxis),
-	facing( Xunit,Yunit),
+	position( Xaxis,Yaxis ),
+	facing( Xunit,Yunit ),
 	X is Xaxis + Xunit,
 	Y is Yaxis + Yunit,
 	move( X,Y ),
 	format("position(~a,~a)",[ X,Y ]).
 
 move( X,Y ) :-
-	retract (position( _,_)),
-	assert (position( X,Y )).
+	retract (position( _,_ ) ),
+	assertz (position( X,Y )).
 
 turn(right) :-
-	facing( Xunit,Yunit),
+	facing( Xunit,Yunit ),
 	X is Yunit,
 	Y is -Xunit,
-	retract (facing( _,_)),
-	assert (facing( X,Y )),
+	retract (facing( _,_ )),
+	assertz (facing( X,Y )),
 	format("facing(~a,~a)",[ X,Y ]).
 	
 turn(left) :-
@@ -230,7 +229,7 @@ turn(left) :-
 	X is - Yunit,
 	Y is Xunit,
 	retract (facing( _,_ )),
-	assert (facing( X,Y )),
+	assertz (facing( X,Y )),
 	format("facing(~a,~a)",[ X,Y ]).
 
 %%	turn( X) é para aceitar outras nomenclaturas para left e right
