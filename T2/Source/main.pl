@@ -121,11 +121,7 @@
 % DEFAULT CONFIG FOR MONSTERS
 %
 %------------------------------------------------
-    %By definition the monster01 always starts on the position [coordinate_X,coordinate_Y]%
-    at(monster01, pos(random[ 1, 12), random[ 1, 12))).
-
-    %By definition the monster02 always starts on the position [coordinate_X, coordinate_Y]%
-    at(monster02, pos(random[ 1, 12), random[ 1, 12))).
+    %As posições dos monstros são sorteadas através do python e inseridas pelo comando assert.
 
     %By definition the monster01 always starts with 100 points of life %
     energy(monster01, 100).
