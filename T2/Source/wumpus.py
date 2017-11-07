@@ -13,6 +13,9 @@ def getFreeSpace(world):
         y = random.randint(0,11)
     return (x,y)
 
+prolog = Prolog()
+prolog.consult("main.pl")
+
 dimension = 12
 
 #Criar mundo
@@ -46,10 +49,7 @@ while i < 8:
     world[x][y] = 'PC'
     i = i + 1
 
-def writeFile(currentWorkingDirectory, world) : #escreve em um novo arquivo a melhor solucao e sua distancia
-    filename = currentWorkingDirectory + "/rules.pl"
-    file = open(filename, 'w')
-    file.write("agent(1,1).\n")
+def fillFile(currentWorkingDirectory, world) : #escreve em um novo arquivo a melhor solucao e sua distancia
     pos_x = -1
     pos_y = -1
     #inserir pocos no prolog
@@ -59,25 +59,23 @@ def writeFile(currentWorkingDirectory, world) : #escreve em um novo arquivo a me
         for item in list:
             pos_x = pos_x+1
             if item == 'PC':
-                file.write("pit("+str(pos_x+1)+","+str(pos_y+1)+").\n")
-    #inserir monstros no prolog
-    for list in world:
-        pos_y = pos_y + 1
-        pos_x = -1
-        for item in list:
-            pos_x = pos_x+1
-            if item == 'M1' or item == 'M2' or item == 'M3' or item == 'M4':
-                file.write("monster(" + str(pos_x + 1) + "," + str(pos_y + 1) + ").\n")
-
-    file.close()
+                prolog.assertz("at(hole, pos("+str(pos_x+1)+","+str(pos_y+1)+"))")
+                #file.write("pit("+str(pos_x+1)+","+str(pos_y+1)+").\n")
+            if item == 'M1':
+                prolog.assertz("at(monster01, pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+            if item == 'M2':
+                prolog.assertz("at(monster02, pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+            if item == 'M3':
+                prolog.assertz("at(monster03, pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+            if item == 'M4':
+                prolog.assertz("at(monster04, pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
 
 cwd = os.getcwd()
-writeFile(cwd, world)
+fillFile(cwd, world)
 
-prolog = Prolog()
-prolog.consult("rules.pl")
-print list(prolog.query("pit(X,Y)"))
-print list(prolog.query("monster(X,Y)"))
-print bool(list(prolog.query("agent(1,1)")))
+print list(prolog.query("at(monster01,X)"))
+print list(prolog.query("at(hole,Y)"))
+print list(prolog.query("at(breeze,X)"))
+
 for list in world:
     print list
