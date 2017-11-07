@@ -85,7 +85,7 @@
         danger_adjacent_list(potential_hole, hole, [Head|Tail])
       ).
   %Case: NOISES%
-  check_monster(noises, Position):-
+  check_noises(noises, Position):-
     at(noises, Position),
     retract(at(noises, Position)),
     get_adjacent_list(_ , Position, [Head|Tail]),
@@ -93,7 +93,7 @@
       danger_adjacent_list(potential_monster, monster, [Head|Tail])
     ).
   %Case: STENCH%
-  check_monster(stench, Position):-
+  check_stench(stench, Position):-
     at(stench, Position),
     retract(at(stench, Position)),
     get_adjacent_list(_, Position, [Head|Tail]),
