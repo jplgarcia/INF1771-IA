@@ -53,7 +53,7 @@
 
   %Return a list with all, not known to be safe, adjacent postions to the given pos(x,y)
   get_adjacent_list(Direction, Position, List):-
-    findall(Adj_p, (get_adjacent(Direction, Adj_p, Position), not(safe(Adj_p)), List), !.
+    findall(Adj_p, (get_adjacent(Direction, Adj_p, Position), not(safe(Adj_p))), List), !.
 
   %Mark each element of the list as Potential_Danger or Danger, depending on the knowledge about the position.
   danger_adjacent_list(_, _, []).
