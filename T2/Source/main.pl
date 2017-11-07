@@ -128,3 +128,9 @@
 
     %By definition the monster01 always starts with 100 points of life %
     energy(monster02, 100).
+
+    %By definition the monster01 always starts with 100 points of life %
+    energy(monster03, 100).
+
+    %By definition the monster01 always starts with 100 points of life %
+    energy(monster04, 100).
