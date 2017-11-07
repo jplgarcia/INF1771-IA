@@ -14,7 +14,7 @@
                 get_adjacent/3,
                 get_adjacent_list/3,
                 correct_safe/0,
-                pos/2,
+                pos/2
                     ]).
 %Obs: Pra que server esse comando module?
 %R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%
@@ -23,7 +23,7 @@
               at/2,
               visited/1,
               energy/2,
-              safe/1,
+              safe/1
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
