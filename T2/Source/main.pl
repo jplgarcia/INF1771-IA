@@ -23,7 +23,9 @@
               at/2,
               visited/1,
               energy/2,
-              safe/1
+              safe/1,
+			  position/2,
+			  facing/2
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -53,7 +55,7 @@
 
   %Return a list with all, not known to be safe, adjacent postions to the given pos(x,y)
   get_adjacent_list(Direction, Position, List):-
-    findall(Adj_p, (get_adjacent(Direction, Adj_p, Position), not(safe(Adj_p))), List), !.
+    findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), not(safe(Adj_p))), List), !.
 
   %Mark each element of the list as Potential_Danger or Danger, depending on the knowledge about the position.
   danger_adjacent_list(_, _, []).
@@ -71,7 +73,7 @@
   %Verify if the char is dead
   is_dead(char):-
       energy(char, Energy_points),
-      Energy_points=<0.
+      Energy_points =< 0.
 
   %These cases right below it will explain how do we check if there's any potential danger at adjacent houses.%
   %If a potential danger appear twice times on the same list we assume that's a real danger%
@@ -100,8 +102,59 @@
     ((length(Tail, 0), assertz(at(stench, Head)));
       danger_adjacent_list(potential_monster, monster, [Head|Tail])
     ).
+/** 
+	AGENT MOVEMENT
+*/
+step() :-
+	position( Xaxis,Yaxis ),
+	facing( Xunit,Yunit ),
+	X is Xaxis + Xunit,
+	Y is Yaxis + Yunit,
+	move( X,Y ),
+	format("position(~a,~a)",[ X,Y ]).
 
+move( X,Y ) :-
+	retract (position( _,_ ) ),
+	assertz (position( X,Y )).
 
+turn(right) :-
+	facing( Xunit,Yunit ),
+	X is Yunit,
+	Y is -Xunit,
+	retract (facing( _,_ )),
+	assertz (facing( X,Y )),
+	format("facing(~a,~a)",[ X,Y ]).
+	
+turn(left) :-
+	facing( Xunit,Yunit ),
+	X is - Yunit,
+	Y is Xunit,
+	retract (facing( _,_ )),
+	assertz (facing( X,Y )),
+	format("facing(~a,~a)",[ X,Y ]).
+
+/** 
+	OTHER NAMES FOR turn( X ) 
+ */
+turn( X ) :-
+	(
+		(
+			X == l;
+			X == e;
+			X == esquerda;
+			X == cc;
+			X == counter_clockwise),	%% cc = "counter clockwise"
+		turn(left),!				%% "!" é para não continuar a avaliação (como um return)
+	);
+	(
+		(
+			X == r;
+			X == d;
+			X == direita;
+			X == c;					%% c = "clockwise"
+			X == clockwise),
+		turn(right),!
+	).
 %------------------------------------------------
 %
 % DEFAULT CONFIG FOR AGENT
@@ -122,6 +175,7 @@
 %
 %------------------------------------------------
     %As posições dos monstros são sorteadas através do python e inseridas pelo comando assert.
+
 
     %By definition the monster01 always starts with 100 points of life %
     energy(monster01, 100).
