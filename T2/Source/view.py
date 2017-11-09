@@ -4,9 +4,10 @@ import time
 
 master = Tk()
 
-w = Canvas(master, width=500, height=600)
+w = Canvas ( master , width=500 , height=600 )
 rectSize = 40
 
+#carrega todas as imagens usadas no tabuleiro
 imageWW = ImageTk.PhotoImage(Image.open("wwleste.gif"))
 imageHole = ImageTk.PhotoImage(Image.open("buraco.png"))
 imageFloor = ImageTk.PhotoImage(Image.open("chao.png"))
@@ -56,10 +57,12 @@ def drawFloor () : #desenha o chao do labirinto/tabuleiro
             j = j + 1
         i = i + 1
 
-def changeDirection ( direction ) : #muda direcao da agente
+def changeDirection ( direction, position ) : #muda direcao da agente em sua respectiva posicao no tabuleiro
 
     global imageWW
+    global agentSprite
 
+    ( x , y ) = position
     #para cada direcao da agente, a foto atualiza para faze-la virar nessa direcao.
     if direction == "South":
         imageWW = ImageTk.PhotoImage(Image.open("wwsul.gif"))
@@ -70,6 +73,37 @@ def changeDirection ( direction ) : #muda direcao da agente
     if direction == "West":
         imageWW = ImageTk.PhotoImage(Image.open("wwoeste.gif"))
 
+    # posiciona imagem com a direcao correta na casa onde a agente se encontra.
+    agentSprite = w.create_image( 30 + rectSize * ( x - 1 ), 70 + rectSize * ( 12 - ( y - 1 ) ), image = imageWW )
+
+def movement () :
+    #acessar o arquivo wumpus.py que acessa o prolog para determinar movimentos
+    time.sleep(0.5)
+    changeDirection("East",(2,1))
+    master.update()
+    time.sleep(0.5)
+    changeDirection("East", (3, 1))
+    master.update()
+    time.sleep(0.5)
+    changeDirection("North", (3, 1))
+    master.update()
+    time.sleep(0.5)
+    changeDirection("North", (3, 2))
+    master.update()
+    time.sleep(0.5)
+    changeDirection("East", (3, 2))
+    master.update()
+    time.sleep(0.5)
+    changeDirection("East", (4, 2))
+    master.update()
+    time.sleep(0.5)
+    changeDirection("North", (5, 2))
+    master.update()
+    time.sleep(0.5)
+    changeDirection("South", (5, 2))
+    master.update()
+
+
 
 drawFloor()
 insertHoles([(1,3),(3,3)])
@@ -78,27 +112,11 @@ insertMonsters([(2,2,20),(10,10,50)])
 agentSprite = w.create_image(30 , 70 + rectSize * 12, image = imageWW)
 drawLines()
 w.pack()
+
+
+button = Button ( master, text = "Start", command = lambda: movement() )
+button.pack()
+
+
 master.mainloop()
 
-time.sleep(2)
-changeDirection("North")
-imageWW = ImageTk.PhotoImage(Image.open("wwsul.gif"))
-agentSprite = w.create_image(30 , 70 + rectSize * 12, image=imageWW)
-master.mainloop()
-#w.pack()
-time.sleep(2)
-changeDirection("East")
-agentSprite = w.create_image(30 , 70 + rectSize * 12, image=imageWW)
-#w.pack()
-time.sleep(2)
-changeDirection("South")
-agentSprite = w.create_image(30 , 70 + rectSize * 12, image=imageWW)
-#w.pack()
-time.sleep(2)
-changeDirection("West")
-agentSprite = w.create_image(30 , 70 + rectSize * 12, image=imageWW)
-#w.pack()
-time.sleep(2)
-changeDirection("South")
-agentSprite = w.create_image(30 , 70 + rectSize * 12, image=imageWW)
-#w.pack()
