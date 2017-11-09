@@ -25,21 +25,21 @@ world = [['  ' for x in range(dimension)] for y in range(dimension)]
 agent = agent.Agent((0,0),(0,1))
 world[0][0] = 'AG'
 
-#criar montros
+#criar monstros
 (x,y) = getFreeSpace(world)
-monster01 = monster.Monster(1,20,x,y)
+monster01 = monster.Monster(01,20,x,y)
 world[x][y] = 'M1'
 
 (x,y) = getFreeSpace(world)
-monster02 = monster.Monster(1,20,x,y)
+monster02 = monster.Monster(02,20,x,y)
 world[x][y] = 'M2'
 
 (x,y) = getFreeSpace(world)
-monster03 = monster.Monster(1,50,x,y)
+monster03 = monster.Monster(03,50,x,y)
 world[x][y] = 'M3'
 
 (x,y) = getFreeSpace(world)
-monster04 = monster.Monster(1,50,x,y)
+monster04 = monster.Monster(04,50,x,y)
 world[x][y] = 'M4'
 
 #criar pocos
