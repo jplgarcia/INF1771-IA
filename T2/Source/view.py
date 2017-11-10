@@ -41,11 +41,11 @@ labelM1Energy = Label ( master, text = "Energia : " )
 labelM1NumEnergy = Label ( master, text = "100" )
 labelM1Damage = Label ( master, text = "Dano : " )
 labelM1NumDamage = Label ( master, text = "20" )
-labelM1.grid( row = 0, column = 3, columnspan = 2, sticky = "W" )
-labelM1Energy.grid( row = 1, column = 3, sticky = "W" )
-labelM1NumEnergy.grid( row = 1, column = 4, sticky = "W" )
-labelM1Damage.grid( row = 2, column = 3, sticky = "W" )
-labelM1NumDamage.grid( row = 2, column = 4, sticky = "W" )
+labelM1.grid ( row = 0, column = 3, columnspan = 2, sticky = "W" )
+labelM1Energy.grid ( row = 1, column = 3, sticky = "W" )
+labelM1NumEnergy.grid ( row = 1, column = 4, sticky = "W" )
+labelM1Damage.grid ( row = 2, column = 3, sticky = "W" )
+labelM1NumDamage.grid ( row = 2, column = 4, sticky = "W" )
 
 #Energia do Monstro 2 (dano 20)
 labelM2 = Label ( master, text = "Monstro 2 : ")
@@ -53,11 +53,11 @@ labelM2Energy = Label ( master, text = "Energia : " )
 labelM2NumEnergy = Label ( master, text = "100" )
 labelM2Damage = Label ( master, text = "Dano : " )
 labelM2NumDamage = Label ( master, text = "20" )
-labelM2.grid( row = 0, column = 5, columnspan = 2, sticky = "W" )
-labelM2Energy.grid( row = 1, column = 5, sticky = "W" )
-labelM2NumEnergy.grid( row = 1, column = 6, sticky = "W" )
-labelM2Damage.grid( row = 2, column = 5, sticky = "W" )
-labelM2NumDamage.grid( row = 2, column = 6, sticky = "W" )
+labelM2.grid ( row = 0, column = 5, columnspan = 2, sticky = "W" )
+labelM2Energy.grid ( row = 1, column = 5, sticky = "W" )
+labelM2NumEnergy.grid ( row = 1, column = 6, sticky = "W" )
+labelM2Damage.grid ( row = 2, column = 5, sticky = "W" )
+labelM2NumDamage.grid ( row = 2, column = 6, sticky = "W" )
 
 #Energia do Monstro 3 (dano 50)
 labelM3 = Label ( master, text = "Monstro 3 : ")
@@ -66,10 +66,10 @@ labelM3NumEnergy = Label ( master, text = "100" )
 labelM3Damage = Label ( master, text = "Dano : " )
 labelM3NumDamage = Label ( master, text = "50" )
 labelM3.grid( row = 3, column = 3, columnspan = 2 , rowspan=3, sticky = "W" )
-labelM3Energy.grid( row = 5, column = 3, sticky = "W" )
-labelM3NumEnergy.grid( row = 5, column = 4, sticky = "W" )
-labelM3Damage.grid( row = 6, column = 3, sticky = "W" )
-labelM3NumDamage.grid( row = 6, column = 4, sticky = "W" )
+labelM3Energy.grid ( row = 5, column = 3, sticky = "W" )
+labelM3NumEnergy.grid ( row = 5, column = 4, sticky = "W" )
+labelM3Damage.grid ( row = 6, column = 3, sticky = "W" )
+labelM3NumDamage.grid ( row = 6, column = 4, sticky = "W" )
 
 #Energia do Monstro 4 (dano 50)
 labelM4 = Label ( master, text = "Monstro 4 : ")
@@ -78,23 +78,34 @@ labelM4NumEnergy = Label ( master, text = "100" )
 labelM4Damage = Label ( master, text = "Dano : " )
 labelM4NumDamage = Label ( master, text = "50" )
 labelM4.grid( row = 3, column = 5, columnspan = 2 , rowspan=3, sticky = "W" )
-labelM4Energy.grid( row = 5, column = 5 , sticky = "W" )
-labelM4NumEnergy.grid( row = 5, column = 6 , sticky = "W" )
-labelM4Damage.grid( row = 6, column = 5 , sticky = "W" )
-labelM4NumDamage.grid( row = 6, column = 6 , sticky = "W" )
+labelM4Energy.grid ( row = 5, column = 5 , sticky = "W" )
+labelM4NumEnergy.grid ( row = 5, column = 6 , sticky = "W" )
+labelM4Damage.grid ( row = 6, column = 5 , sticky = "W" )
+labelM4NumDamage.grid ( row = 6, column = 6 , sticky = "W" )
 
 boardCanvas = Canvas ( master, width = 500, height = 550 ) #tamanho do tabuleiro
 rectSize = 40 #cada casa do tabuleiro tem 40 x 40 px
 
+imagespriteMonster01 = None
+imagespriteMonster02 = None
+imagespriteMonster03 = None
+imagespriteMonster04 = None
+
 
 def insertMonsters ( monsterList ) : #insere os monstros em suas respectivas posicoes no tabuleiro
 
+    global imagespriteMonster01, imagespriteMonster02, imagespriteMonster03, imagespriteMonster04
+
     for monster in monsterList:
-        ( x , y , damage ) = monster #(x,y): coordenadas de cada monstro, damage indica se o monstro tem dano de 20 ou 50
-        if damage == 20:
-            imagesprite = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageMonster20 )
-        else:
-            imagesprite = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageMonster50 )
+        ( x , y , id ) = monster #(x,y): coordenadas de cada monstro, id 1 e 2 tem dano 20 e 3 e 4 dano 50
+        if id == 1:
+            boardCanvas.imagespriteMonster01 = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageMonster20 )
+        elif id == 2:
+            boardCanvas.imagespriteMonster02 = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageMonster20 )
+        elif id == 3:
+            boardCanvas.imagespriteMonster03 = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageMonster50 )
+        elif id == 4:
+            boardCanvas.imagespriteMonster04 = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageMonster50 )
 
 def insertHoles ( holeList ) : #funcao que insere buracos no tabuleiro baseado nas casas sorteadas
 
@@ -150,6 +161,22 @@ def changeDirection ( direction, position ) : #muda direcao da agente em sua res
     # posiciona imagem com a direcao correta na casa onde a agente se encontra.
     agentSprite = boardCanvas.create_image(30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageWW)
 
+def popUpMsg ( msg ) : #abre um pop up com Game Over
+
+    popup = Tk()
+
+    popup.wm_title ( "Game Over!" )
+    label = Label ( popup, text = msg ) #a mensagem indica se o agente ganhou ou perdeu
+    label.pack ( side = "top", fill = "x", padx = 50, pady = (10,0) )
+    label = Label ( popup, text = "Score : " + labelNumPoints [ "text" ] ) #imprime pontuacao final do agente
+    label.pack ( side  = "top", fill = "x", padx = 50 )
+
+    B1 = Button ( popup, text = "Okay", command = lambda: [ master.destroy(), popup.destroy() ] )
+    B1.pack()
+    popup.geometry ( '%dx%d+%d+%d' % ( 200, 90, 150 ,300 ) )
+
+    popup.mainloop()
+
 def movement () : #executa os movimentos da agente
     #acessar o arquivo wumpus.py que acessa o prolog para determinar movimentos
     time.sleep(0.5)
@@ -158,38 +185,88 @@ def movement () : #executa os movimentos da agente
     time.sleep(0.5)
     changeDirection("East", (3, 1))
     master.update()
-    time.sleep(0.5)
-    changeDirection("North", (3, 1))
-    master.update()
-    time.sleep(0.5)
-    changeDirection("North", (3, 2))
-    master.update()
-    time.sleep(0.5)
-    changeDirection("East", (3, 2))
-    master.update()
-    time.sleep(0.5)
-    changeDirection("East", (4, 2))
-    master.update()
-    time.sleep(0.5)
-    changeDirection("North", (5, 2))
-    master.update()
-    time.sleep(0.5)
-    changeDirection("South", (5, 2))
-    master.update()
+    #time.sleep(0.5)
+    #changeDirection("North", (3, 1))
+    #master.update()
+    #time.sleep(0.5)
+    #changeDirection("North", (3, 2))
+    #master.update()
+    #time.sleep(0.5)
+    #changeDirection("East", (3, 2))
+    #master.update()
+    #time.sleep(0.5)
+    #changeDirection("East", (4, 2))
+    #master.update()
+    #time.sleep(0.5)
+    #changeDirection("North", (5, 2))
+    #master.update()
+    #time.sleep(0.5)
+    #changeDirection("South", (5, 2))
+    #master.update()
+    updateAgentPoints(10)
+    updateAgentEnergy(10)
+    updateAmmo()
+    updateMonsterEnergy(100,01)
+    popUpMsg("Game Over!")
 
+def updateAgentPoints ( value ) : #muda pontuacao do agente
+
+    global labelNumPoints
+
+    #caso o valor recebido seja para diminuir do numero de pontos, ele vem com sinal negativo. Por isso, sempre somamos o valor.
+    total = int ( labelNumPoints [ "text" ] ) + value
+    labelNumPoints.config ( text = str ( total ) )
+
+def updateAgentEnergy ( value ) : #muda energia do agente
+
+    global labelNumEnergy
+
+    #o valor da energia sempre vem em modulo e e diminuita do numero total
+    total = int ( labelNumEnergy [ "text" ] ) - value
+    labelNumEnergy.config ( text = str ( total ) )
+
+def updateMonsterEnergy ( value, monster ) : #muda energia do monstro
+
+    global labelM1NumEnergy, labelM2NumEnergy, labelM3NumEnergy, labelM4Energy
+
+    if monster == 01 :
+        total = int ( labelM1NumEnergy ["text"] ) - value
+        labelM1NumEnergy.config ( text = str ( total ) )
+        #if total <= 0 :
+            #boardCanvas.imagespriteMonster01.config(image='')
+    if monster == 02:
+        total = int ( labelM2NumEnergy ["text"] ) - value
+        labelM2NumEnergy.config ( text = str ( total ) )
+    if monster == 03:
+        total = int ( labelM3NumEnergy ["text"] ) - value
+        labelM3NumEnergy.config ( text = str ( total ) )
+    if monster == 04:
+        total = int ( labelM4NumEnergy ["text"] ) - value
+        labelM4NumEnergy.config ( text = str ( total ) )
+
+
+
+def updateAmmo (): #diminui municao, uma flecha por vez
+
+    global labelNumAmmo
+
+    total = int ( labelNumAmmo [ "text" ] ) - 1
+    labelNumAmmo.config ( text = str ( total ) )
 
 
 drawFloor()
 insertHoles([(1,3),(3,3),(1,12),(2,5),(7,11),(7,8),(4,4),(7,7)])
 insertGold([(2,7),(5,6),(10,9)])
-insertMonsters([(2,2,20), (3,10,20),(10,10,50),(5,5,50)])
+insertMonsters([(2,2,1), (3,10,2),(10,10,3),(5,5,4)])
 agentSprite = boardCanvas.create_image ( 30, 20 + rectSize * 12, image = imageWW )
 drawLines()
 boardCanvas.grid ( columnspan = 8 )
 
-#butao para iniciar a simulacao
+#botao para iniciar a simulacao
 button = Button ( master, text = "Start", command = lambda: movement() )
 button.grid ( columnspan = 8, pady = ( 0, 20 ) )
+
+
 
 
 master.mainloop()
