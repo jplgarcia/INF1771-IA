@@ -36,7 +36,7 @@ labelAmmo.grid ( row = 4 , column = 1, sticky = "W" )
 labelNumAmmo.grid ( row = 4, column = 2, sticky = "W" )
 
 #Energia do Monstro 1 (dano 20)
-labelM1 = Label ( master, text = "Monstro 1 : ")
+labelM1 = Label ( master, text = "Monstro 1 : ", pady = 5 )
 labelM1Energy = Label ( master, text = "Energia : " )
 labelM1NumEnergy = Label ( master, text = "100" )
 labelM1Damage = Label ( master, text = "Dano : " )
@@ -48,7 +48,7 @@ labelM1Damage.grid ( row = 2, column = 3, sticky = "W" )
 labelM1NumDamage.grid ( row = 2, column = 4, sticky = "W" )
 
 #Energia do Monstro 2 (dano 20)
-labelM2 = Label ( master, text = "Monstro 2 : ")
+labelM2 = Label ( master, text = "Monstro 2 : ", pady = 5 )
 labelM2Energy = Label ( master, text = "Energia : " )
 labelM2NumEnergy = Label ( master, text = "100" )
 labelM2Damage = Label ( master, text = "Dano : " )
@@ -60,7 +60,7 @@ labelM2Damage.grid ( row = 2, column = 5, sticky = "W" )
 labelM2NumDamage.grid ( row = 2, column = 6, sticky = "W" )
 
 #Energia do Monstro 3 (dano 50)
-labelM3 = Label ( master, text = "Monstro 3 : ")
+labelM3 = Label ( master, text = "Monstro 3 : ", pady = 5 )
 labelM3Energy = Label ( master, text = "Energia : " )
 labelM3NumEnergy = Label ( master, text = "100" )
 labelM3Damage = Label ( master, text = "Dano : " )
@@ -72,7 +72,7 @@ labelM3Damage.grid ( row = 6, column = 3, sticky = "W" )
 labelM3NumDamage.grid ( row = 6, column = 4, sticky = "W" )
 
 #Energia do Monstro 4 (dano 50)
-labelM4 = Label ( master, text = "Monstro 4 : ")
+labelM4 = Label ( master, text = "Monstro 4 : ", pady = 5)
 labelM4Energy = Label ( master, text = "Energia : " )
 labelM4NumEnergy = Label ( master, text = "100" )
 labelM4Damage = Label ( master, text = "Dano : " )
@@ -265,9 +265,6 @@ boardCanvas.grid ( columnspan = 8 )
 #botao para iniciar a simulacao
 button = Button ( master, text = "Start", command = lambda: movement() )
 button.grid ( columnspan = 8, pady = ( 0, 20 ) )
-
-
-
 
 master.mainloop()
 
