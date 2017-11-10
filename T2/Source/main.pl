@@ -24,8 +24,7 @@
               visited/1,
               energy/2,
               safe/1,
-			  position/2,
-			  facing/2
+			  agentfacing/2
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -102,36 +101,42 @@
     ((length(Tail, 0), assertz(at(stench, Head)));
       danger_adjacent_list(potential_monster, monster, [Head|Tail])
     ).
+	%Case: SHINE%
+	check_shine(shine, Position ):-
+		at(shine, Position ),
+		assertz(at(gold,Position ))
+    ).
 /** 
 	AGENT MOVEMENT
 */
+
 step() :-
-	position( Xaxis,Yaxis ),
-	facing( Xunit,Yunit ),
+	at(agent,pos( Xaxis,Yaxis )),
+	agentfacing( Xunit,Yunit ),
 	X is Xaxis + Xunit,
 	Y is Yaxis + Yunit,
 	move( X,Y ),
 	format("position(~a,~a)",[ X,Y ]).
 
 move( X,Y ) :-
-	retract (position( _,_ ) ),
-	assertz (position( X,Y )).
+	retract(at(agent,pos( _ , _ ))),
+	assertz(at(agent,pos( X,Y ))).
 
 turn(right) :-
-	facing( Xunit,Yunit ),
+	agentfacing( Xunit,Yunit ),
 	X is Yunit,
 	Y is -Xunit,
-	retract (facing( _,_ )),
-	assertz (facing( X,Y )),
-	format("facing(~a,~a)",[ X,Y ]).
+	retract(agentfacing( _ , _ )),
+	assertz(agentfacing( X,Y )),
+	format("agentfacing(~a,~a)",[ X,Y ]).
 	
 turn(left) :-
-	facing( Xunit,Yunit ),
+	agentfacing( Xunit,Yunit ),
 	X is - Yunit,
 	Y is Xunit,
-	retract (facing( _,_ )),
-	assertz (facing( X,Y )),
-	format("facing(~a,~a)",[ X,Y ]).
+	retract(agentfacing( _ , _ )),
+	assertz(agentfacing( X,Y )),
+	format("agentfacing(~a,~a)",[ X,Y ]).
 
 /** 
 	OTHER NAMES FOR turn( X ) 
@@ -160,6 +165,10 @@ turn( X ) :-
 % DEFAULT CONFIG FOR AGENT
 %
 %------------------------------------------------
+
+	%%By definition the agents allways starts facing the right
+	agentfacing(1,0).
+	
     %By definition the agent always starts on the position [1,1]%
     at(agent, pos(1,1)).
 
