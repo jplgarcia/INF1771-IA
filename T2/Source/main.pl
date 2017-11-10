@@ -1,6 +1,6 @@
-%------------------------------------------------
-% Module: main as m
-%------------------------------------------------
+%------------------------------------------------%
+% Module: main as m                              %
+%------------------------------------------------%
 
 %------------------------------------------------
 %Definitions
@@ -29,11 +29,11 @@
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
 
-%------------------------------------------------
-%
-% Exported Predicates
-%
-%------------------------------------------------
+%------------------------------------------------%
+%                                                %
+% Exported Predicates                            %
+%                                                %
+%------------------------------------------------%
   %Verify if the two positions are adjacent.
   is_adjacent(Position1, Position2):-
     get_adjacent( _ , Adj_p , Position1), Adj_p , Adj_p == Position2.
@@ -63,8 +63,15 @@
      (retract(at(Potential_Danger, Head)), assertz(at(Danger, Head)))
     ), danger_adjacent_list(Potential_Danger, Danger, Tail), !.
 
+  %Correct positions surrounding the agent's current position to be unsafe.
+  correct_as_unsafe:-
+    at(agent, Position),
+    (check_hole(breeze, Position); true),
+    (check_noises(noises, Position); true),
+    (check_stench(stench, Position); true).
+
   %Correct positions surrounding the agent's current position to be safe.
-  correct_safe:-
+  correct_as_safe:-
     at(agent, Position),
     get_adjacent(_, NewPosition, Position), NewPosition,
     (not(safe(NewPosition)), assertz(safe(NewPosition))).
@@ -101,12 +108,8 @@
     ((length(Tail, 0), assertz(at(stench, Head)));
       danger_adjacent_list(potential_monster, monster, [Head|Tail])
     ).
-	%Case: SHINE%
-	check_shine(shine, Position ):-
-		at(shine, Position ),
-		assertz(at(gold,Position ))
-    ).
-/** 
+
+/**
 	AGENT MOVEMENT
 */
 
@@ -129,7 +132,7 @@ turn(right) :-
 	retract(agentfacing( _ , _ )),
 	assertz(agentfacing( X,Y )),
 	format("agentfacing(~a,~a)",[ X,Y ]).
-	
+
 turn(left) :-
 	agentfacing( Xunit,Yunit ),
 	X is - Yunit,
@@ -138,8 +141,8 @@ turn(left) :-
 	assertz(agentfacing( X,Y )),
 	format("agentfacing(~a,~a)",[ X,Y ]).
 
-/** 
-	OTHER NAMES FOR turn( X ) 
+/**
+	OTHER NAMES FOR turn( X )
  */
 turn( X ) :-
 	(
@@ -166,9 +169,9 @@ turn( X ) :-
 %
 %------------------------------------------------
 
-	%%By definition the agents allways starts facing the right
-	agentfacing(1,0).
-	
+	 %By definition the agents allways starts facing the right
+	  agentfacing(1,0).
+
     %By definition the agent always starts on the position [1,1]%
     at(agent, pos(1,1)).
 
@@ -184,13 +187,17 @@ turn( X ) :-
 %
 %------------------------------------------------
     %As posições dos monstros são sorteadas através do python e inseridas pelo comando assert.
-
-
     %By definition the monster01 always starts with 100 points of life %
     energy(monster01, 100).
 
-    %By definition the monster01 always starts with 100 points of life %
+    %By definition the monster02 always starts with 100 points of life %
     energy(monster02, 100).
+
+    %By definition the monster01 always starts with 100 points of life %
+    energy(monster03, 100).
+
+    %By definition the monster02 always starts with 100 points of life %
+    energy(monster04, 100).
 
 %------------------------------------------------
 %
