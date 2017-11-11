@@ -13,7 +13,8 @@
                 is_adjacent/2,
                 get_adjacent/3,
                 get_adjacent_list/3,
-                correct_safe/0,
+                correct_as_safe/0,
+                correct_as_unsafe/0,
                 pos/2
                     ]).
 %Obs: Pra que server esse comando module?
@@ -108,6 +109,31 @@
     ((length(Tail, 0), assertz(at(stench, Head)));
       danger_adjacent_list(potential_monster, monster, [Head|Tail])
     ).
+
+    %This predicate will verifiy all the surrounding position given the current position of the agent.
+    check_surrounding_current_position:-
+      at(agent, Position),
+      ( get_adjacent_list(_,Adj_p,Pos),
+        ((
+          (not(should_visit(Adj_p)),
+          not(visited(Adj_p))),
+          asserta(should_visit(Adj_p)));true)
+      ),
+        (update_our_dangerous_inferences(Position, hole, realHole, potential_hole);true),
+        (update_our_dangerous_inferences(Position, monster, realMonster, potential_monster);true).
+
+    %This predicate will update our dangerous inferences%
+    update_our_dangerous_inferences(Position, TypeDanger, RealDanger, PotentialDanger):-
+      ( at(TypeDanger, Position)),
+        ((not(at(RealDanger,Position)),
+          asserta(at(RealDanger, Position)));true),
+        (at(PotentialDanger, Position), retract(at(PotentialDanger, Position))
+      );
+      ( not(at(TypeDanger, Position)),
+        ((not(safe(Position), asserta(safe(Position))); true),
+        ((at(RealDanger,Position)), retract(at(RealDanger, Position));
+        ((at(PotentialDanger, Position)), retract(at(PotentialDanger, Position)))
+        ).
 
 /**
 	AGENT MOVEMENT
