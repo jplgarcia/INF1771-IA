@@ -5,19 +5,19 @@ import time
 master = Tk()
 
 #carrega todas as imagens usadas no tabuleiro
-imageWWFace = ImageTk.PhotoImage(Image.open("WWface.jpg"))
-imageWW = ImageTk.PhotoImage(Image.open("wwleste.gif"))
-imageHole = ImageTk.PhotoImage(Image.open("buraco.png"))
-imageFloor = ImageTk.PhotoImage(Image.open("chao.png"))
-imageGold = ImageTk.PhotoImage(Image.open("ouro.gif"))
-imageMonster1 = ImageTk.PhotoImage(Image.open("monstro20.gif"))
-imageMonster2 = ImageTk.PhotoImage(Image.open("monstro20.gif"))
-imageMonster3 = ImageTk.PhotoImage(Image.open("monstro50.gif"))
-imageMonster4 = ImageTk.PhotoImage(Image.open("monstro50.gif"))
+imageWWFace = ImageTk.PhotoImage(Image.open("Imagens/WWface.jpg"))
+imageWW = ImageTk.PhotoImage(Image.open("Imagens/wwleste.gif"))
+imageHole = ImageTk.PhotoImage(Image.open("Imagens/buraco.png"))
+imageFloor = ImageTk.PhotoImage(Image.open("Imagens/chao.png"))
+imageGold = ImageTk.PhotoImage(Image.open("Imagens/ouro.gif"))
+imageMonster1 = ImageTk.PhotoImage(Image.open("Imagens/monstro20.gif"))
+imageMonster2 = ImageTk.PhotoImage(Image.open("Imagens/monstro20.gif"))
+imageMonster3 = ImageTk.PhotoImage(Image.open("Imagens/monstro50.gif"))
+imageMonster4 = ImageTk.PhotoImage(Image.open("Imagens/monstro50.gif"))
 
 #infocanvas
 infoCanvas = Canvas ( master, width = 500, height = 250 )
-infoCanvas.place(relx=1, x=-2, y=2, anchor=NE)
+infoCanvas.place ( relx = 1, x = -2, y = 2, anchor = NE )
 
 infoCanvas.create_rectangle(230,5,350,80)
 infoCanvas.create_rectangle(355,5,475,80)
@@ -160,13 +160,13 @@ def changeDirection ( direction, position ) : #muda direcao da agente em sua res
     ( x , y ) = position
     # para cada direcao da agente, a foto atualiza para faze-la virar nessa direcao.
     if direction == "South":
-        imageWW = ImageTk.PhotoImage(Image.open("wwsul.gif"))
+        imageWW = ImageTk.PhotoImage(Image.open("Imagens/wwsul.gif"))
     if direction == "North":
-        imageWW = ImageTk.PhotoImage(Image.open("wwnorte.gif"))
+        imageWW = ImageTk.PhotoImage(Image.open("Imagens/wwnorte.gif"))
     if direction == "East":
-        imageWW = ImageTk.PhotoImage(Image.open("wwleste.gif"))
+        imageWW = ImageTk.PhotoImage(Image.open("Imagens/wwleste.gif"))
     if direction == "West":
-        imageWW = ImageTk.PhotoImage(Image.open("wwoeste.gif"))
+        imageWW = ImageTk.PhotoImage(Image.open("Imagens/wwoeste.gif"))
 
     # posiciona imagem com a direcao correta na casa onde a agente se encontra.
     agentSprite = boardCanvas.create_image(30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageWW)
@@ -190,6 +190,7 @@ def popUpMsg ( msg ) : #abre um pop up com Game Over
 def retrieveGold ( x, y ) : #tira ouro da posicao em que o agente recolheu
 
     imagesprite = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageFloor )
+    drawLines()
     master.update()
 
 def movement () : #executa os movimentos da agente
@@ -250,28 +251,29 @@ def updateMonsterEnergy ( value, monster ) : #muda energia do monstro
         labelM1NumEnergy.config ( text = str ( total ) )
         # se a energia do monstro ficar igual ou menor que 0, ele morre e sai do tabuleiro
         if total <= 0 :
-            imageMonster1 = ImageTk.PhotoImage(Image.open("chao.png"))
+            imageMonster1 = ImageTk.PhotoImage(Image.open("Imagens/chao.png"))
             master.update()
 
     if monster == 02:
         total = int ( labelM2NumEnergy ["text"] ) - value
         labelM2NumEnergy.config ( text = str ( total ) )
         if total <= 0 :
-            imageMonster2 = ImageTk.PhotoImage(Image.open("chao.png"))
+            imageMonster2 = ImageTk.PhotoImage(Image.open("Imagens/chao.png"))
+
             master.update()
 
     if monster == 03:
         total = int ( labelM3NumEnergy ["text"] ) - value
         labelM3NumEnergy.config ( text = str ( total ) )
         if total <= 0 :
-            imageMonster3 = ImageTk.PhotoImage(Image.open("chao.png"))
+            imageMonster3 = ImageTk.PhotoImage(Image.open("Imagens/chao.png"))
             master.update()
 
     if monster == 04:
         total = int ( labelM4NumEnergy ["text"] ) - value
         labelM4NumEnergy.config ( text = str ( total ) )
         if total <= 0 :
-            imageMonster4 = ImageTk.PhotoImage(Image.open("chao.png"))
+            imageMonster4 = ImageTk.PhotoImage(Image.open("Imagens/chao.png"))
             master.update()
 
 def updateAmmo (): #diminui municao, uma flecha por vez
