@@ -10,8 +10,19 @@ imageWW = ImageTk.PhotoImage(Image.open("wwleste.gif"))
 imageHole = ImageTk.PhotoImage(Image.open("buraco.png"))
 imageFloor = ImageTk.PhotoImage(Image.open("chao.png"))
 imageGold = ImageTk.PhotoImage(Image.open("ouro.gif"))
-imageMonster20 = ImageTk.PhotoImage(Image.open("monstro20.gif"))
-imageMonster50 = ImageTk.PhotoImage(Image.open("monstro50.gif"))
+imageMonster1 = ImageTk.PhotoImage(Image.open("monstro20.gif"))
+imageMonster2 = ImageTk.PhotoImage(Image.open("monstro20.gif"))
+imageMonster3 = ImageTk.PhotoImage(Image.open("monstro50.gif"))
+imageMonster4 = ImageTk.PhotoImage(Image.open("monstro50.gif"))
+
+#infocanvas
+infoCanvas = Canvas ( master, width = 500, height = 250 )
+infoCanvas.place(relx=1, x=-2, y=2, anchor=NE)
+
+infoCanvas.create_rectangle(230,5,350,80)
+infoCanvas.create_rectangle(355,5,475,80)
+infoCanvas.create_rectangle(230,100,350,160)
+infoCanvas.create_rectangle(355,100,475,160)
 
 #insere rosto da agente para inserir ao lado da sua pontuacao
 faceCanvas = Canvas ( master, width = 80, height = 80  )
@@ -91,7 +102,6 @@ imagespriteMonster02 = None
 imagespriteMonster03 = None
 imagespriteMonster04 = None
 
-
 def insertMonsters ( monsterList ) : #insere os monstros em suas respectivas posicoes no tabuleiro
 
     global imagespriteMonster01, imagespriteMonster02, imagespriteMonster03, imagespriteMonster04
@@ -99,13 +109,13 @@ def insertMonsters ( monsterList ) : #insere os monstros em suas respectivas pos
     for monster in monsterList:
         ( x , y , id ) = monster #(x,y): coordenadas de cada monstro, id 1 e 2 tem dano 20 e 3 e 4 dano 50
         if id == 1:
-            boardCanvas.imagespriteMonster01 = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageMonster20 )
+            boardCanvas.imagespriteMonster01 = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageMonster1 )
         elif id == 2:
-            boardCanvas.imagespriteMonster02 = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageMonster20 )
+            boardCanvas.imagespriteMonster02 = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageMonster2 )
         elif id == 3:
-            boardCanvas.imagespriteMonster03 = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageMonster50 )
+            boardCanvas.imagespriteMonster03 = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageMonster3 )
         elif id == 4:
-            boardCanvas.imagespriteMonster04 = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageMonster50 )
+            boardCanvas.imagespriteMonster04 = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageMonster4 )
 
 def insertHoles ( holeList ) : #funcao que insere buracos no tabuleiro baseado nas casas sorteadas
 
@@ -127,7 +137,7 @@ def drawLines () : # desenha as linhas do tabuleiro
         j = 0
         while j < 12:
             boardCanvas.create_rectangle (10 + rectSize * j,  rectSize * (12 - i), 10 + rectSize * j + rectSize,
-                                           rectSize * (12 - i) + rectSize, fill="", outline='black')
+                                           rectSize * (12 - i) + rectSize, fill = "", outline = 'black')
             j = j + 1
         i = i + 1
 
@@ -148,7 +158,7 @@ def changeDirection ( direction, position ) : #muda direcao da agente em sua res
     global agentSprite
 
     ( x , y ) = position
-    #para cada direcao da agente, a foto atualiza para faze-la virar nessa direcao.
+    # para cada direcao da agente, a foto atualiza para faze-la virar nessa direcao.
     if direction == "South":
         imageWW = ImageTk.PhotoImage(Image.open("wwsul.gif"))
     if direction == "North":
@@ -176,6 +186,11 @@ def popUpMsg ( msg ) : #abre um pop up com Game Over
     popup.geometry ( '%dx%d+%d+%d' % ( 200, 90, 150 ,300 ) )
 
     popup.mainloop()
+
+def retrieveGold ( x, y ) : #tira ouro da posicao em que o agente recolheu
+
+    imagesprite = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageFloor )
+    master.update()
 
 def movement () : #executa os movimentos da agente
     #acessar o arquivo wumpus.py que acessa o prolog para determinar movimentos
@@ -207,6 +222,7 @@ def movement () : #executa os movimentos da agente
     updateAgentEnergy(10)
     updateAmmo()
     updateMonsterEnergy(100,01)
+    retrieveGold(2,7)
     popUpMsg("Game Over!")
 
 def updateAgentPoints ( value ) : #muda pontuacao do agente
@@ -227,24 +243,36 @@ def updateAgentEnergy ( value ) : #muda energia do agente
 
 def updateMonsterEnergy ( value, monster ) : #muda energia do monstro
 
-    global labelM1NumEnergy, labelM2NumEnergy, labelM3NumEnergy, labelM4Energy
+    global labelM1NumEnergy, labelM2NumEnergy, labelM3NumEnergy, labelM4Energy, imageMonster1, imageMonster2, imageMonster3, imageMonster4
 
     if monster == 01 :
         total = int ( labelM1NumEnergy ["text"] ) - value
         labelM1NumEnergy.config ( text = str ( total ) )
-        #if total <= 0 :
-            #boardCanvas.imagespriteMonster01.config(image='')
+        # se a energia do monstro ficar igual ou menor que 0, ele morre e sai do tabuleiro
+        if total <= 0 :
+            imageMonster1 = ImageTk.PhotoImage(Image.open("chao.png"))
+            master.update()
+
     if monster == 02:
         total = int ( labelM2NumEnergy ["text"] ) - value
         labelM2NumEnergy.config ( text = str ( total ) )
+        if total <= 0 :
+            imageMonster2 = ImageTk.PhotoImage(Image.open("chao.png"))
+            master.update()
+
     if monster == 03:
         total = int ( labelM3NumEnergy ["text"] ) - value
         labelM3NumEnergy.config ( text = str ( total ) )
+        if total <= 0 :
+            imageMonster3 = ImageTk.PhotoImage(Image.open("chao.png"))
+            master.update()
+
     if monster == 04:
         total = int ( labelM4NumEnergy ["text"] ) - value
         labelM4NumEnergy.config ( text = str ( total ) )
-
-
+        if total <= 0 :
+            imageMonster4 = ImageTk.PhotoImage(Image.open("chao.png"))
+            master.update()
 
 def updateAmmo (): #diminui municao, uma flecha por vez
 
