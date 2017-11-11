@@ -15,7 +15,7 @@
                 get_adjacent_list/3,
                 correct_as_safe/0,
                 correct_as_unsafe/0,
-                check_sensed/2
+                check_sensed/2,
                 pos/2
                     ]).
 %Obs: Pra que server esse comando module?
