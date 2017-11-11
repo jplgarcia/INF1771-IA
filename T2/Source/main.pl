@@ -58,6 +58,9 @@
   %Return a list with all, not known to be safe, adjacent postions to the given pos(x,y)
   get_adjacent_list(Direction, Position, List):-
     findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), not(safe(Adj_p))), List), !.
+	%Return a list with all, KNOWN to be safe, adjacent postions to the given pos(x,y)
+get_safe_adjacent_list(Direction, Position, List):-
+    findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), safe(Adj_p)), List), !.
 
   %Mark each element of the list as Potential_Danger or Danger, depending on the knowledge about the position.
   danger_adjacent_list(_, _, []).
@@ -144,14 +147,153 @@
 		
 		
 	
-	
-take_action( X, Y, Smell, Breeze, shine, Impact, Scream) :-
+%%Decides to pick up gold if seen
+take_action( X, Y, Smell, Breeze, shine, Impact, Scream ) :-
 	pick_gold( X,Y ).
 
-take_action( X, Y, stench, Breeze, Shine, Impact, Scream) :-
-	.
+%%Decides wheter to step or shoot if smelled stench; prefers to walk to a safe place over steping/shooting an unsafe place
+take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
+	get_safe_adjacent_list(_ , Position, [Safe_Head|Safe_Tail ] ),
+	get_safe_adjacent_list(_ , Position, [Unsafe_Head|Unsafe_Tail ] ),
+	(
+		%%CASE no safe space
+		length([Safe_Head|Safe_Tail ], 0),
+		(
+			(	%%CASE PotentialDanger then step
+				at(PotentialDanger,Unsafe_Head ),
+				pos( XU,YU ) = Unsafe_Head,
+				XDIR = XU-X, YDIR = YU-Y,
+				(
+					facing(XDIR,YDIR ),
+					step(),!
+				);
+				(
+					facing(-YDIR,XDIR ),
+					turn(left),
+					step(),!
+				);
+				(
+					facing(YDIR,-XDIR ),
+					turn(right),
+					step(),!
+				);
+				(
+					facing(-XDIR,-YDIR ),
+					turn(right),
+					turn(right),
+					step(),!
+				)
+			);
+			(	%%CASE RealDanger then shoot
+				at(RealDanger,Unsafe_Head ),
+				at(monster,Unsafe_Head ),
+				pos( XU,YU ) = Unsafe_Head,
+				XDIR = XU-X, YDIR = YU-Y,
+				(
+					facing(XDIR,YDIR ),
+					shoot(),!
+				);
+				(
+					facing(-YDIR,XDIR ),
+					turn(left),
+					shoot(),!
+				);
+				(
+					facing(YDIR,-XDIR ),
+					turn(right),
+					shoot(),!
+				);
+				(
+					facing(-XDIR,-YDIR ),
+					turn(right),
+					turn(right),
+					shoot(),!
+				)
+			)
+		),!
+	);
+	(	%%CASE Safe then Step
+		pos( XU,YU ) = Safe_Head,
+		XDIR = XU-X, YDIR = YU-Y,
+		(
+			facing(XDIR,YDIR ),
+			step(),!
+		);
+		(
+			facing(-YDIR,XDIR ),
+			turn(left),
+			step(),!
+		);
+		(
+			facing(YDIR,-XDIR ),
+			turn(right),
+			step(),!
+		);
+		(
+			facing(-XDIR,-YDIR ),
+			turn(right),
+			turn(right),
+			step(),!
+		),!
+	),! .
 			
-		
+%%Decides wheter to step or shoot if felt breeze; prefers to walk to a safe place over steping to an unsafe place
+take_action( X, Y, Stench, breeze, Shine, Impact, Scream ) :-
+	get_safe_adjacent_list(_ , Position, [Safe_Head|Safe_Tail ] ),
+	get_safe_adjacent_list(_ , Position, [Unsafe_Head|Unsafe_Tail ] ),
+	(
+		%%CASE no safe space
+		length([Safe_Head|Safe_Tail ], 0),
+		(
+			at(PotentialDanger,Unsafe_Head ),
+			pos( XU,YU ) = Unsafe_Head,
+			XDIR = XU-X, YDIR = YU-Y,
+			(
+				facing(XDIR,YDIR ),
+				step(),!
+			);
+			(
+				facing(-YDIR,XDIR ),
+				turn(left),
+				step(),!
+			);
+			(
+				facing(YDIR,-XDIR ),
+				turn(right),
+				step(),!
+			);
+			(
+				facing(-XDIR,-YDIR ),
+				turn(right),
+				turn(right),
+				step(),!
+			)
+		),!
+	);
+	(	%%CASE Safe then Step
+		pos( XU,YU ) = Safe_Head,
+		XDIR = XU-X, YDIR = YU-Y,
+		(
+			facing(XDIR,YDIR ),
+			step(),!
+		);
+		(
+			facing(-YDIR,XDIR ),
+			turn(left),
+			step(),!
+		);
+		(
+			facing(YDIR,-XDIR ),
+			turn(right),
+			step(),!
+		);
+		(
+			facing(-XDIR,-YDIR ),
+			turn(right),
+			turn(right),
+			step(),!
+		),!
+	),! .
 		
 		
 		
