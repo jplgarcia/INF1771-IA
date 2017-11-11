@@ -43,3 +43,25 @@ sixth_sense(retract(on_hole)):-
   on_hole,
   at(agent, Position),
   not(at(hole, Position)).
+
+  sixth_sense(check_surrounding_current_position):-
+    at(agent,Position),
+    not(sensed(Position, current)),
+    asserta(sensed(Position, current)).
+
+  sixth_sense(correct_as_safe):-
+    at(agent, Position),
+    not(sensed(Position, around)),
+    not(at(hole, Position)),
+    not(at(noises, Position)),
+    not(at(breeze, Position)),
+    asserta(sensed(Position, around)).
+
+  sixth_sense(correct_as_unsafe):-
+    at(agent, Position),
+    not(sensed(Posiiton, around)),
+    ( at(hole, Position);
+      at(noises, Position);
+      at(breeze, Position),
+      asserta(sensed(Pos, around))
+      ).

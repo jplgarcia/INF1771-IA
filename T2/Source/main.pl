@@ -15,6 +15,7 @@
                 get_adjacent_list/3,
                 correct_as_safe/0,
                 correct_as_unsafe/0,
+                check_sensed/2
                 pos/2
                     ]).
 %Obs: Pra que server esse comando module?
@@ -25,7 +26,8 @@
               visited/1,
               energy/2,
               safe/1,
-			  agentfacing/2
+			  agentfacing/2,
+        checked_sensed/2
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -121,6 +123,10 @@
       ),
         (update_our_dangerous_inferences(Position, hole, realHole, potential_hole);true),
         (update_our_dangerous_inferences(Position, monster, realMonster, potential_monster);true).
+
+    check_sensed(X , Y):-
+      sensed(pos(X,Y), current),
+      sensed(pos(X,Y), around).
 
     %This predicate will update our dangerous inferences%
     update_our_dangerous_inferences(Position, TypeDanger, RealDanger, PotentialDanger):-
