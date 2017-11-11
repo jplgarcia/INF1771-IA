@@ -141,6 +141,20 @@
         ((at(PotentialDanger, Position)), retract(at(PotentialDanger, Position)))
         ).
 
+		
+		
+	
+	
+take_action( X, Y, Smell, Breeze, shine, Impact, Scream) :-
+	pick_gold( X,Y ).
+
+take_action( X, Y, stench, Breeze, Shine, Impact, Scream) :-
+	.
+			
+		
+		
+		
+		
 /**
 	AGENT MOVEMENT
 */
