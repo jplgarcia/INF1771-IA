@@ -136,8 +136,8 @@
         (at(PotentialDanger, Position), retract(at(PotentialDanger, Position))
       );
       ( not(at(TypeDanger, Position)),
-        ((not(safe(Position), asserta(safe(Position))); true),
-        ((at(RealDanger,Position)), retract(at(RealDanger, Position));
+        (not(safe(Position)), asserta(safe(Position)); true),
+        ((at(RealDanger,Position)), retract(at(RealDanger, Position)));
         ((at(PotentialDanger, Position)), retract(at(PotentialDanger, Position)))
         ).
 
