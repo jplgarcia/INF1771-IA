@@ -37,9 +37,13 @@
 % Exported Predicates                            %
 %                                                %
 %------------------------------------------------%
+% Gets all adjacent positions
+get_all_adjacent(Direction, Position, List ) :-
+	findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), Adj_p ), List), !.
+
   %Verify if the two positions are adjacent.
-  is_adjacent(Position1, Position2):-
-    get_adjacent( _ , Adj_p , Position1), Adj_p , Adj_p == Position2.
+  is_adjacent(Position1, Position2 ):-
+    get_adjacent( _ , Adj_p , Position1 ), Adj_p , Adj_p == Position2 .
 
   %Returns the position adjacent to the given pos(x,y) at specific direction
     %Direction: North%
@@ -56,10 +60,10 @@
         NewX is X-1, pos(NewX , Y).
 
   %Return a list with all, not known to be safe, adjacent postions to the given pos(x,y)
-  get_adjacent_list(Direction, Position, List):-
+  get_adjacent_list(Direction, Position, List ):-
     findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), not(safe(Adj_p))), List), !.
 	%Return a list with all, KNOWN to be safe, adjacent postions to the given pos(x,y)
-get_safe_adjacent_list(Direction, Position, List):-
+get_safe_adjacent_list(Direction, Position, List ):-
     findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), safe(Adj_p)), List), !.
 
   %Mark each element of the list as Potential_Danger or Danger, depending on the knowledge about the position.
@@ -144,8 +148,35 @@ get_safe_adjacent_list(Direction, Position, List):-
         ((at(PotentialDanger, Position)), retract(at(PotentialDanger, Position)))
         ).
 
+%%Checks for monster
+check_for_moster([Head|Tail ]):-		
+	\+ lenght([Head|Tail ], 0),
+	(
+		at(monster, Head );
+		check_for_moster(Tail)
+	) .
+
+%%Check if stench must persist because of any adjacent monster
+assert_stench([Head|Tail ]) :-
+	\+ lenght([Head|Tail ],0),
+	get_all_adjacent(Position,List ),
+	(
+		(
+			check_for_moster( List ),
+			assert_stench( Tail ),!
+		);
+		(	%%If there is no monster, retract the stench
+			retract(at(stench,Head )),
+			assert_stench(Tail),!
+		)
+	) .
 		
 		
+%%Kills_monster at position
+kill_monster( Position ) :-
+	retract(at(monster, Position )),
+	get_all_adjacent( _ ,Position,List ),
+	assert_stench(List ).
 	
 %%Decides to pick up gold if seen
 take_action( X, Y, Smell, Breeze, shine, Impact, Scream ) :-
@@ -155,7 +186,11 @@ take_action( X, Y, Smell, Breeze, shine, Impact, Scream ) :-
 take_action( X, Y, Stench, Breeze, Shine, impact, Scream ) :-
 	facing( XD,YD ),
 	assertz(at(wall,pos( X+XD,Y+YD ))).
-
+%%Treats monster death
+take_action( X, Y, Stench, Breeze, Shine, Impact, scream ) :-
+	facing( XD,YD ),
+	kill_monster( pos( X+XD,Y+YD )),!.
+	
 %%Decides wheter to step or shoot if smelled stench; prefers to walk to a safe place over steping/shooting an unsafe place
 take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 	get_safe_adjacent_list(_ , Position, [Safe_Head|Safe_Tail ] ),
