@@ -151,6 +151,11 @@ get_safe_adjacent_list(Direction, Position, List):-
 take_action( X, Y, Smell, Breeze, shine, Impact, Scream ) :-
 	pick_gold( X,Y ).
 
+%%Marks a position as a wall
+take_action( X, Y, Stench, Breeze, Shine, impact, Scream ) :-
+	facing( XD,YD ),
+	assertz(at(wall,pos( X+XD,Y+YD ))).
+
 %%Decides wheter to step or shoot if smelled stench; prefers to walk to a safe place over steping/shooting an unsafe place
 take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 	get_safe_adjacent_list(_ , Position, [Safe_Head|Safe_Tail ] ),
@@ -294,7 +299,6 @@ take_action( X, Y, Stench, breeze, Shine, Impact, Scream ) :-
 			step(),!
 		),!
 	),! .
-		
 		
 		
 /**
