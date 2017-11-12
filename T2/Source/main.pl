@@ -184,12 +184,21 @@ take_action( X, Y, Smell, Breeze, shine, Impact, Scream ) :-
 
 %%Marks a position as a wall
 take_action( X, Y, Stench, Breeze, Shine, impact, Scream ) :-
-	facing( XD,YD ),
-	assertz(at(wall,pos( X+XD,Y+YD ))).
+	agentfacing( DX,DY ),
+	NX is X+DX,NY is Y+DY,
+	(
+		(
+			at(wall,pos( NX,NY )),!
+		);
+		(
+			assertz(at(wall,pos( NX,NY ))),!
+		)
+	).
 %%Treats monster death
 take_action( X, Y, Stench, Breeze, Shine, Impact, scream ) :-
-	facing( XD,YD ),
-	kill_monster( pos( X+XD,Y+YD )),!.
+	agentfacing( DX,DY ),
+	NX is X+DX,NY is Y+DY,
+	kill_monster( pos( NX,NY )),!.
 	
 %%Decides wheter to step or shoot if smelled stench; prefers to walk to a safe place over steping/shooting an unsafe place
 take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
@@ -202,23 +211,23 @@ take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 			(	%%CASE PotentialDanger then step
 				at(PotentialDanger,Unsafe_Head ),
 				pos( XU,YU ) = Unsafe_Head,
-				XDIR = XU-X, YDIR = YU-Y,
+				DXIR = XU-X, DYIR = YU-Y,
 				(
-					facing(XDIR,YDIR ),
+					agentfacing(DXIR,DYIR ),
 					step(),!
 				);
 				(
-					facing(-YDIR,XDIR ),
+					agentfacing(-DYIR,DXIR ),
 					turn(left),
 					step(),!
 				);
 				(
-					facing(YDIR,-XDIR ),
+					agentfacing(DYIR,-DXIR ),
 					turn(right),
 					step(),!
 				);
 				(
-					facing(-XDIR,-YDIR ),
+					agentfacing(-DXIR,-DYIR ),
 					turn(right),
 					turn(right),
 					step(),!
@@ -228,23 +237,23 @@ take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 				at(RealDanger,Unsafe_Head ),
 				at(monster,Unsafe_Head ),
 				pos( XU,YU ) = Unsafe_Head,
-				XDIR = XU-X, YDIR = YU-Y,
+				DXIR = XU-X, DYIR = YU-Y,
 				(
-					facing(XDIR,YDIR ),
+					agentfacing(DXIR,DYIR ),
 					shoot(),!
 				);
 				(
-					facing(-YDIR,XDIR ),
+					agentfacing(-DYIR,DXIR ),
 					turn(left),
 					shoot(),!
 				);
 				(
-					facing(YDIR,-XDIR ),
+					agentfacing(DYIR,-DXIR ),
 					turn(right),
 					shoot(),!
 				);
 				(
-					facing(-XDIR,-YDIR ),
+					agentfacing(-DXIR,-DYIR ),
 					turn(right),
 					turn(right),
 					shoot(),!
@@ -254,23 +263,23 @@ take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 	);
 	(	%%CASE Safe then Step
 		pos( XU,YU ) = Safe_Head,
-		XDIR = XU-X, YDIR = YU-Y,
+		DXIR = XU-X, DYIR = YU-Y,
 		(
-			facing(XDIR,YDIR ),
+			agentfacing(DXIR,DYIR ),
 			step(),!
 		);
 		(
-			facing(-YDIR,XDIR ),
+			agentfacing(-DYIR,DXIR ),
 			turn(left),
 			step(),!
 		);
 		(
-			facing(YDIR,-XDIR ),
+			agentfacing(DYIR,-DXIR ),
 			turn(right),
 			step(),!
 		);
 		(
-			facing(-XDIR,-YDIR ),
+			agentfacing(-DXIR,-DYIR ),
 			turn(right),
 			turn(right),
 			step(),!
@@ -287,23 +296,23 @@ take_action( X, Y, Stench, breeze, Shine, Impact, Scream ) :-
 		(
 			at(PotentialDanger,Unsafe_Head ),
 			pos( XU,YU ) = Unsafe_Head,
-			XDIR = XU-X, YDIR = YU-Y,
+			DXIR = XU-X, DYIR = YU-Y,
 			(
-				facing(XDIR,YDIR ),
+				agentfacing(DXIR,DYIR ),
 				step(),!
 			);
 			(
-				facing(-YDIR,XDIR ),
+				agentfacing(-DYIR,DXIR ),
 				turn(left),
 				step(),!
 			);
 			(
-				facing(YDIR,-XDIR ),
+				agentfacing(DYIR,-DXIR ),
 				turn(right),
 				step(),!
 			);
 			(
-				facing(-XDIR,-YDIR ),
+				agentfacing(-DXIR,-DYIR ),
 				turn(right),
 				turn(right),
 				step(),!
@@ -312,23 +321,23 @@ take_action( X, Y, Stench, breeze, Shine, Impact, Scream ) :-
 	);
 	(	%%CASE Safe then Step
 		pos( XU,YU ) = Safe_Head,
-		XDIR = XU-X, YDIR = YU-Y,
+		DXIR = XU-X, DYIR = YU-Y,
 		(
-			facing(XDIR,YDIR ),
+			agentfacing(DXIR,DYIR ),
 			step(),!
 		);
 		(
-			facing(-YDIR,XDIR ),
+			agentfacing(-DYIR,DXIR ),
 			turn(left),
 			step(),!
 		);
 		(
-			facing(YDIR,-XDIR ),
+			agentfacing(DYIR,-DXIR ),
 			turn(right),
 			step(),!
 		);
 		(
-			facing(-XDIR,-YDIR ),
+			agentfacing(-DXIR,-DYIR ),
 			turn(right),
 			turn(right),
 			step(),!
