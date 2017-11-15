@@ -49,7 +49,15 @@ while i < 8:
     world[x][y] = 'PC'
     i = i + 1
 
-def fillFile(currentWorkingDirectory, world) : #escreve em um novo arquivo a melhor solucao e sua distancia
+# criar ouros
+i = 0
+while i < 3:
+    (x, y) = getFreeSpace(world)
+    world[x][y] = 'GD'
+    i = i + 1
+
+
+def fillMap(world) : #escreve em um novo arquivo a melhor solucao e sua distancia
     pos_x = -1
     pos_y = -1
     #inserir pocos no prolog
@@ -60,22 +68,43 @@ def fillFile(currentWorkingDirectory, world) : #escreve em um novo arquivo a mel
             pos_x = pos_x+1
             if item == 'PC':
                 prolog.assertz("at(hole, pos("+str(pos_x+1)+","+str(pos_y+1)+"))")
-                #file.write("pit("+str(pos_x+1)+","+str(pos_y+1)+").\n")
             if item == 'M1':
-                prolog.assertz("at(monster01, pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+                prolog.assertz("at(monster(1), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
             if item == 'M2':
-                prolog.assertz("at(monster02, pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+                prolog.assertz("at(monster(2), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
             if item == 'M3':
-                prolog.assertz("at(monster03, pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+                prolog.assertz("at(monster(3), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
             if item == 'M4':
-                prolog.assertz("at(monster04, pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+                prolog.assertz("at(monster(4), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+            if item == 'GD':
+                prolog.assertz("at(gold, pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
 
-cwd = os.getcwd()
-fillFile(cwd, world)
+fillMap(world)
 
-print list(prolog.query("at(monster01,X)"))
-print list(prolog.query("at(hole,Y)"))
-print list(prolog.query("at(breeze,X)"))
+prologMonsterList = list(prolog.query("at(monster(N),pos(X,Y))"))
+prologHoleList= list(prolog.query("at(hole,pos(X,Y))"))
+prologGoldList = list(prolog.query("at(gold,pos(X,Y))"))
 
 for list in world:
     print list
+
+def getMonsterPositions():
+    print prologMonsterList
+    monsterList = []
+    for monster in prologMonsterList:
+        monsterList.append((monster['X'],monster['Y'],monster['N']))
+    return monsterList
+
+def getHolePositions():
+    print prologHoleList
+    holeList = []
+    for hole in prologHoleList:
+        holeList.append((hole['X'], hole['Y']))
+    return holeList
+
+def getGoldPositions():
+    print prologGoldList
+    goldList = []
+    for gold in prologGoldList:
+        goldList.append((gold['X'], gold['Y']))
+    return goldList
