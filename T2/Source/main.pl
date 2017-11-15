@@ -26,10 +26,10 @@
               visited/1,
               energy/2,
               safe/1,
-			  agentfacing/2,
-			checked_sensed/2,
-				score/2,
-				ammo/1
+              agentfacing/2,
+              checked_sensed/2,
+              score/2,
+              ammo/1
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -73,8 +73,9 @@ get_all_adjacent(Direction, Position, List ) :-
   %Return a list with all, not known to be safe, adjacent postions to the given pos(x,y)
   get_adjacent_list(Direction, Position, List ):-
     findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), not(safe(Adj_p))), List), !.
-	%Return a list with all, KNOWN to be safe, adjacent postions to the given pos(x,y)
-get_safe_adjacent_list(Direction, Position, List ):-
+
+  %Return a list with all, KNOWN to be safe, adjacent postions to the given pos(x,y)
+  get_safe_adjacent_list(Direction, Position, List ):-
     findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), safe(Adj_p)), List), !.
 
   %Mark each element of the list as Potential_Danger or Danger, depending on the knowledge about the position.
@@ -190,7 +191,7 @@ check_for_monster([Head|Tail ]):-
 	(
 		at(monster(_), Head );
 		check_for_monster(Tail)
-	) .
+	).
 
 %Senses scream if monster died
 check_monster_dead( MONSTER ) :-
@@ -504,8 +505,8 @@ turn( X ) :-
     %We have to mark as visited the start position of the agent%
     visited(pos(1,1)).
 
-	%Starting ammo
-	ammo(5).
+  	%Starting ammo
+  	ammo(5).
 %------------------------------------------------
 %
 % DEFAULT CONFIG FOR MONSTERS
