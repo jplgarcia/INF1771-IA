@@ -28,7 +28,8 @@
               safe/1,
 			  agentfacing/2,
 			checked_sensed/2,
-				score/2
+				score/2,
+				ammo/1
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -184,12 +185,25 @@ get_safe_adjacent_list(Direction, Position, List ):-
         ).
 
 %%Checks for monster
-check_for_moster([Head|Tail ]):-		
+check_for_monster([Head|Tail ]):-		
 	\+ lenght([Head|Tail ], 0),
 	(
 		at(monster(_), Head );
-		check_for_moster(Tail)
+		check_for_monster(Tail)
 	) .
+
+%Senses scream if monster died
+check_monster_dead( MONSTER ) :-
+	energy(MONSTER, ENERGY ),
+	(
+		(
+			ENERGY < 1,
+			senses( MYX, MYY, Stench, Breeze, Shine, Impact, Scream ),
+			retract(senses( _, _, _, _, _, _, _ )),
+			asserta(senses( MYX, MYY, Stench, Breeze, Shine, Impact, scream )),
+			retract(at( MONSTER, _ ))
+		);true
+	).
 
 %%Check if stench must persist because of any adjacent monster
 assert_stench([Head|Tail ]) :-
@@ -197,7 +211,7 @@ assert_stench([Head|Tail ]) :-
 	get_all_adjacent(Position,List ),
 	(
 		(
-			check_for_moster( List ),
+			check_for_monster( List ),
 			assert_stench( Tail ),!
 		);
 		(	%%If there is no monster, retract the stench
@@ -385,7 +399,22 @@ take_action( X, Y, Stench, breeze, Shine, Impact, Scream ) :-
 		),!
 	),! .
 	
-		
+shoot() :-
+	at(agent, pos( X,Y )),
+	agentfacing( XD,YD ),
+	NX is X+XD, NY is Y+YD,
+	at(monster( NUM ),pos( NX,NY )),
+	random_between( 20,50,DAM ),
+	subtract_ammo(),
+	deal_damage(monster( NUM ),DAM ),
+	check_monster_dead(monster(NUM)).
+
+subtract_ammo() :-
+	ammo( QTD ),
+	NEW_QTD is QTD -1,
+	retract(ammo(_)),
+	asserta(ammo(NEW_QTD)).
+	
 /**
 	AGENT MOVEMENT
 */
@@ -474,7 +503,9 @@ turn( X ) :-
 
     %We have to mark as visited the start position of the agent%
     visited(pos(1,1)).
-
+	
+	%Starting ammo
+	ammo(5).
 %------------------------------------------------
 %
 % DEFAULT CONFIG FOR MONSTERS
