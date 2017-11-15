@@ -134,7 +134,10 @@ get_safe_adjacent_list(Direction, Position, List ):-
     check_sensed(X , Y):-
       sensed(pos(X,Y), current),
       sensed(pos(X,Y), around).
-
+	
+	%
+	  
+	  
     %This predicate will update our dangerous inferences%
     update_our_dangerous_inferences(Position, TypeDanger, RealDanger, PotentialDanger):-
       ( at(TypeDanger, Position)),
@@ -170,8 +173,17 @@ assert_stench([Head|Tail ]) :-
 			assert_stench(Tail),!
 		)
 	) .
-		
-		
+
+
+pick_gold( POS ) :-
+	at(gold, POS ),
+	score( S ),
+	NewScore is S+1000,
+	retract(score( S )),
+	asserta(score( NewScore )),
+	retract(at(gold, POS )),
+	retract(at(shine, POS )).
+	
 %%Kills_monster at position
 kill_monster( Position ) :-
 	retract(at(monster, Position )),
@@ -180,7 +192,7 @@ kill_monster( Position ) :-
 	
 %%Decides to pick up gold if seen
 take_action( X, Y, Smell, Breeze, shine, Impact, Scream ) :-
-	pick_gold( X,Y ).
+	pick_gold(pos( X,Y ) ).
 
 %%Marks a position as a wall
 take_action( X, Y, Stench, Breeze, Shine, impact, Scream ) :-
@@ -404,7 +416,9 @@ turn( X ) :-
 % DEFAULT CONFIG FOR AGENT
 %
 %------------------------------------------------
-
+	%Starting Score
+	score( 0 ).
+	
 	 %By definition the agents allways starts facing the right
 	  agentfacing(1,0).
 
