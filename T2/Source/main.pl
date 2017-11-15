@@ -47,10 +47,9 @@ adjust_score( ADD ) :-
 	retract(score(agent, S )),
 	asserta(score(agent, NewScore )).
 
-
-% Gets all adjacent positions
-get_all_adjacent(Direction, Position, List ) :-
-	findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), Adj_p ), List), !.
+  % Gets all adjacent positions
+  get_all_adjacent(Direction, Position, List ) :-
+	  findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), Adj_p ), List), !.
 
   %Verify if the two positions are adjacent.
   is_adjacent(Position1, Position2 ):-
@@ -272,8 +271,13 @@ turn_to( DXIR,DYIR ) :-
 		agentfacing(-DXIR,-DYIR ),
 		turn(right),
 		turn(right),!
+<<<<<<< HEAD
+	)
+
+=======
 	).
 	
+>>>>>>> 1f977d31a1ef7c7f79dca4d3f06a95787c2ca3cc
 %%Decides wheter to step or shoot if smelled stench; prefers to walk to a safe place over steping/shooting an unsafe place
 take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 	get_safe_adjacent_list(_ , Position, [Safe_Head|Safe_Tail ] ),
@@ -289,7 +293,7 @@ take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 				turn_to( DXIR,DYIR ),
 				step(),!
 			);
-			(	%%CASE RealDanger 
+			(	%%CASE RealDanger
 				at(RealDanger,Unsafe_Head ),
 				(
 					(
@@ -454,19 +458,19 @@ turn( X ) :-
     %As posições dos monstros são sorteadas através do python e inseridas pelo comando assert.
     %By definition the monster01 always starts with 100 points of life %
     energy(monster(01), 100).
-	strength(monster(01), 20).
+    strength(monster(01), 20).
 
     %By definition the monster02 always starts with 100 points of life %
     energy(monster(02), 100).
-	strength(monster(02), 20).
+    strength(monster(02), 20).
 
     %By definition the monster01 always starts with 100 points of life %
     energy(monster(03), 100).
-	strength(monster(03), 50).
+    strength(monster(03), 50).
 
     %By definition the monster02 always starts with 100 points of life %
     energy(monster(04), 100).
-	strength(monster(04), 50).
+    strength(monster(04), 50).
 
 %------------------------------------------------
 %
