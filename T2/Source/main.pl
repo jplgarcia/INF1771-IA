@@ -148,8 +148,6 @@ get_safe_adjacent_list(Direction, Position, List ):-
     check_sensed( X,Y ):-
       sensed(pos(X,Y), current),
       sensed(pos(X,Y), around).
-	
-	
 
 
 	%Subtracts STRENGHT from the energy of the WHO
@@ -158,7 +156,6 @@ get_safe_adjacent_list(Direction, Position, List ):-
 		NEW is CURRENT-STRENGHT,
 		retract(energy( WHO, _ )),
 		asserta(energy( WHO, NEW )).
-	
 
 	%Checks agent safety after STEPING
 	check_safety( POS ) :-
@@ -173,7 +170,6 @@ get_safe_adjacent_list(Direction, Position, List ):-
 			deal_damage(agent,DAM )
 		);
 		true .
-	  
 
     %This predicate will update our dangerous inferences%
     update_our_dangerous_inferences(Position, TypeDanger, RealDanger, PotentialDanger):-
@@ -189,7 +185,6 @@ get_safe_adjacent_list(Direction, Position, List ):-
         ).
 
 %%Checks for monster
-check_for_monster([Head|Tail ]):-		
 check_for_monster([Head|Tail ]):-
 	\+ lenght([Head|Tail ], 0),
 	(
@@ -231,14 +226,12 @@ pick_gold( POS ) :-
 	adjust_score(1000),
 	retract(at(gold, POS )),
 	retract(at(shine, POS )).
-	
 
 %%Kills_monster at position
 kill_monster( Position ) :-
 	retract(at(monster(_), Position )),
 	get_all_adjacent( _ ,Position,List ),
 	assert_stench(List ).
-	
 
 %%Decides to pick up gold if seen
 take_action( X, Y, Smell, Breeze, shine, Impact, Scream ) :-
@@ -262,7 +255,6 @@ take_action( X, Y, Stench, Breeze, Shine, Impact, scream ) :-
 	NX is X+DX,NY is Y+DY,
 	kill_monster( pos( NX,NY )),!.
 
-<<<<<<< HEAD
 turn_to( DXIR,DYIR ) :-
 	(
 		agentfacing(DXIR,DYIR ),!
@@ -281,8 +273,6 @@ turn_to( DXIR,DYIR ) :-
 		turn(right),!
 	)
 	
-=======
->>>>>>> ed8c85cc9c619a1b6a4e0b7c006831ce9f50242b
 %%Decides wheter to step or shoot if smelled stench; prefers to walk to a safe place over steping/shooting an unsafe place
 take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 	get_safe_adjacent_list(_ , Position, [Safe_Head|Safe_Tail ] ),
@@ -298,13 +288,23 @@ take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 				turn_to( DXIR,DYIR ),
 				step(),!
 			);
-			(	%%CASE RealDanger then shoot
+			(	%%CASE RealDanger 
 				at(RealDanger,Unsafe_Head ),
-				at(monster(_),Unsafe_Head ),
-				pos( XU,YU ) = Unsafe_Head,
-				DXIR = XU-X, DYIR = YU-Y,
-				turn_to( DXIR,DYIR ),
-				shoot(),!
+				(
+					(
+						%%If has ammo then shoot
+						ammo( QTD ),
+						\+ QTD < 1,
+						at(monster(_),Unsafe_Head ),
+						pos( XU,YU ) = Unsafe_Head,
+						DXIR = XU-X, DYIR = YU-Y,
+						turn_to( DXIR,DYIR ),
+						shoot(),!
+					);
+					(%%Has no ammo
+						/** Q FAREMOS SE N TIVER MUNIÇÃO?	#EDITING*/
+					)
+				)
 			)
 		),!
 	);
@@ -314,7 +314,6 @@ take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 		turn_to( DXIR,DYIR ),
 		step(),!
 	),! .
-			
 
 %%Decides wheter to step  if felt breeze; prefers to walk to a safe place over steping to an unsafe place
 take_action( X, Y, Stench, breeze, Shine, Impact, Scream ) :-
@@ -337,7 +336,6 @@ take_action( X, Y, Stench, breeze, Shine, Impact, Scream ) :-
 		turn_to( DXIR,DYIR ),
 		step(),!
 	),! .
-	
 
 shoot() :-
 	at(agent, pos( X,Y )),
@@ -354,7 +352,6 @@ subtract_ammo() :-
 	NEW_QTD is QTD -1,
 	retract(ammo(_)),
 	asserta(ammo(NEW_QTD)).
-	
 
 /**
 	AGENT MOVEMENT
@@ -430,11 +427,6 @@ turn( X ) :-
 % DEFAULT CONFIG FOR AGENT
 %
 %------------------------------------------------
-	%Starting Score
-	score(agent,0).
-	
-	 %By definition the agents allways starts facing the right
-	agentfacing(1,0).
 	  %Starting Score
 	  score(agent,0).
 
@@ -449,7 +441,6 @@ turn( X ) :-
 
     %We have to mark as visited the start position of the agent%
     visited(pos(1,1)).
-	
 
 	%Starting ammo
 	ammo(5).
