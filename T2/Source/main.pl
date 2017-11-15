@@ -97,8 +97,8 @@ get_safe_adjacent_list(Direction, Position, List ):-
     (not(safe(NewPosition)), assertz(safe(NewPosition))).
 
   %Verify if the char is dead
-  is_dead(char):-
-      energy(char, Energy_points),
+  is_dead(agent):-
+      energy(agent, Energy_points),
 	  (
 		Energy_points =< 0,
 		adjust_score(-1000),!
@@ -160,13 +160,15 @@ get_safe_adjacent_list(Direction, Position, List ):-
 	check_safety( POS ) :-
 		(%CASE: HOLE
 			at(hole,POS ),
-			fall(agent),!
+			fall(agent)
 		);
 		(%CASE: WUMPUS
 			at(monster(X),POS ),
-			deal_damage(agent,strenght(monster(X))),!
-		)
-		.
+			DAM is -strenght(monster(X)),
+			adjust_score( DAM ),
+			deal_damage(agent,DAM )
+		);
+		true .
 	  
     %This predicate will update our dangerous inferences%
     update_our_dangerous_inferences(Position, TypeDanger, RealDanger, PotentialDanger):-
