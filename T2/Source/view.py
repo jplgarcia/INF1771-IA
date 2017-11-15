@@ -14,93 +14,97 @@ imageMonster1 = ImageTk.PhotoImage(Image.open("Imagens/monstro20.gif"))
 imageMonster2 = ImageTk.PhotoImage(Image.open("Imagens/monstro20.gif"))
 imageMonster3 = ImageTk.PhotoImage(Image.open("Imagens/monstro50.gif"))
 imageMonster4 = ImageTk.PhotoImage(Image.open("Imagens/monstro50.gif"))
+imageMonster1Face = ImageTk.PhotoImage(Image.open("Imagens/monstro20.gif"))
+imageMonster2Face = ImageTk.PhotoImage(Image.open("Imagens/monstro20.gif"))
+imageMonster3Face = ImageTk.PhotoImage(Image.open("Imagens/monstro50.gif"))
+imageMonster4Face = ImageTk.PhotoImage(Image.open("Imagens/monstro50.gif"))
+
+baseRow = 0
 
 #infocanvas
-infoCanvas = Canvas ( master, width = 500, height = 250 )
-infoCanvas.place ( relx = 1, x = -2, y = 2, anchor = NE )
+infoCanvas = Canvas ( master, width = 500, height = 600 )
+infoCanvas.place ( anchor = NW )
 
-infoCanvas.create_rectangle(230,5,350,80)
-infoCanvas.create_rectangle(355,5,475,80)
-infoCanvas.create_rectangle(230,100,350,160)
-infoCanvas.create_rectangle(355,100,475,160)
+infoCanvas.create_rectangle(3,40,220,125)
+infoCanvas.create_rectangle(3,135,220,212)
+infoCanvas.create_rectangle(3,212,220,289)
+infoCanvas.create_rectangle(3,289,220,366)
+infoCanvas.create_rectangle(3,366,220,443)
 
-#insere rosto da agente para inserir ao lado da sua pontuacao
-faceCanvas = Canvas ( master, width = 80, height = 80  )
-WWfacesprite =  faceCanvas.create_image ( 45, 45, image = imageWWFace )
-faceCanvas.grid ( row = 0, column = 0, rowspan = 6 )
+infoCanvas.create_image(45, 82, image = imageWWFace)
 
 #cria secao para pontuacoes, energia e flechas
 labelPoints = Label ( master, text = "Pontos : " )
 labelNumPoints = Label ( master, text = "0" )
-
-labelPoints.grid ( row = 2 , column = 1, sticky = "W" )
-labelNumPoints.grid ( row = 2, column = 2, sticky = "W" )
+labelPoints.grid ( row = 0 + baseRow , column = 1, sticky = "W" , pady = (40,0), padx=(100,0))
+labelNumPoints.grid ( row = 0 + baseRow, column = 2, sticky = "W" , pady = (40,0), padx=(0,0))
 
 labelEnergy = Label ( master, text = "Energia : " )
 labelNumEnergy = Label ( master, text = "100" )
-labelEnergy.grid ( row = 3 , column = 1, sticky ="W" )
-labelNumEnergy.grid ( row = 3, column = 2, sticky ="W" )
+labelEnergy.grid ( row = 1 + baseRow , column = 1, sticky ="W" , padx=(100,0))
+labelNumEnergy.grid ( row = 1 + baseRow, column = 2, sticky ="W" , padx=(0,0))
 
 labelAmmo = Label ( master, text = "Flechas : " )
 labelNumAmmo = Label ( master, text = "5" )
-labelAmmo.grid ( row = 4 , column = 1, sticky = "W" )
-labelNumAmmo.grid ( row = 4, column = 2, sticky = "W" )
+labelAmmo.grid ( row = 2  + baseRow, column = 1, sticky = "W" , padx=(100,0))
+labelNumAmmo.grid ( row = 2 + baseRow, column = 2, sticky = "W" , padx=(0,0))
 
-#Energia do Monstro 1 (dano 20)
-labelM1 = Label ( master, text = "Monstro 1 : ", pady = 5 )
+#Informacao do Monstro 1 (dano 20)
+infoCanvas.create_image ( 45, 170, image = imageMonster1Face )
+labelM1 = Label ( master, text = "Monstro 1 : ", )
 labelM1Energy = Label ( master, text = "Energia : " )
 labelM1NumEnergy = Label ( master, text = "100" )
 labelM1Damage = Label ( master, text = "Dano : " )
 labelM1NumDamage = Label ( master, text = "20" )
-labelM1.grid ( row = 0, column = 3, columnspan = 2, sticky = "W" )
-labelM1Energy.grid ( row = 1, column = 3, sticky = "W" )
-labelM1NumEnergy.grid ( row = 1, column = 4, sticky = "W" )
-labelM1Damage.grid ( row = 2, column = 3, sticky = "W" )
-labelM1NumDamage.grid ( row = 2, column = 4, sticky = "W" )
+labelM1.grid ( row = 8 + baseRow, column = 1, columnspan = 2, sticky = "W", padx=(100,0) )
+labelM1Energy.grid ( row = 9 + baseRow, column = 1, sticky = "W", padx=(100,0) )
+labelM1NumEnergy.grid ( row = 9 + baseRow, column = 2, sticky = "W", padx=(0,0) )
+labelM1Damage.grid ( row = 10 + baseRow, column = 1, sticky = "W", padx=(100,0) )
+labelM1NumDamage.grid ( row = 10 + baseRow, column = 2, sticky = "W", padx=(0,0) )
 
-#Energia do Monstro 2 (dano 20)
-labelM2 = Label ( master, text = "Monstro 2 : ", pady = 5 )
+#Informacao do Monstro 2 (dano 20)
+infoCanvas.create_image ( 45, 255, image = imageMonster2Face )
+labelM2 = Label ( master, text = "Monstro 2 : ")
 labelM2Energy = Label ( master, text = "Energia : " )
 labelM2NumEnergy = Label ( master, text = "100" )
 labelM2Damage = Label ( master, text = "Dano : " )
 labelM2NumDamage = Label ( master, text = "20" )
-labelM2.grid ( row = 0, column = 5, columnspan = 2, sticky = "W" )
-labelM2Energy.grid ( row = 1, column = 5, sticky = "W" )
-labelM2NumEnergy.grid ( row = 1, column = 6, sticky = "W" )
-labelM2Damage.grid ( row = 2, column = 5, sticky = "W" )
-labelM2NumDamage.grid ( row = 2, column = 6, sticky = "W" )
+labelM2.grid ( row = 11 + baseRow, column = 1, columnspan = 2, sticky = "W", padx=(100,0) )
+labelM2Energy.grid ( row = 12 + baseRow, column = 1, sticky = "W", padx=(100,0) )
+labelM2NumEnergy.grid ( row = 12 + baseRow, column = 2, sticky = "W", padx=(0,0) )
+labelM2Damage.grid ( row = 13 + baseRow, column = 1, sticky = "W", padx=(100,0) )
+labelM2NumDamage.grid ( row = 13 + baseRow, column = 2, sticky = "W", padx=(0,0) )
 
-#Energia do Monstro 3 (dano 50)
-labelM3 = Label ( master, text = "Monstro 3 : ", pady = 5 )
+#Informacao do Monstro 3 (dano 50)
+infoCanvas.create_image ( 45, 330, image = imageMonster3Face )
+labelM3 = Label ( master, text = "Monstro 3 : " )
 labelM3Energy = Label ( master, text = "Energia : " )
 labelM3NumEnergy = Label ( master, text = "100" )
 labelM3Damage = Label ( master, text = "Dano : " )
 labelM3NumDamage = Label ( master, text = "50" )
-labelM3.grid( row = 3, column = 3, columnspan = 2 , rowspan=3, sticky = "W" )
-labelM3Energy.grid ( row = 5, column = 3, sticky = "W" )
-labelM3NumEnergy.grid ( row = 5, column = 4, sticky = "W" )
-labelM3Damage.grid ( row = 6, column = 3, sticky = "W" )
-labelM3NumDamage.grid ( row = 6, column = 4, sticky = "W" )
+labelM3.grid( row = 14 + baseRow, column = 1, columnspan = 2 , sticky = "W", padx=(100,0) )
+labelM3Energy.grid ( row = 15 + baseRow, column = 1, sticky = "W", padx=(100,0) )
+labelM3NumEnergy.grid ( row = 15 + baseRow, column = 2, sticky = "W", padx=(0,0) )
+labelM3Damage.grid ( row = 16 + baseRow, column = 1, sticky = "W", padx=(100,0) )
+labelM3NumDamage.grid ( row = 16 + baseRow, column = 2, sticky = "W", padx=(0,0) )
 
-#Energia do Monstro 4 (dano 50)
-labelM4 = Label ( master, text = "Monstro 4 : ", pady = 5)
+#Informacao do Monstro 4 (dano 50)
+infoCanvas.create_image ( 45, 400, image = imageMonster4Face )
+labelM4 = Label ( master, text = "Monstro 4 : ")
 labelM4Energy = Label ( master, text = "Energia : " )
 labelM4NumEnergy = Label ( master, text = "100" )
 labelM4Damage = Label ( master, text = "Dano : " )
 labelM4NumDamage = Label ( master, text = "50" )
-labelM4.grid( row = 3, column = 5, columnspan = 2 , rowspan=3, sticky = "W" )
-labelM4Energy.grid ( row = 5, column = 5 , sticky = "W" )
-labelM4NumEnergy.grid ( row = 5, column = 6 , sticky = "W" )
-labelM4Damage.grid ( row = 6, column = 5 , sticky = "W" )
-labelM4NumDamage.grid ( row = 6, column = 6 , sticky = "W" )
+labelM4.grid( row = 17 + baseRow, column = 1, columnspan = 2 , sticky = "W", padx=(100,0) )
+labelM4Energy.grid ( row = 18 + baseRow, column = 1 , sticky = "W", padx=(100,0) )
+labelM4NumEnergy.grid ( row = 18 + baseRow, column = 2 , sticky = "W", padx=(0,0) )
+labelM4Damage.grid ( row = 19 + baseRow, column = 1 , sticky = "W", padx=(100,0) )
+labelM4NumDamage.grid ( row = 19 + baseRow, column = 2 , sticky = "W", padx=(0,0) )
 
-boardCanvas = Canvas ( master, width = 500, height = 550 ) #tamanho do tabuleiro
+
+
+boardCanvas = Canvas ( master, width = 500, height = 550) #tamanho do tabuleiro
 rectSize = 40 #cada casa do tabuleiro tem 40 x 40 px
-
-imagespriteMonster01 = None
-imagespriteMonster02 = None
-imagespriteMonster03 = None
-imagespriteMonster04 = None
 
 def insertMonsters ( monsterList ) : #insere os monstros em suas respectivas posicoes no tabuleiro
 
@@ -195,6 +199,13 @@ def retrieveGold ( x, y ) : #tira ouro da posicao em que o agente recolheu
 
 def movement () : #executa os movimentos da agente
     #acessar o arquivo wumpus.py que acessa o prolog para determinar movimentos
+    """
+    true_condition = TRUE
+    do
+        #Aqui deve Ficar o loop de avisa o q ta sentindo e perguta o q fazer, certo?
+    while(true_condition)
+
+    """
     time.sleep(0.5)
     changeDirection("East",(2,1))
     master.update()
@@ -290,11 +301,11 @@ insertGold([(2,7),(5,6),(10,9)])
 insertMonsters([(2,2,1), (3,10,2),(10,10,3),(5,5,4)])
 agentSprite = boardCanvas.create_image ( 30, 20 + rectSize * 12, image = imageWW )
 drawLines()
-boardCanvas.grid ( columnspan = 8 )
+boardCanvas.grid (row=0, column = 7, rowspan = 50, columnspan = 8, padx=(30,0) )
 
 #botao para iniciar a simulacao
 button = Button ( master, text = "Start", command = lambda: movement() )
-button.grid ( columnspan = 8, pady = ( 0, 20 ) )
+button.grid ( columnspan = 20, pady = ( 0 , 10 ) )
 
 master.mainloop()
 

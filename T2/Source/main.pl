@@ -27,7 +27,9 @@
               energy/2,
               safe/1,
 			  agentfacing/2,
-        checked_sensed/2
+			checked_sensed/2,
+				score/2,
+				ammo/1
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -37,9 +39,22 @@
 % Exported Predicates                            %
 %                                                %
 %------------------------------------------------%
+
+%modifies the score by a given amount
+adjust_score( ADD ) :-
+	score(agent, S ),
+	NewScore is S+ADD,
+	retract(score(agent, S )),
+	asserta(score(agent, NewScore )).
+
+
+% Gets all adjacent positions
+get_all_adjacent(Direction, Position, List ) :-
+	findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), Adj_p ), List), !.
+
   %Verify if the two positions are adjacent.
-  is_adjacent(Position1, Position2):-
-    get_adjacent( _ , Adj_p , Position1), Adj_p , Adj_p == Position2.
+  is_adjacent(Position1, Position2 ):-
+    get_adjacent( _ , Adj_p , Position1 ), Adj_p , Adj_p == Position2 .
 
   %Returns the position adjacent to the given pos(x,y) at specific direction
     %Direction: North%
@@ -56,8 +71,11 @@
         NewX is X-1, pos(NewX , Y).
 
   %Return a list with all, not known to be safe, adjacent postions to the given pos(x,y)
-  get_adjacent_list(Direction, Position, List):-
+  get_adjacent_list(Direction, Position, List ):-
     findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), not(safe(Adj_p))), List), !.
+	%Return a list with all, KNOWN to be safe, adjacent postions to the given pos(x,y)
+get_safe_adjacent_list(Direction, Position, List ):-
+    findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), safe(Adj_p)), List), !.
 
   %Mark each element of the list as Potential_Danger or Danger, depending on the knowledge about the position.
   danger_adjacent_list(_, _, []).
@@ -80,9 +98,12 @@
     (not(safe(NewPosition)), assertz(safe(NewPosition))).
 
   %Verify if the char is dead
-  is_dead(char):-
-      energy(char, Energy_points),
-      Energy_points =< 0.
+  is_dead(agent):-
+      energy(agent, Energy_points),
+	  (
+		Energy_points =< 0,
+		adjust_score(-1000),!
+	  ).
 
   %These cases right below it will explain how do we check if there's any potential danger at adjacent houses.%
   %If a potential danger appear twice times on the same list we assume that's a real danger%
@@ -124,10 +145,32 @@
         (update_our_dangerous_inferences(Position, hole, realHole, potential_hole);true),
         (update_our_dangerous_inferences(Position, monster, realMonster, potential_monster);true).
 
-    check_sensed(X , Y):-
+    check_sensed( X,Y ):-
       sensed(pos(X,Y), current),
       sensed(pos(X,Y), around).
-
+	
+	
+	%Subtracts STRENGHT from the energy of the WHO
+	deal_damage( WHO, STRENGHT ) :-
+		energy( WHO, CURRENT ),
+		NEW is CURRENT-STRENGHT,
+		retract(energy( WHO, _ )),
+		asserta(energy( WHO, NEW )).
+	
+	%Checks agent safety after STEPING
+	check_safety( POS ) :-
+		(%CASE: HOLE
+			at(hole,POS ),
+			fall(agent)
+		);
+		(%CASE: WUMPUS
+			at(monster(X),POS ),
+			DAM is -strenght(monster(X)),
+			adjust_score( DAM ),
+			deal_damage(agent,DAM )
+		);
+		true .
+	  
     %This predicate will update our dangerous inferences%
     update_our_dangerous_inferences(Position, TypeDanger, RealDanger, PotentialDanger):-
       ( at(TypeDanger, Position)),
@@ -141,6 +184,237 @@
         ((at(PotentialDanger, Position)), retract(at(PotentialDanger, Position)))
         ).
 
+%%Checks for monster
+check_for_monster([Head|Tail ]):-		
+	\+ lenght([Head|Tail ], 0),
+	(
+		at(monster(_), Head );
+		check_for_monster(Tail)
+	) .
+
+%Senses scream if monster died
+check_monster_dead( MONSTER ) :-
+	energy(MONSTER, ENERGY ),
+	(
+		(
+			ENERGY < 1,
+			senses( MYX, MYY, Stench, Breeze, Shine, Impact, Scream ),
+			retract(senses( _, _, _, _, _, _, _ )),
+			asserta(senses( MYX, MYY, Stench, Breeze, Shine, Impact, scream )),
+			retract(at( MONSTER, _ ))
+		);true
+	).
+
+%%Check if stench must persist because of any adjacent monster
+assert_stench([Head|Tail ]) :-
+	\+ lenght([Head|Tail ],0),
+	get_all_adjacent(Position,List ),
+	(
+		(
+			check_for_monster( List ),
+			assert_stench( Tail ),!
+		);
+		(	%%If there is no monster, retract the stench
+			retract(at(stench,Head )),
+			assert_stench(Tail),!
+		)
+	) .
+
+
+pick_gold( POS ) :-
+	at(gold, POS ),
+	adjust_score(1000),
+	retract(at(gold, POS )),
+	retract(at(shine, POS )).
+	
+%%Kills_monster at position
+kill_monster( Position ) :-
+	retract(at(monster(_), Position )),
+	get_all_adjacent( _ ,Position,List ),
+	assert_stench(List ).
+	
+%%Decides to pick up gold if seen
+take_action( X, Y, Smell, Breeze, shine, Impact, Scream ) :-
+	pick_gold(pos( X,Y ) ).
+
+%%Marks a position as a wall
+take_action( X, Y, Stench, Breeze, Shine, impact, Scream ) :-
+	agentfacing( DX,DY ),
+	NX is X+DX,NY is Y+DY,
+	(
+		(
+			at(wall,pos( NX,NY )),!
+		);
+		(
+			assertz(at(wall,pos( NX,NY ))),!
+		)
+	).
+%%Treats monster death
+take_action( X, Y, Stench, Breeze, Shine, Impact, scream ) :-
+	agentfacing( DX,DY ),
+	NX is X+DX,NY is Y+DY,
+	kill_monster( pos( NX,NY )),!.
+	
+%%Decides wheter to step or shoot if smelled stench; prefers to walk to a safe place over steping/shooting an unsafe place
+take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
+	get_safe_adjacent_list(_ , Position, [Safe_Head|Safe_Tail ] ),
+	get_safe_adjacent_list(_ , Position, [Unsafe_Head|Unsafe_Tail ] ),
+	(
+		%%CASE no safe space
+		length([Safe_Head|Safe_Tail ], 0),
+		(
+			(	%%CASE PotentialDanger then step
+				at(PotentialDanger,Unsafe_Head ),
+				pos( XU,YU ) = Unsafe_Head,
+				DXIR = XU-X, DYIR = YU-Y,
+				(
+					agentfacing(DXIR,DYIR ),
+					step(),!
+				);
+				(
+					agentfacing(-DYIR,DXIR ),
+					turn(left),
+					step(),!
+				);
+				(
+					agentfacing(DYIR,-DXIR ),
+					turn(right),
+					step(),!
+				);
+				(
+					agentfacing(-DXIR,-DYIR ),
+					turn(right),
+					turn(right),
+					step(),!
+				)
+			);
+			(	%%CASE RealDanger then shoot
+				at(RealDanger,Unsafe_Head ),
+				at(monster(_),Unsafe_Head ),
+				pos( XU,YU ) = Unsafe_Head,
+				DXIR = XU-X, DYIR = YU-Y,
+				(
+					agentfacing(DXIR,DYIR ),
+					shoot(),!
+				);
+				(
+					agentfacing(-DYIR,DXIR ),
+					turn(left),
+					shoot(),!
+				);
+				(
+					agentfacing(DYIR,-DXIR ),
+					turn(right),
+					shoot(),!
+				);
+				(
+					agentfacing(-DXIR,-DYIR ),
+					turn(right),
+					turn(right),
+					shoot(),!
+				)
+			)
+		),!
+	);
+	(	%%CASE Safe then Step
+		pos( XU,YU ) = Safe_Head,
+		DXIR = XU-X, DYIR = YU-Y,
+		(
+			agentfacing(DXIR,DYIR ),
+			step(),!
+		);
+		(
+			agentfacing(-DYIR,DXIR ),
+			turn(left),
+			step(),!
+		);
+		(
+			agentfacing(DYIR,-DXIR ),
+			turn(right),
+			step(),!
+		);
+		(
+			agentfacing(-DXIR,-DYIR ),
+			turn(right),
+			turn(right),
+			step(),!
+		),!
+	),! .
+			
+%%Decides wheter to step  if felt breeze; prefers to walk to a safe place over steping to an unsafe place
+take_action( X, Y, Stench, breeze, Shine, Impact, Scream ) :-
+	get_safe_adjacent_list(_ , Position, [Safe_Head|Safe_Tail ] ),
+	get_safe_adjacent_list(_ , Position, [Unsafe_Head|Unsafe_Tail ] ),
+	(
+		%%CASE no safe space
+		length([Safe_Head|Safe_Tail ], 0),
+		(
+			at(PotentialDanger,Unsafe_Head ),
+			pos( XU,YU ) = Unsafe_Head,
+			DXIR = XU-X, DYIR = YU-Y,
+			(
+				agentfacing(DXIR,DYIR ),
+				step(),!
+			);
+			(
+				agentfacing(-DYIR,DXIR ),
+				turn(left),
+				step(),!
+			);
+			(
+				agentfacing(DYIR,-DXIR ),
+				turn(right),
+				step(),!
+			);
+			(
+				agentfacing(-DXIR,-DYIR ),
+				turn(right),
+				turn(right),
+				step(),!
+			)
+		),!
+	);
+	(	%%CASE Safe then Step
+		pos( XU,YU ) = Safe_Head,
+		DXIR = XU-X, DYIR = YU-Y,
+		(
+			agentfacing(DXIR,DYIR ),
+			step(),!
+		);
+		(
+			agentfacing(-DYIR,DXIR ),
+			turn(left),
+			step(),!
+		);
+		(
+			agentfacing(DYIR,-DXIR ),
+			turn(right),
+			step(),!
+		);
+		(
+			agentfacing(-DXIR,-DYIR ),
+			turn(right),
+			turn(right),
+			step(),!
+		),!
+	),! .
+	
+shoot() :-
+	at(agent, pos( X,Y )),
+	agentfacing( XD,YD ),
+	NX is X+XD, NY is Y+YD,
+	at(monster( NUM ),pos( NX,NY )),
+	random_between( 20,50,DAM ),
+	subtract_ammo(),
+	deal_damage(monster( NUM ),DAM ),
+	check_monster_dead(monster(NUM)).
+
+subtract_ammo() :-
+	ammo( QTD ),
+	NEW_QTD is QTD -1,
+	retract(ammo(_)),
+	asserta(ammo(NEW_QTD)).
+	
 /**
 	AGENT MOVEMENT
 */
@@ -150,12 +424,25 @@ step() :-
 	agentfacing( Xunit,Yunit ),
 	X is Xaxis + Xunit,
 	Y is Yaxis + Yunit,
-	move( X,Y ),
-	format("position(~a,~a)",[ X,Y ]).
+	adjust_score(-1),
+	(
+		(%is new position is outside of the dungeon, "cancel" the movement
+			( X < 0;Y < 0;X > 12;Y > 12 ),
+			senses( MYX, MYY, Stench, Breeze, Shine, Impact, Scream ),
+			retract(senses( _, _, _, _, _, _, _ )),
+			asserta(senses( MYX, MYY, Stench, Breeze, Shine, impact, Scream )),
+			format("wall in position(~a,~a), couldn't step",[ X,Y ]),!
+		);
+		(
+			move( X,Y ),
+			format("position(~a,~a)",[ X,Y ]),!
+		)
+	).
 
 move( X,Y ) :-
 	retract(at(agent,pos( _ , _ ))),
-	assertz(at(agent,pos( X,Y ))).
+	assertz(at(agent,pos( X,Y ))),
+	check_safety(pos( X,Y )).
 
 turn(right) :-
 	agentfacing( Xunit,Yunit ),
@@ -163,6 +450,7 @@ turn(right) :-
 	Y is -Xunit,
 	retract(agentfacing( _ , _ )),
 	assertz(agentfacing( X,Y )),
+	adjust_score(-1),
 	format("agentfacing(~a,~a)",[ X,Y ]).
 
 turn(left) :-
@@ -171,6 +459,7 @@ turn(left) :-
 	Y is Xunit,
 	retract(agentfacing( _ , _ )),
 	assertz(agentfacing( X,Y )),
+	adjust_score(-1),
 	format("agentfacing(~a,~a)",[ X,Y ]).
 
 /**
@@ -200,9 +489,11 @@ turn( X ) :-
 % DEFAULT CONFIG FOR AGENT
 %
 %------------------------------------------------
-
+	%Starting Score
+	score(agent,0).
+	
 	 %By definition the agents allways starts facing the right
-	  agentfacing(1,0).
+	agentfacing(1,0).
 
     %By definition the agent always starts on the position [1,1]%
     at(agent, pos(1,1)).
@@ -212,7 +503,9 @@ turn( X ) :-
 
     %We have to mark as visited the start position of the agent%
     visited(pos(1,1)).
-
+	
+	%Starting ammo
+	ammo(5).
 %------------------------------------------------
 %
 % DEFAULT CONFIG FOR MONSTERS
