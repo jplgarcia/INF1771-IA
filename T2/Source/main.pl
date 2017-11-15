@@ -165,9 +165,9 @@ adjust_score( ADD ) :-
 		);
 		(%CASE: WUMPUS
 			at(monster(X),POS ),
-			DAM is -strenght(monster(X)),
-			adjust_score( DAM ),
-			deal_damage(agent,DAM )
+			strength(monster(X),DAM ),
+			adjust_score( -DAM ),
+			deal_damage(agent, DAM )
 		);
 		true .
 
@@ -271,8 +271,13 @@ turn_to( DXIR,DYIR ) :-
 		agentfacing(-DXIR,-DYIR ),
 		turn(right),
 		turn(right),!
+<<<<<<< HEAD
 	)
 
+=======
+	).
+	
+>>>>>>> 1f977d31a1ef7c7f79dca4d3f06a95787c2ca3cc
 %%Decides wheter to step or shoot if smelled stench; prefers to walk to a safe place over steping/shooting an unsafe place
 take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 	get_safe_adjacent_list(_ , Position, [Safe_Head|Safe_Tail ] ),
