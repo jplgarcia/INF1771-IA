@@ -16,7 +16,9 @@
                 correct_as_safe/0,
                 correct_as_unsafe/0,
                 check_sensed/2,
-                pos/2
+                pos/2,
+              score/2,
+              ammo/1
                     ]).
 %Obs: Pra que server esse comando module?
 %R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%

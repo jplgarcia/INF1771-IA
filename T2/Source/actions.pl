@@ -35,7 +35,7 @@ take_action( X, Y, Stench, Breeze, Shine, impact, Scream ) :-
 		(
 			assertz(at(wall,pos( NX,NY ))),!
 		)
-	).
+	) .
 %%Treats monster death
 take_action( X, Y, Stench, Breeze, Shine, Impact, scream ) :-
 	agentfacing( DX,DY ),
