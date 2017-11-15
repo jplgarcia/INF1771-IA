@@ -144,12 +144,20 @@ get_safe_adjacent_list(Direction, Position, List ):-
         (update_our_dangerous_inferences(Position, hole, realHole, potential_hole);true),
         (update_our_dangerous_inferences(Position, monster, realMonster, potential_monster);true).
 
-    check_sensed(X , Y):-
+    check_sensed( X,Y ):-
       sensed(pos(X,Y), current),
       sensed(pos(X,Y), around).
 	
 	%
-	  
+	check_safety( POS ) :-
+		(%CASE: HOLE
+			at(hole,POS ),
+			fall(agent),!
+		);
+		(%CASE: WUMPUS
+			at(monster(X),POS ),
+		)
+		.
 	  
     %This predicate will update our dangerous inferences%
     update_our_dangerous_inferences(Position, TypeDanger, RealDanger, PotentialDanger):-
@@ -168,7 +176,7 @@ get_safe_adjacent_list(Direction, Position, List ):-
 check_for_moster([Head|Tail ]):-		
 	\+ lenght([Head|Tail ], 0),
 	(
-		at(monster, Head );
+		at(monster(_), Head );
 		check_for_moster(Tail)
 	) .
 
@@ -196,7 +204,7 @@ pick_gold( POS ) :-
 	
 %%Kills_monster at position
 kill_monster( Position ) :-
-	retract(at(monster, Position )),
+	retract(at(monster(_), Position )),
 	get_all_adjacent( _ ,Position,List ),
 	assert_stench(List ).
 	
@@ -257,7 +265,7 @@ take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 			);
 			(	%%CASE RealDanger then shoot
 				at(RealDanger,Unsafe_Head ),
-				at(monster,Unsafe_Head ),
+				at(monster(_),Unsafe_Head ),
 				pos( XU,YU ) = Unsafe_Head,
 				DXIR = XU-X, DYIR = YU-Y,
 				(
@@ -393,7 +401,8 @@ step() :-
 
 move( X,Y ) :-
 	retract(at(agent,pos( _ , _ ))),
-	assertz(at(agent,pos( X,Y ))).
+	assertz(at(agent,pos( X,Y ))),
+	check_safety(pos( X,Y )).
 
 turn(right) :-
 	agentfacing( Xunit,Yunit ),
@@ -462,16 +471,16 @@ turn( X ) :-
 %------------------------------------------------
     %As posições dos monstros são sorteadas através do python e inseridas pelo comando assert.
     %By definition the monster01 always starts with 100 points of life %
-    energy(monster01, 100).
+    energy(monster(01), 100).
 
     %By definition the monster02 always starts with 100 points of life %
-    energy(monster02, 100).
+    energy(monster(02), 100).
 
     %By definition the monster01 always starts with 100 points of life %
-    energy(monster03, 100).
+    energy(monster(03), 100).
 
     %By definition the monster02 always starts with 100 points of life %
-    energy(monster04, 100).
+    energy(monster(04), 100).
 
 %------------------------------------------------
 %
