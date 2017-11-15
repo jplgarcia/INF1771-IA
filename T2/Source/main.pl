@@ -302,9 +302,9 @@ take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 						turn_to( DXIR,DYIR ),
 						shoot(),!
 					);
-					(%%Has no ammo
-						/** Q FAREMOS SE N TIVER MUNIÇÃO?	#EDITING*/
-					)
+					/**(%%Has no ammo
+						%%Q FAREMOS SE N TIVER MUNIÇÃO? #EDITING
+					)*/
 				)
 			)
 		),!
