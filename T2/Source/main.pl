@@ -165,9 +165,9 @@ get_safe_adjacent_list(Direction, Position, List ):-
 		);
 		(%CASE: WUMPUS
 			at(monster(X),POS ),
-			DAM is -strenght(monster(X)),
-			adjust_score( DAM ),
-			deal_damage(agent,DAM )
+			strength(monster(X),DAM ),
+			adjust_score( -DAM ),
+			deal_damage(agent, DAM )
 		);
 		true .
 
