@@ -254,6 +254,24 @@ take_action( X, Y, Stench, Breeze, Shine, Impact, scream ) :-
 	agentfacing( DX,DY ),
 	NX is X+DX,NY is Y+DY,
 	kill_monster( pos( NX,NY )),!.
+
+turn_to( DXIR,DYIR ) :-
+	(
+		agentfacing(DXIR,DYIR ),!
+	);
+	(
+		agentfacing(-DYIR,DXIR ),
+		turn(left),!
+	);
+	(
+		agentfacing(DYIR,-DXIR ),
+		turn(right),!
+	);
+	(
+		agentfacing(-DXIR,-DYIR ),
+		turn(right),
+		turn(right),!
+	)
 	
 %%Decides wheter to step or shoot if smelled stench; prefers to walk to a safe place over steping/shooting an unsafe place
 take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
@@ -267,78 +285,24 @@ take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 				at(PotentialDanger,Unsafe_Head ),
 				pos( XU,YU ) = Unsafe_Head,
 				DXIR = XU-X, DYIR = YU-Y,
-				(
-					agentfacing(DXIR,DYIR ),
-					step(),!
-				);
-				(
-					agentfacing(-DYIR,DXIR ),
-					turn(left),
-					step(),!
-				);
-				(
-					agentfacing(DYIR,-DXIR ),
-					turn(right),
-					step(),!
-				);
-				(
-					agentfacing(-DXIR,-DYIR ),
-					turn(right),
-					turn(right),
-					step(),!
-				)
+				turn_to( DXIR,DYIR ),
+				step(),!
 			);
 			(	%%CASE RealDanger then shoot
 				at(RealDanger,Unsafe_Head ),
 				at(monster(_),Unsafe_Head ),
 				pos( XU,YU ) = Unsafe_Head,
 				DXIR = XU-X, DYIR = YU-Y,
-				(
-					agentfacing(DXIR,DYIR ),
-					shoot(),!
-				);
-				(
-					agentfacing(-DYIR,DXIR ),
-					turn(left),
-					shoot(),!
-				);
-				(
-					agentfacing(DYIR,-DXIR ),
-					turn(right),
-					shoot(),!
-				);
-				(
-					agentfacing(-DXIR,-DYIR ),
-					turn(right),
-					turn(right),
-					shoot(),!
-				)
+				turn_to( DXIR,DYIR ),
+				shoot(),!
 			)
 		),!
 	);
 	(	%%CASE Safe then Step
 		pos( XU,YU ) = Safe_Head,
 		DXIR = XU-X, DYIR = YU-Y,
-		(
-			agentfacing(DXIR,DYIR ),
-			step(),!
-		);
-		(
-			agentfacing(-DYIR,DXIR ),
-			turn(left),
-			step(),!
-		);
-		(
-			agentfacing(DYIR,-DXIR ),
-			turn(right),
-			step(),!
-		);
-		(
-			agentfacing(-DXIR,-DYIR ),
-			turn(right),
-			turn(right),
-			step(),!
-		),!
+		turn_to( DXIR,DYIR ),
+		step(),!
 	),! .
 			
 %%Decides wheter to step  if felt breeze; prefers to walk to a safe place over steping to an unsafe place
@@ -352,51 +316,15 @@ take_action( X, Y, Stench, breeze, Shine, Impact, Scream ) :-
 			at(PotentialDanger,Unsafe_Head ),
 			pos( XU,YU ) = Unsafe_Head,
 			DXIR = XU-X, DYIR = YU-Y,
-			(
-				agentfacing(DXIR,DYIR ),
-				step(),!
-			);
-			(
-				agentfacing(-DYIR,DXIR ),
-				turn(left),
-				step(),!
-			);
-			(
-				agentfacing(DYIR,-DXIR ),
-				turn(right),
-				step(),!
-			);
-			(
-				agentfacing(-DXIR,-DYIR ),
-				turn(right),
-				turn(right),
-				step(),!
-			)
+			turn_to( DXIR,DYIR ),
+			step(),!
 		),!
 	);
 	(	%%CASE Safe then Step
 		pos( XU,YU ) = Safe_Head,
 		DXIR = XU-X, DYIR = YU-Y,
-		(
-			agentfacing(DXIR,DYIR ),
-			step(),!
-		);
-		(
-			agentfacing(-DYIR,DXIR ),
-			turn(left),
-			step(),!
-		);
-		(
-			agentfacing(DYIR,-DXIR ),
-			turn(right),
-			step(),!
-		);
-		(
-			agentfacing(-DXIR,-DYIR ),
-			turn(right),
-			turn(right),
-			step(),!
-		),!
+		turn_to( DXIR,DYIR ),
+		step(),!
 	),! .
 	
 shoot() :-
@@ -514,15 +442,19 @@ turn( X ) :-
     %As posições dos monstros são sorteadas através do python e inseridas pelo comando assert.
     %By definition the monster01 always starts with 100 points of life %
     energy(monster(01), 100).
+	strength(monster(01), 20).
 
     %By definition the monster02 always starts with 100 points of life %
     energy(monster(02), 100).
+	strength(monster(02), 20).
 
     %By definition the monster01 always starts with 100 points of life %
     energy(monster(03), 100).
+	strength(monster(03), 50).
 
     %By definition the monster02 always starts with 100 points of life %
     energy(monster(04), 100).
+	strength(monster(04), 50).
 
 %------------------------------------------------
 %
