@@ -220,16 +220,16 @@ turn( X ) :-
 %------------------------------------------------
     %As posições dos monstros são sorteadas através do python e inseridas pelo comando assert.
     %By definition the monster01 always starts with 100 points of life %
-    energy(monster01, 100).
+    energy(monster(01), 100).
 
     %By definition the monster02 always starts with 100 points of life %
-    energy(monster02, 100).
+    energy(monster(02), 100).
 
     %By definition the monster01 always starts with 100 points of life %
-    energy(monster03, 100).
+    energy(monster(03), 100).
 
     %By definition the monster02 always starts with 100 points of life %
-    energy(monster04, 100).
+    energy(monster(04), 100).
 
 %------------------------------------------------
 %

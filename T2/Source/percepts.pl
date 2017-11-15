@@ -21,11 +21,17 @@
 %In addition, this predicate retracts the energy of the agent and will set a new energy for the agent through the command asserta.
 sixth_sense(asserta(energy(agent, 0))):-
   at(agent, Position),
-  ( at(monster01, Position);at(monster02, Position);
-    at(monster03, Position);at(monster04, Position);
-    at(hole, Position)
-    ),
+  at(hole, Position),
   retract(energy(agent,_)).
+
+sixth_sense():-
+  at(agent, Position),
+  ( at(damage(monster(01),20));
+    at(damage(monster(02),20)))
+  );
+  ( at(damage(monster(03),50));
+    at(damage(monster(01),50))
+  ).
 
 %This predicate will infers that agent it's on same positon as the gold it's.
 sixth_sense(assertz(at(gold, pos(X,Y)))):-
