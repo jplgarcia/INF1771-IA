@@ -190,7 +190,7 @@ def popUpMsg ( msg ) : #abre um pop up com Game Over
 
     popup.mainloop()
 
-def retrieveGold ( x, y ) : #tira ouro da posicao em que o agente recolheu
+def retrieveGold ( x, y ) : #tira ouro da posicao onde o agente recolheu
 
     imagesprite = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageFloor )
     drawLines()
@@ -293,7 +293,7 @@ def updateAmmo (): #diminui municao, uma flecha por vez
     total = int ( labelNumAmmo [ "text" ] ) - 1
     labelNumAmmo.config ( text = str ( total ) )
 
-def initializeBoard():
+def initializeBoard() :
     drawFloor()
     insertHoles(wumpus.getHolePositions())
     insertGold(wumpus.getGoldPositions())
