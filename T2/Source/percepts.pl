@@ -9,7 +9,7 @@
                 sixth_sense/1
                     ] ).
 
-:- use_module(main ).
+:- use_module(main).
 
 %------------------------------------------------%
 %                                                %
@@ -30,13 +30,13 @@ sixth_sense(asserta(energy(agent, NewEnergy  ))):-
 		at(damage(monster(01 ),20 ));
 		at(damage(monster(02 ),20 )),
 		NewEnergy is energy(agent, _  ) - 20,
-		retract(energy(agent,_  )),
+		retract( energy(agent,_ ))
 	);
 	(
 		at(damage(monster(03 ),50 ));
 		at(damage(monster(01 ),50 )),
 		NewEnergy is energy(agent, _ - 50 ),
-		retract(energy(agent, _  )),
+		retract( energy(agent,_ ))
 	) .
 
 %This predicate will infers that agent it's on same positon as the gold it's.
