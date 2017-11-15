@@ -148,7 +148,15 @@ get_safe_adjacent_list(Direction, Position, List ):-
       sensed(pos(X,Y), current),
       sensed(pos(X,Y), around).
 	
-	%
+	
+	%Subtracts STRENGHT from the energy of the WHO
+	deal_damage( WHO, STRENGHT ) :-
+		energy( WHO, CURRENT ),
+		NEW is CURRENT-STRENGHT,
+		retract(energy( WHO, _ )),
+		asserta(energy( WHO, NEW )).
+	
+	%Checks agent safety after STEPING
 	check_safety( POS ) :-
 		(%CASE: HOLE
 			at(hole,POS ),
@@ -156,6 +164,7 @@ get_safe_adjacent_list(Direction, Position, List ):-
 		);
 		(%CASE: WUMPUS
 			at(monster(X),POS ),
+			deal_damage(agent,strenght(monster(X))),!
 		)
 		.
 	  
