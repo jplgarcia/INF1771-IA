@@ -344,6 +344,7 @@ shoot() :-
 	at(monster( NUM ),pos( NX,NY )),
 	random_between( 20,50,DAM ),
 	subtract_ammo(),
+	adjust_score(-10),
 	deal_damage(monster( NUM ),DAM ),
 	check_monster_dead(monster(NUM)).
 
