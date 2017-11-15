@@ -24,13 +24,17 @@ sixth_sense(asserta(energy(agent, 0))):-
   at(hole, Position),
   retract(energy(agent,_)).
 
-sixth_sense():-
+sixth_sense(asserta(energy(agent, NewEnergy))):-
   at(agent, Position),
   ( at(damage(monster(01),20));
-    at(damage(monster(02),20)))
+    at(damage(monster(02),20))),
+    NewEnergy is energy(agent, _) - 20,
+    retract(energy(agent,_)),
   );
   ( at(damage(monster(03),50));
-    at(damage(monster(01),50))
+    at(damage(monster(01),50)),
+    NewEnergy is energy(agent, _ - 50),
+    retract(energy(agent, _)),
   ).
 
 %This predicate will infers that agent it's on same positon as the gold it's.

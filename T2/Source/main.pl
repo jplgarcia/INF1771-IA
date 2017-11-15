@@ -148,15 +148,15 @@ get_safe_adjacent_list(Direction, Position, List ):-
     check_sensed( X,Y ):-
       sensed(pos(X,Y), current),
       sensed(pos(X,Y), around).
-	
-	
+
+
 	%Subtracts STRENGHT from the energy of the WHO
 	deal_damage( WHO, STRENGHT ) :-
 		energy( WHO, CURRENT ),
 		NEW is CURRENT-STRENGHT,
 		retract(energy( WHO, _ )),
 		asserta(energy( WHO, NEW )).
-	
+
 	%Checks agent safety after STEPING
 	check_safety( POS ) :-
 		(%CASE: HOLE
@@ -170,7 +170,7 @@ get_safe_adjacent_list(Direction, Position, List ):-
 			deal_damage(agent,DAM )
 		);
 		true .
-	  
+
     %This predicate will update our dangerous inferences%
     update_our_dangerous_inferences(Position, TypeDanger, RealDanger, PotentialDanger):-
       ( at(TypeDanger, Position)),
@@ -185,7 +185,7 @@ get_safe_adjacent_list(Direction, Position, List ):-
         ).
 
 %%Checks for monster
-check_for_monster([Head|Tail ]):-		
+check_for_monster([Head|Tail ]):-
 	\+ lenght([Head|Tail ], 0),
 	(
 		at(monster(_), Head );
@@ -226,13 +226,13 @@ pick_gold( POS ) :-
 	adjust_score(1000),
 	retract(at(gold, POS )),
 	retract(at(shine, POS )).
-	
+
 %%Kills_monster at position
 kill_monster( Position ) :-
 	retract(at(monster(_), Position )),
 	get_all_adjacent( _ ,Position,List ),
 	assert_stench(List ).
-	
+
 %%Decides to pick up gold if seen
 take_action( X, Y, Smell, Breeze, shine, Impact, Scream ) :-
 	pick_gold(pos( X,Y ) ).
@@ -254,7 +254,7 @@ take_action( X, Y, Stench, Breeze, Shine, Impact, scream ) :-
 	agentfacing( DX,DY ),
 	NX is X+DX,NY is Y+DY,
 	kill_monster( pos( NX,NY )),!.
-	
+
 %%Decides wheter to step or shoot if smelled stench; prefers to walk to a safe place over steping/shooting an unsafe place
 take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 	get_safe_adjacent_list(_ , Position, [Safe_Head|Safe_Tail ] ),
@@ -340,7 +340,7 @@ take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 			step(),!
 		),!
 	),! .
-			
+
 %%Decides wheter to step  if felt breeze; prefers to walk to a safe place over steping to an unsafe place
 take_action( X, Y, Stench, breeze, Shine, Impact, Scream ) :-
 	get_safe_adjacent_list(_ , Position, [Safe_Head|Safe_Tail ] ),
@@ -398,7 +398,7 @@ take_action( X, Y, Stench, breeze, Shine, Impact, Scream ) :-
 			step(),!
 		),!
 	),! .
-	
+
 shoot() :-
 	at(agent, pos( X,Y )),
 	agentfacing( XD,YD ),
@@ -414,7 +414,7 @@ subtract_ammo() :-
 	NEW_QTD is QTD -1,
 	retract(ammo(_)),
 	asserta(ammo(NEW_QTD)).
-	
+
 /**
 	AGENT MOVEMENT
 */
@@ -489,11 +489,11 @@ turn( X ) :-
 % DEFAULT CONFIG FOR AGENT
 %
 %------------------------------------------------
-	%Starting Score
-	score(agent,0).
-	
-	 %By definition the agents allways starts facing the right
-	agentfacing(1,0).
+	  %Starting Score
+	  score(agent,0).
+
+	  %By definition the agents allways starts facing the right
+	  agentfacing(1,0).
 
     %By definition the agent always starts on the position [1,1]%
     at(agent, pos(1,1)).
@@ -503,7 +503,7 @@ turn( X ) :-
 
     %We have to mark as visited the start position of the agent%
     visited(pos(1,1)).
-	
+
 	%Starting ammo
 	ammo(5).
 %------------------------------------------------
