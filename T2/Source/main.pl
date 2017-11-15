@@ -27,7 +27,8 @@
               energy/2,
               safe/1,
 			  agentfacing/2,
-        checked_sensed/2
+			checked_sensed/2,
+				score/2
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -37,6 +38,15 @@
 % Exported Predicates                            %
 %                                                %
 %------------------------------------------------%
+
+%modifies the score by a given amount
+adjust_score( ADD ) :-
+	score(agent, S ),
+	NewScore is S+ADD,
+	retract(score(agent, S )),
+	asserta(score(agent, NewScore )).
+
+
 % Gets all adjacent positions
 get_all_adjacent(Direction, Position, List ) :-
 	findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), Adj_p ), List), !.
@@ -89,7 +99,10 @@ get_safe_adjacent_list(Direction, Position, List ):-
   %Verify if the char is dead
   is_dead(char):-
       energy(char, Energy_points),
-      Energy_points =< 0.
+	  (
+		Energy_points =< 0,
+		adjust_score(-1000),!
+	  ).
 
   %These cases right below it will explain how do we check if there's any potential danger at adjacent houses.%
   %If a potential danger appear twice times on the same list we assume that's a real danger%
@@ -177,10 +190,7 @@ assert_stench([Head|Tail ]) :-
 
 pick_gold( POS ) :-
 	at(gold, POS ),
-	score( S ),
-	NewScore is S+1000,
-	retract(score( S )),
-	asserta(score( NewScore )),
+	adjust_score(1000),
 	retract(at(gold, POS )),
 	retract(at(shine, POS )).
 	
@@ -298,7 +308,7 @@ take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 		),!
 	),! .
 			
-%%Decides wheter to step or shoot if felt breeze; prefers to walk to a safe place over steping to an unsafe place
+%%Decides wheter to step  if felt breeze; prefers to walk to a safe place over steping to an unsafe place
 take_action( X, Y, Stench, breeze, Shine, Impact, Scream ) :-
 	get_safe_adjacent_list(_ , Position, [Safe_Head|Safe_Tail ] ),
 	get_safe_adjacent_list(_ , Position, [Unsafe_Head|Unsafe_Tail ] ),
@@ -366,6 +376,7 @@ step() :-
 	agentfacing( Xunit,Yunit ),
 	X is Xaxis + Xunit,
 	Y is Yaxis + Yunit,
+	adjust_score(-1),
 	(
 		(%is new position is outside of the dungeon, "cancel" the movement
 			( X < 0;Y < 0;X > 12;Y > 12 ),
@@ -390,6 +401,7 @@ turn(right) :-
 	Y is -Xunit,
 	retract(agentfacing( _ , _ )),
 	assertz(agentfacing( X,Y )),
+	adjust_score(-1),
 	format("agentfacing(~a,~a)",[ X,Y ]).
 
 turn(left) :-
@@ -398,6 +410,7 @@ turn(left) :-
 	Y is Xunit,
 	retract(agentfacing( _ , _ )),
 	assertz(agentfacing( X,Y )),
+	adjust_score(-1),
 	format("agentfacing(~a,~a)",[ X,Y ]).
 
 /**
@@ -428,10 +441,10 @@ turn( X ) :-
 %
 %------------------------------------------------
 	%Starting Score
-	score( 0 ).
+	score(agent,0).
 	
 	 %By definition the agents allways starts facing the right
-	  agentfacing(1,0).
+	agentfacing(1,0).
 
     %By definition the agent always starts on the position [1,1]%
     at(agent, pos(1,1)).
