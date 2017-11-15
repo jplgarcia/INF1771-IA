@@ -199,6 +199,13 @@ def retrieveGold ( x, y ) : #tira ouro da posicao em que o agente recolheu
 
 def movement () : #executa os movimentos da agente
     #acessar o arquivo wumpus.py que acessa o prolog para determinar movimentos
+    """
+    true_condition = TRUE
+    do
+        #Aqui deve Ficar o loop de avisa o q ta sentindo e perguta o q fazer, certo?
+    while(true_condition)
+
+    """
     time.sleep(0.5)
     changeDirection("East",(2,1))
     master.update()

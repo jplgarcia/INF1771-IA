@@ -355,7 +355,7 @@ take_action( X, Y, Stench, breeze, Shine, Impact, Scream ) :-
 			step(),!
 		),!
 	),! .
-		
+	
 		
 /**
 	AGENT MOVEMENT
@@ -366,8 +366,16 @@ step() :-
 	agentfacing( Xunit,Yunit ),
 	X is Xaxis + Xunit,
 	Y is Yaxis + Yunit,
-	move( X,Y ),
-	format("position(~a,~a)",[ X,Y ]).
+	(
+		(%is new position is outside of the dungeon, "cancel" the movement
+			( X < 0;Y < 0;X > 12;Y > 12 ),
+			format("wall in position(~a,~a), couldn't step",[ X,Y ]),!
+		);
+		(
+			move( X,Y ),
+			format("position(~a,~a)",[ X,Y ]),!
+		)
+	).
 
 move( X,Y ) :-
 	retract(at(agent,pos( _ , _ ))),
