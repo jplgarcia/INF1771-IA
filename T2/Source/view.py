@@ -1,6 +1,7 @@
 from Tkinter import *
 from PIL import ImageTk, Image
 import time
+import wumpus
 
 master = Tk()
 
@@ -101,8 +102,6 @@ labelM4NumEnergy.grid ( row = 18 + baseRow, column = 2 , sticky = "W", padx=(0,0
 labelM4Damage.grid ( row = 19 + baseRow, column = 1 , sticky = "W", padx=(100,0) )
 labelM4NumDamage.grid ( row = 19 + baseRow, column = 2 , sticky = "W", padx=(0,0) )
 
-
-
 boardCanvas = Canvas ( master, width = 500, height = 550) #tamanho do tabuleiro
 rectSize = 40 #cada casa do tabuleiro tem 40 x 40 px
 
@@ -191,7 +190,7 @@ def popUpMsg ( msg ) : #abre um pop up com Game Over
 
     popup.mainloop()
 
-def retrieveGold ( x, y ) : #tira ouro da posicao em que o agente recolheu
+def retrieveGold ( x, y ) : #tira ouro da posicao onde o agente recolheu
 
     imagesprite = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageFloor )
     drawLines()
@@ -294,18 +293,18 @@ def updateAmmo (): #diminui municao, uma flecha por vez
     total = int ( labelNumAmmo [ "text" ] ) - 1
     labelNumAmmo.config ( text = str ( total ) )
 
+def initializeBoard() :
+    drawFloor()
+    insertHoles(wumpus.getHolePositions())
+    insertGold(wumpus.getGoldPositions())
+    insertMonsters(wumpus.getMonsterPositions())
+    agentSprite = boardCanvas.create_image ( 30, 20 + rectSize * 12, image = imageWW )
+    drawLines()
+    boardCanvas.grid (row=0, column = 7, rowspan = 50, columnspan = 8, padx=(30,0) )
+    #botao para iniciar a simulacao
+    button = Button ( master, text = "Start", command = lambda: movement() )
+    button.grid ( row = 100, columnspan = 20, pady = ( 0 , 10 ) )
 
-drawFloor()
-insertHoles([(1,3),(3,3),(1,12),(2,5),(7,11),(7,8),(4,4),(7,7)])
-insertGold([(2,7),(5,6),(10,9)])
-insertMonsters([(2,2,1), (3,10,2),(10,10,3),(5,5,4)])
-agentSprite = boardCanvas.create_image ( 30, 20 + rectSize * 12, image = imageWW )
-drawLines()
-boardCanvas.grid (row=0, column = 7, rowspan = 50, columnspan = 8, padx=(30,0) )
-
-#botao para iniciar a simulacao
-button = Button ( master, text = "Start", command = lambda: movement() )
-button.grid ( columnspan = 20, pady = ( 0 , 10 ) )
-
+initializeBoard()
 master.mainloop()
 
