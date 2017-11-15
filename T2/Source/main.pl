@@ -271,7 +271,7 @@ turn_to( DXIR,DYIR ) :-
 		agentfacing(-DXIR,-DYIR ),
 		turn(right),
 		turn(right),!
-	)
+	).
 	
 %%Decides wheter to step or shoot if smelled stench; prefers to walk to a safe place over steping/shooting an unsafe place
 take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
