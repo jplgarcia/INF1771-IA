@@ -30,7 +30,7 @@ take_action() :-
 		);
 		(
 			at(breeze, pos( X,Y )),
-			Breeze is breeze
+			(Breeze is breeze)
 		);
 		(
 			at(stench, pos( X,Y )),
