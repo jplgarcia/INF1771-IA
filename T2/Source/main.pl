@@ -369,6 +369,9 @@ step() :-
 	(
 		(%is new position is outside of the dungeon, "cancel" the movement
 			( X < 0;Y < 0;X > 12;Y > 12 ),
+			senses( MYX, MYY, Stench, Breeze, Shine, Impact, Scream ),
+			retract(senses( _, _, _, _, _, _, _ )),
+			asserta(senses( MYX, MYY, Stench, Breeze, Shine, impact, Scream )),
 			format("wall in position(~a,~a), couldn't step",[ X,Y ]),!
 		);
 		(
