@@ -18,10 +18,34 @@ pick_gold( POS ) :-
 	retract(at(gold, POS )),
 	retract(at(shine, POS )).
 
+%generic take_action
+take_action() :-
+	senses( _,_,_,_,_,Impact,Scream ),
+	Shine is no,Breeze is no,Stench is no,
+	at(agent,pos( X,Y )),
+	(
+		(
+			at(gold, pos( X,Y )),
+			Shine is shine
+		);
+		(
+			at(breeze, pos( X,Y )),
+			Breeze is breeze
+		);
+		(
+			at(stench, pos( X,Y )),
+			Stench is stench
+		)
+	),
+	take_action( X, Y, Stench, Breeze, Shine, Impact, Scream ),
+	retract(senses( _, _, _, _, _, _, _ )),
+	asserta(senses( X, Y, Stench, Breeze, Shine, no, no)) .
 
-
+take_action( X, Y,no, no, no, no, no ) :-
+	step().
+	
 %%Decides to pick up gold if seen
-take_action( X, Y, Smell, Breeze, shine, Impact, Scream ) :-
+take_action( X, Y, Stench, Breeze, shine, Impact, Scream ) :-
 	pick_gold(pos( X,Y ) ).
 
 %%Marks a position as a wall
