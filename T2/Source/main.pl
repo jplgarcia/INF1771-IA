@@ -142,7 +142,7 @@ adjust_score( ADD ) :-
     %This predicate will verifiy all the surrounding position given the current position of the agent.
     check_surrounding_current_position:-
       at(agent, Position),
-      ( get_adjacent_list(_,Adj_p,Pos),
+      ( get_adjacent_list(_,Adj_p,Position),
         ((
           (not(should_visit(Adj_p)),
           not(visited(Adj_p))),
@@ -204,7 +204,7 @@ check_monster_dead( MONSTER ) :-
 	(
 		(
 			ENERGY < 1,
-			senses( MYX, MYY, Stench, Breeze, Shine, Impact, Scream ),
+			senses( MYX, MYY, Stench, Breeze, Shine, Impact, scream ),
 			retract(senses( _, _, _, _, _, _, _ )),
 			asserta(senses( MYX, MYY, Stench, Breeze, Shine, Impact, scream )),
 			retract(at( MONSTER, _ ))
@@ -214,7 +214,7 @@ check_monster_dead( MONSTER ) :-
 %%Check if stench must persist because of any adjacent monster
 assert_stench([Head|Tail ]) :-
 	\+ lenght([Head|Tail ],0),
-	get_all_adjacent(Position,List ),
+	get_all_adjacent(_ , Position , List ),
 	(
 		(
 			check_for_monster( List ),
@@ -322,20 +322,32 @@ turn( X ) :-
 % DEFAULT CONFIG FOR AGENT
 %
 %------------------------------------------------
-	%Starting senses
-	senses(1,1,no,no,no,no,no).
+  	%Starting senses
+  	senses(1,1,no,no,no,no,no).
 
-	%Starting Score
-	score(agent, 0).
+  	%Starting Score
+  	score(agent, 0).
 
-	%By definition the agents always starts facing the right
-	agentfacing(1, 0).
+  	%By definition the agents always starts facing the right
+  	agentfacing(1, 0).
 
     %By definition the agent always starts on the position [1,1]%
     at(agent, pos(1,1)).
 
     %By definition the agent always starts with 100 points of life %
     energy(agent, 100).
+
+    %By definition the monster01 always starts with 100 points of life %
+    energy(monster(01), 100).
+
+    %By definition the monster02 always starts with 100 points of life %
+    energy(monster(02), 100).
+
+    %By definition the monster01 always starts with 100 points of life %
+    energy(monster(03), 100).
+
+    %By definition the monster02 always starts with 100 points of life %
+    energy(monster(04), 100).
 
     %We have to mark as visited the start position of the agent%
     visited(pos(1,1)).
@@ -348,20 +360,9 @@ turn( X ) :-
 %
 %------------------------------------------------
     %As posições dos monstros são sorteadas através do python e inseridas pelo comando assert.
-    %By definition the monster01 always starts with 100 points of life %
-    energy(monster(01), 100).
     strength(monster(01), 20).
-
-    %By definition the monster02 always starts with 100 points of life %
-    energy(monster(02), 100).
     strength(monster(02), 20).
-
-    %By definition the monster01 always starts with 100 points of life %
-    energy(monster(03), 100).
     strength(monster(03), 50).
-
-    %By definition the monster02 always starts with 100 points of life %
-    energy(monster(04), 100).
     strength(monster(04), 50).
 
 %------------------------------------------------
