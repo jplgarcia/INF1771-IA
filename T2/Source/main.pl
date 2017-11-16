@@ -114,7 +114,7 @@ adjust_score( ADD ) :-
   %Nao aguento mais comentar as coisas, meu deus...%
   %Case: BREEZE%
   check_hole(breeze, Position):-
-    at(breeze, Position),
+      at(breeze, Position),
       retract(at(breeze, Position)),
       get_adjacent_list(_ , Position, [Head|Tail]),
       ((length(Tail, 0) , assertz(at(hole, Head)));
