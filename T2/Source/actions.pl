@@ -6,11 +6,15 @@
 % Definitions                                    %
 %------------------------------------------------%
 :- module(acts,  [
-                sixth_sense/1
+                take_action/7
                     ]).
 
 :- use_module(main).
 :- use_module(percepts).
+
+:- dynamic([
+              take_action/7
+                  ]).
 
 pick_gold( POS ) :-
 	at(gold, POS ),
@@ -43,7 +47,7 @@ take_action() :-
 
 take_action( X, Y,no, no, no, no, no ) :-
 	step().
-	
+
 %%Decides to pick up gold if seen
 take_action( X, Y, Stench, Breeze, shine, Impact, Scream ) :-
 	pick_gold(pos( X,Y ) ).

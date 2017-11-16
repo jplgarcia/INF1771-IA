@@ -17,10 +17,10 @@
                 correct_as_unsafe/0,
                 check_sensed/2,
                 pos/2,
-              score/2,
-              ammo/1,
-			  senses/7,
-			  agentfacing/2
+                score/2,
+                ammo/1,
+        			  senses/7,
+        			  agentfacing/2
                     ]).
 %Obs: Pra que server esse comando module?
 %R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%
@@ -34,8 +34,8 @@
               checked_sensed/2,
               score/2,
               ammo/1,
-			  senses/7,
-			  pos/2
+      			  senses/7,
+      			  pos/2
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
