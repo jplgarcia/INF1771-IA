@@ -21,20 +21,20 @@ pick_gold( POS ) :-
 %generic take_action
 take_action() :-
 	senses( _,_,_,_,_,Impact,Scream ),
-	Shine is no,Breeze is no,Stench is no,
+	Shine = no,Breeze = no,Stench = no,
 	at(agent,pos( X,Y )),
 	(
 		(
 			at(gold, pos( X,Y )),
-			Shine is shine
+			Shine = shine
 		);
 		(
 			at(breeze, pos( X,Y )),
-			Breeze is breeze
+			(Breeze = breeze)
 		);
 		(
 			at(stench, pos( X,Y )),
-			Stench is stench
+			Stench = stench
 		)
 	),
 	take_action( X, Y, Stench, Breeze, Shine, Impact, Scream ),

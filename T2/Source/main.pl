@@ -324,7 +324,7 @@ turn( X ) :-
 %------------------------------------------------
 	%Starting senses
 	senses(1,1,no,no,no,no,no).
-	
+
 	%Starting Score
 	score(agent, 0).
 
