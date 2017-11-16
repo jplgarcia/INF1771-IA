@@ -61,10 +61,10 @@ def fillMap(world) : #escreve em um novo arquivo a melhor solucao e sua distanci
     pos_x = -1
     pos_y = -1
     #inserir pocos no prolog
-    for list in world:
+    for line in world:
         pos_y = pos_y + 1
         pos_x = -1
-        for item in list:
+        for item in line:
             pos_x = pos_x+1
             if item == 'PC':
                 prolog.assertz("at(hole, pos("+str(pos_x+1)+","+str(pos_y+1)+"))")
@@ -81,30 +81,77 @@ def fillMap(world) : #escreve em um novo arquivo a melhor solucao e sua distanci
 
 fillMap(world)
 
-prologMonsterList = list(prolog.query("at(monster(N),pos(X,Y))"))
-prologHoleList= list(prolog.query("at(hole,pos(X,Y))"))
-prologGoldList = list(prolog.query("at(gold,pos(X,Y))"))
-
-for list in world:
-    print list
+for line in world:
+    print line
 
 def getMonsterPositions():
-    print prologMonsterList
+    prologMonsterList = list(prolog.query("at(monster(N),pos(X,Y))"))
     monsterList = []
     for monster in prologMonsterList:
         monsterList.append((monster['X'],monster['Y'],monster['N']))
     return monsterList
 
 def getHolePositions():
-    print prologHoleList
+    prologHoleList = list(prolog.query("at(hole,pos(X,Y))"))
     holeList = []
     for hole in prologHoleList:
         holeList.append((hole['X'], hole['Y']))
     return holeList
 
 def getGoldPositions():
-    print prologGoldList
+    prologGoldList = list(prolog.query("at(gold,pos(X,Y))"))
     goldList = []
     for gold in prologGoldList:
         goldList.append((gold['X'], gold['Y']))
     return goldList
+
+def takeAction():
+
+    #pega informacao do prolog sobre o agente
+    pScore = list(prolog.query("score(agent, X)"))
+    pEnergy = list(prolog.query("energy(agent, X)"))
+    pAmmo = list(prolog.query("ammo(X)"))
+    pPosition = list(prolog.query("at(agent,pos(X,Y))"))
+    pFacing = list(prolog.query("agentfacing(X, Y)"))
+
+    #pega informacao do prolog sobre os monstros
+    pMonster1Energy =  list(prolog.query("energy(monster(01), X)"))
+    pMonster2Energy = list(prolog.query("energy(monster(02), X)"))
+    pMonster3Energy = list(prolog.query("energy(monster(03), X)"))
+    pMonster4Energy = list(prolog.query("energy(monster(04), X)"))
+
+    score = pScore[0]['X']
+    energy = pEnergy[0]['X']
+    position = (pPosition[0]['X'], pPosition[0]['Y'])
+    facing = (pFacing[0]['X'], pFacing[0]['Y'])
+    ammo = pAmmo[0]['X']
+
+    monster1Energy = pMonster1Energy[0]['X']
+    monster2Energy = pMonster2Energy[0]['X']
+    monster3Energy = pMonster3Energy[0]['X']
+    monster4Energy = pMonster4Energy[0]['X']
+
+    # print "score: " + str(score)
+    # print "energy: " + str(energy)
+    # print "ammo: " + str(ammo)
+    # print "position: " + str(position)
+    # print "facing: " + str(facing)
+    #
+    # print "monster 1: " +str(monster1Energy)
+    # print "monster 2: " + str(monster2Energy)
+    # print "monster 3: " + str(monster3Energy)
+    # print "monster 4: " + str(monster4Energy)
+
+    #junta os dados para enviar para view.py
+    gameData = {'score': score, 'energy': energy, 'ammo': ammo, 'position': position, 'facing': facing, 'monster1':monster1Energy, 'monster2': monster2Energy, 'monster3': monster3Energy, 'monster4':monster4Energy}
+
+    queryString = "take_action("+str(position[0])+","+str(position[1])+",no,no,no,no,no)"
+    print queryString
+
+    action = bool(prolog.query(queryString))
+    print action
+
+    return gameData
+
+
+

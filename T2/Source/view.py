@@ -196,8 +196,33 @@ def retrieveGold ( x, y ) : #tira ouro da posicao onde o agente recolheu
     drawLines()
     master.update()
 
+
 def movement () : #executa os movimentos da agente
     #acessar o arquivo wumpus.py que acessa o prolog para determinar movimentos
+    gameData = wumpus.takeAction()
+
+    score = gameData['score']
+    energy = gameData['energy']
+    position = gameData['position']
+    facing = gameData['facing']
+    ammo = gameData['ammo']
+
+    monster1Energy = gameData['monster1']
+    monster2Energy = gameData['monster2']
+    monster3Energy = gameData['monster3']
+    monster4Energy = gameData['monster4']
+
+    print "score: " + str(score)
+    print "energy: " + str(energy)
+    print "ammo: " + str(ammo)
+    print "position: " + str(position)
+    print "facing: " + str(facing)
+
+    print "monster 1: " + str(monster1Energy)
+    print "monster 2: " + str(monster2Energy)
+    print "monster 3: " + str(monster3Energy)
+    print "monster 4: " + str(monster4Energy)
+
     """
     true_condition = TRUE
     do
@@ -205,36 +230,36 @@ def movement () : #executa os movimentos da agente
     while(true_condition)
 
     """
-    time.sleep(0.5)
-    changeDirection("East",(2,1))
-    master.update()
-    time.sleep(0.5)
-    changeDirection("East", (3, 1))
-    master.update()
-    time.sleep(0.5)
-    changeDirection("North", (3, 1))
-    master.update()
-    time.sleep(0.5)
-    changeDirection("North", (3, 2))
-    master.update()
-    time.sleep(0.5)
-    changeDirection("East", (3, 2))
-    master.update()
-    time.sleep(0.5)
-    changeDirection("East", (4, 2))
-    master.update()
-    time.sleep(0.5)
-    changeDirection("North", (5, 2))
-    master.update()
-    time.sleep(0.5)
-    changeDirection("South", (5, 2))
-    master.update()
-    updateAgentPoints(10)
-    updateAgentEnergy(10)
-    updateAmmo()
-    updateMonsterEnergy(100,01)
-    retrieveGold(2,7)
-    popUpMsg("Game Over!")
+    # time.sleep(0.5)
+    # changeDirection("East",(2,1))
+    # master.update()
+    # time.sleep(0.5)
+    # changeDirection("East", (3, 1))
+    # master.update()
+    # time.sleep(0.5)
+    # changeDirection("North", (3, 1))
+    # master.update()
+    # time.sleep(0.5)
+    # changeDirection("North", (3, 2))
+    # master.update()
+    # time.sleep(0.5)
+    # changeDirection("East", (3, 2))
+    # master.update()
+    # time.sleep(0.5)
+    # changeDirection("East", (4, 2))
+    # master.update()
+    # time.sleep(0.5)
+    # changeDirection("North", (5, 2))
+    # master.update()
+    # time.sleep(0.5)
+    # changeDirection("South", (5, 2))
+    # master.update()
+    # updateAgentPoints(10)
+    # updateAgentEnergy(10)
+    # updateAmmo()
+    # updateMonsterEnergy(100,01)
+    # retrieveGold(2,7)
+    # popUpMsg("Game Over!")
 
 def updateAgentPoints ( value ) : #muda pontuacao do agente
 
