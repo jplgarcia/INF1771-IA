@@ -17,9 +17,10 @@
                 correct_as_unsafe/0,
                 check_sensed/2,
                 pos/2,
-                score/2,
-                ammo/1,
-                senses/7
+              score/2,
+              ammo/1,
+			  senses/7,
+			  agentfacing/2
                     ]).
 %Obs: Pra que server esse comando module?
 %R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%
@@ -33,7 +34,8 @@
               checked_sensed/2,
               score/2,
               ammo/1,
-              senses/7
+			  senses/7,
+			  pos/2
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -324,10 +326,10 @@ turn( X ) :-
 	senses(1,1,no,no,no,no,no).
 
 	%Starting Score
-	score(agent,0).
+	score(agent, 0).
 
-	%By definition the agents allways starts facing the right
-	agentfacing(1,0).
+	%By definition the agents always starts facing the right
+	agentfacing(1, 0).
 
     %By definition the agent always starts on the position [1,1]%
     at(agent, pos(1,1)).
