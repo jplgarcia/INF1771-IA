@@ -6,14 +6,16 @@
 % Definitions                                    %
 %------------------------------------------------%
 :- module(acts,  [
-                take_action/7
+                take_action/7,
+				take_action/0
                     ]).
 
 :- use_module(main).
 :- use_module(percepts).
 
 :- dynamic([
-              take_action/7
+              take_action/7,
+				take_action/0
                   ]).
 
 pick_gold( POS ) :-
