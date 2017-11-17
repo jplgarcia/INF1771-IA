@@ -19,8 +19,9 @@
                 pos/2,
                 score/2,
                 ammo/1,
-        			  senses/7,
-        			  agentfacing/2
+        	senses/7,
+        	agentfacing/2,
+		step/0
                     ]).
 %Obs: Pra que server esse comando module?
 %R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%
