@@ -36,7 +36,8 @@
               score/2,
               ammo/1,
       			  senses/7,
-      			  pos/2
+      			  pos/2,
+		step/0
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
