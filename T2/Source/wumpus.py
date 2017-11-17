@@ -131,25 +131,13 @@ def takeAction():
     monster3Energy = pMonster3Energy[0]['X']
     monster4Energy = pMonster4Energy[0]['X']
 
-    # print "score: " + str(score)
-    # print "energy: " + str(energy)
-    # print "ammo: " + str(ammo)
-    # print "position: " + str(position)
-    # print "facing: " + str(facing)
-    #
-    # print "monster 1: " +str(monster1Energy)
-    # print "monster 2: " + str(monster2Energy)
-    # print "monster 3: " + str(monster3Energy)
-    # print "monster 4: " + str(monster4Energy)
-
     #junta os dados para enviar para view.py
     gameData = {'score': score, 'energy': energy, 'ammo': ammo, 'position': position, 'facing': facing, 'monster1':monster1Energy, 'monster2': monster2Energy, 'monster3': monster3Energy, 'monster4':monster4Energy}
 
-    queryString = "take_action("+str(position[0])+","+str(position[1])+",no,no,no,no,no)"
+    queryString = "step()."
     print queryString
 
-    action = bool(prolog.query(queryString))
-    print action
+    print list(prolog.query(queryString))
 
     return gameData
 
