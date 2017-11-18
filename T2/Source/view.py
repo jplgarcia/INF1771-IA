@@ -294,7 +294,7 @@ def movement () : #executa os movimentos da agente
     boardCanvas.update()
     infoCanvas.update()
 
-# Descricao: Atualiza o campo pontos do agente na label
+# Descricao: Atualiza a label pontos da agente
 # Param: value: novo valor de pontos a ser estabelecido
 # Return: none
 def updateAgentPoints ( value ) : #muda pontuacao do agente
@@ -305,6 +305,10 @@ def updateAgentPoints ( value ) : #muda pontuacao do agente
     total = value
     labelNumPoints.config ( text = str ( total ) )
 
+
+# Descricao: Atualiza a label energia da agente
+# Param: value: novo valor de energia a ser estabelecido
+# Return: none
 def updateAgentEnergy ( value ) : #muda energia do agente
 
     global labelNumEnergy
@@ -313,6 +317,11 @@ def updateAgentEnergy ( value ) : #muda energia do agente
     total =  value
     labelNumEnergy.config ( text = str ( total ) )
 
+
+# Descricao: Atualiza a label energia do monstro especifico
+# Param: value: novo valor de energia a ser estabelecido
+# Param: monster: identificador do montro cuja label sera alterada
+# Return: none
 def updateMonsterEnergy ( value, monster ) : #muda energia do monstro
 
     global labelM1NumEnergy, labelM2NumEnergy, labelM3NumEnergy, labelM4Energy, imageMonster1, imageMonster2, imageMonster3, imageMonster4
@@ -347,6 +356,10 @@ def updateMonsterEnergy ( value, monster ) : #muda energia do monstro
             imageMonster4 = ImageTk.PhotoImage(Image.open("Imagens/chao.png"))
             master.update()
 
+
+# Descricao: Atualiza a label municao da agente
+# Param: value: novo valor de municao a ser estabelecido
+# Return: none
 def updateAmmo (value): #diminui municao, uma flecha por vez
 
     global labelNumAmmo
@@ -354,6 +367,9 @@ def updateAmmo (value): #diminui municao, uma flecha por vez
     total = value
     labelNumAmmo.config ( text = str ( total ) )
 
+# Descricao: inicializa o tabuleiro chamando todas as funcoes necessaria para sua construcao
+# Param: none
+# Return: none
 def initializeBoard() :
     drawFloor()
     insertHoles(wumpus.getHolePositions())
