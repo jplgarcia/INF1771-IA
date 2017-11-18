@@ -173,7 +173,7 @@ def takeAction():
     pGoldList = list(prolog.query("at(gold, pos(X,Y))"))
 
     #pega informacao do prolog sobre os monstros
-    pMonster1Energy =  list(prolog.query("energy(monster(01), X)"))
+    pMonster1Energy = list(prolog.query("energy(monster(01), X)"))
     pMonster2Energy = list(prolog.query("energy(monster(02), X)"))
     pMonster3Energy = list(prolog.query("energy(monster(03), X)"))
     pMonster4Energy = list(prolog.query("energy(monster(04), X)"))
@@ -200,4 +200,4 @@ def takeAction():
     return gameData
 
 
-
+print list(prolog.query("at(Name,pos(X,Y))"))
