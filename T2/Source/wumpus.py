@@ -4,6 +4,10 @@ import agent
 import random
 import os
 
+# Descricao: busca aleatoriamente uma posicao vaga no mundo
+# Uma posicao vaga nao esta ocupada po nada
+# Param: world - Matriz contendo as informacoes PC = poco, M1,M2,M3,M4=monstros e GD = ouro
+# Return: Tupla com posicao vaga (x, y) como coordenadas cartesianas
 def getFreeSpace(world):
     x = 0
     y = 0
@@ -18,49 +22,49 @@ prolog.consult("run.pl")
 
 dimension = 12
 
-#Criar mundo
+#Criar mundo como uma matriz dimension x dimension (12x12)
 world = [['  ' for x in range(dimension)] for y in range(dimension)]
 
-#Criar agente
-agent = agent.Agent((0,0),(0,1))
+#Criar agente inserindo ele na casa 1,1
 world[0][0] = 'AG'
 
-#criar monstros
+#criar monstros colocando-os em locais aleatorios
 (x,y) = getFreeSpace(world)
-monster01 = monster.Monster(01,20,x,y)
 world[x][y] = 'M1'
 
 (x,y) = getFreeSpace(world)
-monster02 = monster.Monster(02,20,x,y)
 world[x][y] = 'M2'
 
 (x,y) = getFreeSpace(world)
-monster03 = monster.Monster(03,50,x,y)
 world[x][y] = 'M3'
 
 (x,y) = getFreeSpace(world)
-monster04 = monster.Monster(04,50,x,y)
 world[x][y] = 'M4'
 
-#criar pocos
+#criar pocos colocando-os em locais aleatorios
 i = 0
 while i < 8:
     (x,y) = getFreeSpace(world)
     world[x][y] = 'PC'
     i = i + 1
 
-# criar ouros
+# criar ouros colocando-os em locais aleatorios
 i = 0
 while i < 3:
     (x, y) = getFreeSpace(world)
     world[x][y] = 'GD'
     i = i + 1
 
-
-def fillMap(world) : #escreve em um novo arquivo a melhor solucao e sua distancia
+# Descricao: preenche o prolog atraves de asserts.
+# As informacoes a serem passadas dos prolog vem de uma matriz NxN
+# Apos a insercao de cada buraco insere as brizas, apos cada monstro insere os fedores
+# prolog.assertz() faz uma assertiva no prolog
+# at(obj, pos(X,Y)) - obj(hole, gold, monster, breeze, stench) na posicao (X,Y) cartesiana
+# Param: world - Matriz contendo as informacoes PC = poco, M1,M2,M3,M4=monstros e GD = ouro
+# Return: none
+def fillMap(world) :
     pos_x = -1
     pos_y = -1
-    #inserir pocos no prolog
     for line in world:
         pos_y = pos_y + 1
         pos_x = -1
@@ -96,11 +100,17 @@ def fillMap(world) : #escreve em um novo arquivo a melhor solucao e sua distanci
             elif item == 'GD':
                 prolog.assertz("at(gold, pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
 
+#Chamada da funcao fillMap para preencher o prolog com as informacoes antes colocadas na matriz
 fillMap(world)
 
 for line in world:
     print line
 
+# Descricao: busca no prolog onde estao os monstros e faz um parse da lista
+# prolog.query() faz uma busca no prolog
+# at(monster(N), pos(X,Y)) - monstro de identificador N na posicao (X,Y) cartesiana
+# Param: nenhum
+# Return: lista com tuplas(X,Y,N) onde x,y sao posicoes cartesianas e n o identificador do monstro
 def getMonsterPositions():
     prologMonsterList = list(prolog.query("at(monster(N),pos(X,Y))"))
     monsterList = []
@@ -108,6 +118,11 @@ def getMonsterPositions():
         monsterList.append((monster['X'],monster['Y'],monster['N']))
     return monsterList
 
+# Descricao: busca no prolog onde estao os buracos e faz um parse da lista
+# prolog.query() faz uma busca no prolog
+# at(hole, pos(X,Y)) - hole na posicao (X,Y) cartesiana
+# Param: nenhum
+# Return: lista com tuplas(X,Y) onde x,y sao posicoes cartesianas
 def getHolePositions():
     prologHoleList = list(prolog.query("at(hole,pos(X,Y))"))
     holeList = []
@@ -115,6 +130,11 @@ def getHolePositions():
         holeList.append((hole['X'], hole['Y']))
     return holeList
 
+# Descricao: busca no prolog onde estao os ouros e faz um parse da lista
+# prolog.query() faz uma busca no prolog
+# at(gold, pos(X,Y)) - gold na posicao (X,Y) cartesiana
+# Param: nenhum
+# Return: lista com tuplas(X,Y) onde x,y sao posicoes cartesianas
 def getGoldPositions():
     prologGoldList = list(prolog.query("at(gold,pos(X,Y))"))
     goldList = []
@@ -122,9 +142,24 @@ def getGoldPositions():
         goldList.append((gold['X'], gold['Y']))
     return goldList
 
+# Descricao: Chama a funcao take_action() do prolog para executar a melhor acao possivel
+# Em seguida busca um conjunto de informacoes do prolog, faz o parse delas para um dicionario
+# Devolte esse dicionario como resultado da funcao
+# {
+#   'score': pontuacao do personagem/agente/mulhermaravilha,
+#   'energy': ponto de energia do personegem/agente/mulhermaravilha,
+#   'ammo': municao restante usada para atacar monstros,
+#   'position': posicao em coordenada cartesianas (x,y) onde o agente se encontra,
+#   'facing': tupla de coordenadas cartesianas (x,y) para onde o agente esta olhando,
+#   'goldList': tupla de coordenadas cartesianas (x,y) onde existem ouros,
+#   'monster1': pontos de energia do monstro 1,
+#   'monster2': pontos de energia do monstro 2,
+#   'monster3': pontos de energia do monstro 3,
+#   'monster4': pontos de energia do monstro 4,
+# }
+# Param: nenhum
+# Return: dicionario contendo informacoes acima
 def takeAction():
-
-
     queryString = "take_action()."
     print queryString
     print list(prolog.query(queryString))
