@@ -76,7 +76,7 @@ take_action( X, Y, _, _, _, _, scream ) :-
 %%Decides wheter to step or shoot if smelled stench; prefers to walk to a safe place over steping/shooting an unsafe place
 take_action( X, Y, stench, _, _, _, _ ) :-
 	get_safe_adjacent_list(_ , pos( X,Y ), [Safe_Head|Safe_Tail ] ),
-	get_safe_adjacent_list(_ , pos( X,Y ), [Unsafe_Head|_ ] ),
+	get_safe_adjacent_list(_ , pos( X,Y ), [Unsafe_Head|Unsafe_Tail ] ),
 	(
 		%%CASE no safe space
 		length([Safe_Head|Safe_Tail ], 0),
@@ -95,15 +95,30 @@ take_action( X, Y, stench, _, _, _, _ ) :-
 						%%If has ammo then shoot
 						ammo( QTD ),
 						\+ QTD < 1,
-						at(monster(_),Unsafe_Head ),
 						pos( XU,YU ) = Unsafe_Head,
 						DXIR = XU-X, DYIR = YU-Y,
 						turn_to( DXIR,DYIR ),
 						shoot(),!
-					)/**;
-					(%%Has no ammo
-						%%Q FAREMOS SE N TIVER MUNIÇÃO? #EDITING
-					)*/
+					);
+					(	%%Has no ammo
+						%% If there is no monster, go there
+						(
+							[Unsafe_Head|Unsafe_Tail ] = Unsafe_Tail,
+							\+at(realMonster,Unsafe_Head ),
+							run_from_monster(X,Y,Unsafe_Head ),!
+						);
+						(
+							[Unsafe_Head|Unsafe_Tail ] = Unsafe_Tail,
+							\+at(realMonster,Unsafe_Head ),
+							run_from_monster(X,Y,Unsafe_Head ),!
+						);
+						(
+							[Unsafe_Head|Unsafe_Tail ] = Unsafe_Tail,
+							\+at(realMonster,Unsafe_Head ),
+							run_from_monster(X,Y,Unsafe_Head ),!
+						)
+						%%#EDITING
+					)
 				)
 			)
 		),!
@@ -136,6 +151,7 @@ take_action( X, Y, _, breeze, _, _, _ ) :-
 		turn_to( DXIR,DYIR ),
 		step(),!
 	),! .
+	
 turn_to( DXIR,DYIR ) :-
 	(
 		agentfacing(DXIR,DYIR ),!
@@ -153,3 +169,8 @@ turn_to( DXIR,DYIR ) :-
 		turn(right),
 		turn(right),!
 	).
+run_from_monster(X,Y,Unsafe_Head ) :-
+	pos( XU,YU ) = Unsafe_Head,
+	DXIR = XU-X, DYIR = YU-Y,
+	turn_to( DXIR,DYIR ),
+	step(),!.
