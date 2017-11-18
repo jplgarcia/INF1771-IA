@@ -36,12 +36,12 @@ take_action() :-
 		);
 		(
 			at(breeze, pos( X,Y )),
-			(Breeze = breeze)
+			Breeze = breeze
 		);
 		(
 			at(stench, pos( X,Y )),
 			Stench = stench
-		)
+		);true
 	),
 	(
 		(
@@ -140,10 +140,20 @@ take_action( X, Y, stench, _, _, _, _ ) :-
 			)
 		),!
 	);
-	(	%%CASE Safe then Step
-						%%#EDITING
-		
-		pos( XU,YU ) = Safe_Head,
+	(	%%CASE Safe then Step to should_visit
+		get_all_should_visit( _,pos( X,Y ),Should_List ),
+		(
+			(
+				\+ lenght( Should_List,0 ),
+				[ Should_Head|Should_Tail ] = Should_List,
+				Where_to = Should_Head
+			);
+			(
+				lenght( Should_List,0 ),
+				Where_to = Safe_Head
+			)
+		),
+		pos( XU,YU ) = Where_to,
 		DXIR = XU-X, DYIR = YU-Y,
 		turn_to( DXIR,DYIR ),
 		step(),!
@@ -164,8 +174,20 @@ take_action( X, Y, _, breeze, _, _, _ ) :-
 			step(),!
 		),!
 	);
-	(	%%CASE Safe then Step
-		pos( XU,YU ) = Safe_Head,
+	(	%%CASE Safe then Step to should_visit
+		get_all_should_visit( _,pos( X,Y ),Should_List ),
+		(
+			(
+				\+ lenght( Should_List,0 ),
+				[ Should_Head|Should_Tail ] = Should_List,
+				Where_to = Should_Head
+			);
+			(
+				lenght( Should_List,0 ),
+				Where_to = Safe_Head
+			)
+		),
+		pos( XU,YU ) = Where_to,
 		DXIR = XU-X, DYIR = YU-Y,
 		turn_to( DXIR,DYIR ),
 		step(),!
