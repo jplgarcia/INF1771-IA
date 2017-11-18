@@ -28,7 +28,7 @@ lose_energy( Value ) :-
 				asserta( energy(agent , NewEnergy)),
 				retract( energy(agent, Energy)).
 
-sixth_sense():-
+sixth_sense:-
   at(agent, Position ),
   ((
     at(damage(monster(01),20 ), Position);

@@ -25,7 +25,7 @@ pick_gold( POS ) :-
 	retract(at(shine, POS )).
 
 %generic take_action
-take_action() :-
+take_action :-
 	senses( _,_,_,_,_,Impact,Scream ),
 	Shine = no,Breeze = no,Stench = no,
 	at(agent,pos( X,Y )),
@@ -66,7 +66,7 @@ take_action() :-
 	asserta(senses( X, Y, Stench, Breeze, Shine, no, no)) .
 
 take_action( _, _,no, no, no, no, no ) :-
-	step().
+	step.
 
 %%Decides to pick up gold if seen
 take_action( X, Y, _, _, shine, _, _ ) :-
@@ -104,7 +104,7 @@ take_action( X, Y, stench, _, _, _, _ ) :-
 				pos( XU,YU ) = Unsafe_Head,
 				DXIR = XU-X, DYIR = YU-Y,
 				turn_to( DXIR,DYIR ),
-				step(),!
+				step,!
 			);
 			(	%%CASE RealDanger
 				at(realMonster,Unsafe_Head ),
@@ -116,7 +116,7 @@ take_action( X, Y, stench, _, _, _, _ ) :-
 						pos( XU,YU ) = Unsafe_Head,
 						DXIR = XU-X, DYIR = YU-Y,
 						turn_to( DXIR,DYIR ),
-						shoot(),!
+						shoot,!
 					);
 					(	%%Has no ammo
 						%% If there is no monster, go there
@@ -156,7 +156,7 @@ take_action( X, Y, stench, _, _, _, _ ) :-
 		pos( XU,YU ) = Where_to,
 		DXIR = XU-X, DYIR = YU-Y,
 		turn_to( DXIR,DYIR ),
-		step(),!
+		step,!
 	),! .
 
 %%Decides wheter to step  if felt breeze; prefers to walk to a safe place over steping to an unsafe place
@@ -171,7 +171,7 @@ take_action( X, Y, _, breeze, _, _, _ ) :-
 			pos( XU,YU ) = Unsafe_Head,
 			DXIR = XU-X, DYIR = YU-Y,
 			turn_to( DXIR,DYIR ),
-			step(),!
+			step,!
 		),!
 	);
 	(	%%CASE Safe then Step to should_visit
@@ -190,7 +190,7 @@ take_action( X, Y, _, breeze, _, _, _ ) :-
 		pos( XU,YU ) = Where_to,
 		DXIR = XU-X, DYIR = YU-Y,
 		turn_to( DXIR,DYIR ),
-		step(),!
+		step,!
 	),! .
 	
 turn_to( DXIR,DYIR ) :-
@@ -214,4 +214,4 @@ run_from_monster(X,Y,Unsafe_Head ) :-
 	pos( XU,YU ) = Unsafe_Head,
 	DXIR = XU-X, DYIR = YU-Y,
 	turn_to( DXIR,DYIR ),
-	step(),!.
+	step,!.

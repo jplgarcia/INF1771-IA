@@ -160,7 +160,7 @@ def getGoldPositions():
 # Param: nenhum
 # Return: dicionario contendo informacoes acima
 def takeAction():
-    queryString = "take_action()."
+    queryString = "take_action."
     print queryString
     print list(prolog.query(queryString))
 
