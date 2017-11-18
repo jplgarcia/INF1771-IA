@@ -14,7 +14,7 @@ def getFreeSpace(world):
     return (x,y)
 
 prolog = Prolog()
-prolog.consult("main.pl")
+prolog.consult("run.pl")
 
 dimension = 12
 
@@ -68,15 +68,32 @@ def fillMap(world) : #escreve em um novo arquivo a melhor solucao e sua distanci
             pos_x = pos_x+1
             if item == 'PC':
                 prolog.assertz("at(hole, pos("+str(pos_x+1)+","+str(pos_y+1)+"))")
-            if item == 'M1':
-                prolog.assertz("at(monster(1), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
-            if item == 'M2':
-                prolog.assertz("at(monster(2), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
-            if item == 'M3':
-                prolog.assertz("at(monster(3), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
-            if item == 'M4':
-                prolog.assertz("at(monster(4), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
-            if item == 'GD':
+                if (pos_x < 11):
+                    prolog.assertz("at(breeze, pos(" + str(pos_x + 2) + "," + str(pos_y + 1) + "))")
+                if (pos_x > 0):
+                    prolog.assertz("at(breeze, pos(" + str(pos_x) + "," + str(pos_y + 1) + "))")
+                if (pos_y < 11):
+                    prolog.assertz("at(breeze, pos(" + str(pos_x + 1) + "," + str(pos_y + 2) + "))")
+                if (pos_y > 0):
+                    prolog.assertz("at(breeze, pos(" + str(pos_x + 1) + "," + str(pos_y) + "))")
+            elif item == 'M1' or item == 'M2' or item == 'M3' or item == 'M4':
+                if item == 'M1':
+                    prolog.assertz("at(monster(1), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+                elif item == 'M2':
+                    prolog.assertz("at(monster(2), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+                elif item == 'M3':
+                    prolog.assertz("at(monster(3), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+                elif item == 'M4':
+                    prolog.assertz("at(monster(4), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+                if (pos_x < 11):
+                    prolog.assertz("at(stench, pos(" + str(pos_x + 2) + "," + str(pos_y + 1) + "))")
+                if (pos_x > 0):
+                    prolog.assertz("at(stench, pos(" + str(pos_x) + "," + str(pos_y + 1) + "))")
+                if (pos_y < 11):
+                    prolog.assertz("at(stench, pos(" + str(pos_x + 1) + "," + str(pos_y + 2) + "))")
+                if (pos_y > 0):
+                    prolog.assertz("at(stench, pos(" + str(pos_x + 1) + "," + str(pos_y) + "))")
+            elif item == 'GD':
                 prolog.assertz("at(gold, pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
 
 fillMap(world)
@@ -107,12 +124,18 @@ def getGoldPositions():
 
 def takeAction():
 
+
+    queryString = "take_action()."
+    print queryString
+    print list(prolog.query(queryString))
+
     #pega informacao do prolog sobre o agente
     pScore = list(prolog.query("score(agent, X)"))
     pEnergy = list(prolog.query("energy(agent, X)"))
     pAmmo = list(prolog.query("ammo(X)"))
     pPosition = list(prolog.query("at(agent,pos(X,Y))"))
     pFacing = list(prolog.query("agentfacing(X, Y)"))
+    pGoldList = list(prolog.query("at(gold, pos(X,Y))"))
 
     #pega informacao do prolog sobre os monstros
     pMonster1Energy =  list(prolog.query("energy(monster(01), X)"))
@@ -126,18 +149,18 @@ def takeAction():
     facing = (pFacing[0]['X'], pFacing[0]['Y'])
     ammo = pAmmo[0]['X']
 
+    goldlist = []
+    for item in pGoldList:
+        (x,y) = (item['X'],item['Y'])
+        goldlist.append((x,y))
+
     monster1Energy = pMonster1Energy[0]['X']
     monster2Energy = pMonster2Energy[0]['X']
     monster3Energy = pMonster3Energy[0]['X']
     monster4Energy = pMonster4Energy[0]['X']
 
     #junta os dados para enviar para view.py
-    gameData = {'score': score, 'energy': energy, 'ammo': ammo, 'position': position, 'facing': facing, 'monster1':monster1Energy, 'monster2': monster2Energy, 'monster3': monster3Energy, 'monster4':monster4Energy}
-
-    queryString = "step()."
-    print queryString
-
-    print list(prolog.query(queryString))
+    gameData = {'score': score, 'energy': energy, 'ammo': ammo, 'position': position, 'facing': facing,'goldList': goldlist  , 'monster1':monster1Energy, 'monster2': monster2Energy, 'monster3': monster3Energy, 'monster4':monster4Energy}
 
     return gameData
 

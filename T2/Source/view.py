@@ -104,6 +104,7 @@ labelM4NumDamage.grid ( row = 19 + baseRow, column = 2 , sticky = "W", padx=(0,0
 
 boardCanvas = Canvas ( master, width = 500, height = 550) #tamanho do tabuleiro
 rectSize = 40 #cada casa do tabuleiro tem 40 x 40 px
+baseGoldList = []
 
 def insertMonsters ( monsterList ) : #insere os monstros em suas respectivas posicoes no tabuleiro
 
@@ -131,6 +132,7 @@ def insertGold ( goldList ) : #insere ouros no tabuleiro
 
     for gold in goldList :
         (x,y) = gold #lista contem posicao x,y de cada ouro
+        baseGoldList.append((x,y))
         imagesprite = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageGold )
 
 def drawLines () : # desenha as linhas do tabuleiro
@@ -206,6 +208,7 @@ def movement () : #executa os movimentos da agente
     position = gameData['position']
     facing = gameData['facing']
     ammo = gameData['ammo']
+    goldList = gameData['goldList']
 
     monster1Energy = gameData['monster1']
     monster2Energy = gameData['monster2']
@@ -217,11 +220,39 @@ def movement () : #executa os movimentos da agente
     print "ammo: " + str(ammo)
     print "position: " + str(position)
     print "facing: " + str(facing)
+    print "goldList: " + str(goldList)
 
     print "monster 1: " + str(monster1Energy)
     print "monster 2: " + str(monster2Energy)
     print "monster 3: " + str(monster3Energy)
     print "monster 4: " + str(monster4Energy)
+
+    facingDirection = "North"
+    if facing == (1,0):
+        facingDirection = "East"
+    elif facing == (-1,0):
+        facingDirection = "West"
+    elif facing == (0,1):
+        facingDirection = "North"
+    elif facing == (0,-1):
+        facingDirection = "South"
+
+    updateAgentPoints(score)
+    updateAgentEnergy(energy)
+    updateAmmo(ammo)
+    updateMonsterEnergy(monster1Energy, 1)
+    updateMonsterEnergy(monster2Energy, 2)
+    updateMonsterEnergy(monster3Energy, 3)
+    updateMonsterEnergy(monster4Energy, 4)
+
+    if position in baseGoldList:
+        (x,y) = position
+        retrieveGold(x,y)
+
+    changeDirection(facingDirection, position)
+    boardCanvas.update()
+    infoCanvas.update()
+
 
     """
     true_condition = TRUE
@@ -266,7 +297,7 @@ def updateAgentPoints ( value ) : #muda pontuacao do agente
     global labelNumPoints
 
     #caso o valor recebido seja para diminuir do numero de pontos, ele vem com sinal negativo. Por isso, sempre somamos o valor.
-    total = int ( labelNumPoints [ "text" ] ) + value
+    total = value
     labelNumPoints.config ( text = str ( total ) )
 
 def updateAgentEnergy ( value ) : #muda energia do agente
@@ -274,7 +305,7 @@ def updateAgentEnergy ( value ) : #muda energia do agente
     global labelNumEnergy
 
     #o valor da energia sempre vem em modulo e e diminuita do numero total
-    total = int ( labelNumEnergy [ "text" ] ) - value
+    total =  value
     labelNumEnergy.config ( text = str ( total ) )
 
 def updateMonsterEnergy ( value, monster ) : #muda energia do monstro
@@ -282,7 +313,7 @@ def updateMonsterEnergy ( value, monster ) : #muda energia do monstro
     global labelM1NumEnergy, labelM2NumEnergy, labelM3NumEnergy, labelM4Energy, imageMonster1, imageMonster2, imageMonster3, imageMonster4
 
     if monster == 01 :
-        total = int ( labelM1NumEnergy ["text"] ) - value
+        total =  value
         labelM1NumEnergy.config ( text = str ( total ) )
         # se a energia do monstro ficar igual ou menor que 0, ele morre e sai do tabuleiro
         if total <= 0 :
@@ -290,7 +321,7 @@ def updateMonsterEnergy ( value, monster ) : #muda energia do monstro
             master.update()
 
     if monster == 02:
-        total = int ( labelM2NumEnergy ["text"] ) - value
+        total = value
         labelM2NumEnergy.config ( text = str ( total ) )
         if total <= 0 :
             imageMonster2 = ImageTk.PhotoImage(Image.open("Imagens/chao.png"))
@@ -298,24 +329,24 @@ def updateMonsterEnergy ( value, monster ) : #muda energia do monstro
             master.update()
 
     if monster == 03:
-        total = int ( labelM3NumEnergy ["text"] ) - value
+        total = value
         labelM3NumEnergy.config ( text = str ( total ) )
         if total <= 0 :
             imageMonster3 = ImageTk.PhotoImage(Image.open("Imagens/chao.png"))
             master.update()
 
     if monster == 04:
-        total = int ( labelM4NumEnergy ["text"] ) - value
+        total =  value
         labelM4NumEnergy.config ( text = str ( total ) )
         if total <= 0 :
             imageMonster4 = ImageTk.PhotoImage(Image.open("Imagens/chao.png"))
             master.update()
 
-def updateAmmo (): #diminui municao, uma flecha por vez
+def updateAmmo (value): #diminui municao, uma flecha por vez
 
     global labelNumAmmo
 
-    total = int ( labelNumAmmo [ "text" ] ) - 1
+    total = value
     labelNumAmmo.config ( text = str ( total ) )
 
 def initializeBoard() :
