@@ -5,7 +5,8 @@ import wumpus
 
 master = Tk()
 
-#carrega todas as imagens usadas no tabuleiro
+# Carrega todas as imagens usadas no tabuleiro
+# Imagens de encontram na pasta Imagens
 imageWWFace = ImageTk.PhotoImage(Image.open("Imagens/WWface.jpg"))
 imageWW = ImageTk.PhotoImage(Image.open("Imagens/wwleste.gif"))
 imageHole = ImageTk.PhotoImage(Image.open("Imagens/buraco.png"))
@@ -20,21 +21,26 @@ imageMonster2Face = ImageTk.PhotoImage(Image.open("Imagens/monstro20.gif"))
 imageMonster3Face = ImageTk.PhotoImage(Image.open("Imagens/monstro50.gif"))
 imageMonster4Face = ImageTk.PhotoImage(Image.open("Imagens/monstro50.gif"))
 
+# Variavel utilizada para alinhamento do grid
+# a interface grafica utiliza o modo grid do tkinter
+# necessario uma fileira(row) base para alinhamento dos elementos graficos
 baseRow = 0
 
-#infocanvas
+# infocanvas
+# O quadro onde fica desenhado o rosto da agente, fotos dos monstros e informacoes sobre eles
+# Necessario criar um canvas para podermos desenhar os contornos dos campos de informacoes e imagens
 infoCanvas = Canvas ( master, width = 500, height = 600 )
 infoCanvas.place ( anchor = NW )
 
-infoCanvas.create_rectangle(3,40,220,125)
-infoCanvas.create_rectangle(3,135,220,212)
-infoCanvas.create_rectangle(3,212,220,289)
-infoCanvas.create_rectangle(3,289,220,366)
-infoCanvas.create_rectangle(3,366,220,443)
+infoCanvas.create_rectangle(3,40,220,125)  # Contorno das informacoes da agente
+infoCanvas.create_rectangle(3,135,220,212) # Contorno das informacoes do monstro 1
+infoCanvas.create_rectangle(3,212,220,289) # Contorno das informacoes do monstro 2
+infoCanvas.create_rectangle(3,289,220,366) # Contorno das informacoes do monstro 3
+infoCanvas.create_rectangle(3,366,220,443) # Contorno das informacoes do monstro 4
 
 infoCanvas.create_image(45, 82, image = imageWWFace)
 
-#cria secao para pontuacoes, energia e flechas
+# Cria secao para pontuacoes, energia e flechas da agente
 labelPoints = Label ( master, text = "Pontos : " )
 labelNumPoints = Label ( master, text = "0" )
 labelPoints.grid ( row = 0 + baseRow , column = 1, sticky = "W" , pady = (40,0), padx=(100,0))
@@ -50,7 +56,7 @@ labelNumAmmo = Label ( master, text = "5" )
 labelAmmo.grid ( row = 2  + baseRow, column = 1, sticky = "W" , padx=(100,0))
 labelNumAmmo.grid ( row = 2 + baseRow, column = 2, sticky = "W" , padx=(0,0))
 
-#Informacao do Monstro 1 (dano 20)
+# Informacao do Monstro 1 (dano 20)
 infoCanvas.create_image ( 45, 170, image = imageMonster1Face )
 labelM1 = Label ( master, text = "Monstro 1 : ", )
 labelM1Energy = Label ( master, text = "Energia : " )
@@ -63,7 +69,7 @@ labelM1NumEnergy.grid ( row = 9 + baseRow, column = 2, sticky = "W", padx=(0,0) 
 labelM1Damage.grid ( row = 10 + baseRow, column = 1, sticky = "W", padx=(100,0) )
 labelM1NumDamage.grid ( row = 10 + baseRow, column = 2, sticky = "W", padx=(0,0) )
 
-#Informacao do Monstro 2 (dano 20)
+# Informacao do Monstro 2 (dano 20)
 infoCanvas.create_image ( 45, 255, image = imageMonster2Face )
 labelM2 = Label ( master, text = "Monstro 2 : ")
 labelM2Energy = Label ( master, text = "Energia : " )
@@ -76,7 +82,7 @@ labelM2NumEnergy.grid ( row = 12 + baseRow, column = 2, sticky = "W", padx=(0,0)
 labelM2Damage.grid ( row = 13 + baseRow, column = 1, sticky = "W", padx=(100,0) )
 labelM2NumDamage.grid ( row = 13 + baseRow, column = 2, sticky = "W", padx=(0,0) )
 
-#Informacao do Monstro 3 (dano 50)
+# Informacao do Monstro 3 (dano 50)
 infoCanvas.create_image ( 45, 330, image = imageMonster3Face )
 labelM3 = Label ( master, text = "Monstro 3 : " )
 labelM3Energy = Label ( master, text = "Energia : " )
@@ -89,7 +95,7 @@ labelM3NumEnergy.grid ( row = 15 + baseRow, column = 2, sticky = "W", padx=(0,0)
 labelM3Damage.grid ( row = 16 + baseRow, column = 1, sticky = "W", padx=(100,0) )
 labelM3NumDamage.grid ( row = 16 + baseRow, column = 2, sticky = "W", padx=(0,0) )
 
-#Informacao do Monstro 4 (dano 50)
+# Informacao do Monstro 4 (dano 50)
 infoCanvas.create_image ( 45, 400, image = imageMonster4Face )
 labelM4 = Label ( master, text = "Monstro 4 : ")
 labelM4Energy = Label ( master, text = "Energia : " )
@@ -106,7 +112,11 @@ boardCanvas = Canvas ( master, width = 500, height = 550) #tamanho do tabuleiro
 rectSize = 40 #cada casa do tabuleiro tem 40 x 40 px
 baseGoldList = []
 
-def insertMonsters ( monsterList ) : #insere os monstros em suas respectivas posicoes no tabuleiro
+# Descricao: insere as imagens dos monstros no boardCanvas a partir de uma lista com tuplas
+# tupla x,y,id definem coordenada cartesianas x,y e identificador do monstro
+# Param: monsterList - lista com tuplas (x,y,id)
+# Return: none
+def insertMonsters ( monsterList ) :
 
     global imagespriteMonster01, imagespriteMonster02, imagespriteMonster03, imagespriteMonster04
 
@@ -121,6 +131,10 @@ def insertMonsters ( monsterList ) : #insere os monstros em suas respectivas pos
         elif id == 4:
             boardCanvas.imagespriteMonster04 = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageMonster4 )
 
+# Descricao: insere as imagens dos buracos no boardCanvas a partir de uma lista com tuplas
+# tupla x,y definem coordenada cartesianas x,y
+# Param: holeList - lista com tuplas (x,y)
+# Return: none
 def insertHoles ( holeList ) : #funcao que insere buracos no tabuleiro baseado nas casas sorteadas
 
     for hole in holeList:
@@ -128,6 +142,11 @@ def insertHoles ( holeList ) : #funcao que insere buracos no tabuleiro baseado n
         # posicoes no tabuleiro sao de 0 a 11, e as recebidas de 1 a 12
         imagesprite = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageHole )
 
+
+# Descricao: insere as imagens dos ouros no boardCanvas a partir de uma lista com tuplas
+# tupla x,y definem coordenada cartesianas x,y
+# Param: goldList - lista com tuplas (x,y)
+# Return: none
 def insertGold ( goldList ) : #insere ouros no tabuleiro
 
     for gold in goldList :
@@ -135,6 +154,10 @@ def insertGold ( goldList ) : #insere ouros no tabuleiro
         baseGoldList.append((x,y))
         imagesprite = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageGold )
 
+
+# Descricao: insere as linhas no boardCanvas para definir limites dos quadrados
+# Param: none
+# Return: none
 def drawLines () : # desenha as linhas do tabuleiro
 
     i = 0
@@ -146,6 +169,9 @@ def drawLines () : # desenha as linhas do tabuleiro
             j = j + 1
         i = i + 1
 
+# Descricao: desenha quadrados referentes ao chao nas celulas de 1 a 12
+# Param: none
+# Return: none
 def drawFloor () : #desenha o chao do labirinto/tabuleiro
 
     i = 0
@@ -157,6 +183,10 @@ def drawFloor () : #desenha o chao do labirinto/tabuleiro
             j = j + 1
         i = i + 1
 
+# Descricao: muda a direcao e a posicao da agente e redesenhas no tabuleiro no local e com posicao certa
+# Param: direction: direcao North, South, East, West para onde o agente esta olhando
+# Param: position: tupla (x,y) com coordenadas cartesianas referentes a posicao da agente
+# Return: none
 def changeDirection ( direction, position ) : #muda direcao da agente em sua respectiva posicao no tabuleiro
 
     global imageWW
@@ -176,6 +206,9 @@ def changeDirection ( direction, position ) : #muda direcao da agente em sua res
     # posiciona imagem com a direcao correta na casa onde a agente se encontra.
     agentSprite = boardCanvas.create_image(30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageWW)
 
+# Descricao: Cria uma mensgame pop up com mensagem costumizavel
+# Param: msg: mensagem que sera exibida na pop up
+# Return: none
 def popUpMsg ( msg ) : #abre um pop up com Game Over
 
     popup = Tk()
@@ -192,13 +225,21 @@ def popUpMsg ( msg ) : #abre um pop up com Game Over
 
     popup.mainloop()
 
+# Descricao: retira ouro de uma posicao X Y
+# Param: x: coordenada cartesiana X
+# Param: y: coordenada cartesiana Y
+# Return: none
 def retrieveGold ( x, y ) : #tira ouro da posicao onde o agente recolheu
 
     imagesprite = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageFloor )
     drawLines()
     master.update()
 
-
+# Descricao: Acao ao apertar botao start
+# Pergunta ao modulo wumpus.py a melhor acao a se tomar
+# Recebe informcoes do prolog para chamar as funcoes auxiliares de atualizacao da interface
+# Param: none
+# Return: none
 def movement () : #executa os movimentos da agente
     #acessar o arquivo wumpus.py que acessa o prolog para determinar movimentos
     gameData = wumpus.takeAction()
@@ -253,45 +294,9 @@ def movement () : #executa os movimentos da agente
     boardCanvas.update()
     infoCanvas.update()
 
-
-    """
-    true_condition = TRUE
-    do
-        #Aqui deve Ficar o loop de avisa o q ta sentindo e perguta o q fazer, certo?
-    while(true_condition)
-
-    """
-    # time.sleep(0.5)
-    # changeDirection("East",(2,1))
-    # master.update()
-    # time.sleep(0.5)
-    # changeDirection("East", (3, 1))
-    # master.update()
-    # time.sleep(0.5)
-    # changeDirection("North", (3, 1))
-    # master.update()
-    # time.sleep(0.5)
-    # changeDirection("North", (3, 2))
-    # master.update()
-    # time.sleep(0.5)
-    # changeDirection("East", (3, 2))
-    # master.update()
-    # time.sleep(0.5)
-    # changeDirection("East", (4, 2))
-    # master.update()
-    # time.sleep(0.5)
-    # changeDirection("North", (5, 2))
-    # master.update()
-    # time.sleep(0.5)
-    # changeDirection("South", (5, 2))
-    # master.update()
-    # updateAgentPoints(10)
-    # updateAgentEnergy(10)
-    # updateAmmo()
-    # updateMonsterEnergy(100,01)
-    # retrieveGold(2,7)
-    # popUpMsg("Game Over!")
-
+# Descricao: Atualiza o campo pontos do agente na label
+# Param: value: novo valor de pontos a ser estabelecido
+# Return: none
 def updateAgentPoints ( value ) : #muda pontuacao do agente
 
     global labelNumPoints
