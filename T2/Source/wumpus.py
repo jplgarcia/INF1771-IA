@@ -5,7 +5,7 @@ import random
 import os
 
 # Descricao: busca aleatoriamente uma posicao vaga no mundo
-# Uma posicao vaga nao esta ocupada po nada
+# Uma posicao vaga nao esta ocupada por nada
 # Param: world - Matriz contendo as informacoes PC = poco, M1,M2,M3,M4=monstros e GD = ouro
 # Return: Tupla com posicao vaga (x, y) como coordenadas cartesianas
 def getFreeSpace(world):
