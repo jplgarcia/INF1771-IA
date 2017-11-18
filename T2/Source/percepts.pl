@@ -41,7 +41,7 @@ sixth_sense():-
     lose_energy(50)
   )).
 
-%This predicate will infers that agent has lost energy 'cause it's on the same position of a monster or a hole.
+%This predicate infers that agent has lost energy 'cause it's on the same position of a monster or a hole.
 %In addition, this predicate retracts the energy of the agent and will set a new energy for the agent through the command asserta.
 sixth_sense(asserta(energy(agent, 0 ))):-
   at(agent, Position ),
