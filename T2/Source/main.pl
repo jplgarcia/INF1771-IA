@@ -12,20 +12,20 @@
                 visited/1,
                 is_adjacent/2,
                 get_adjacent/3,
-				get_all_adjacent/3,
+                get_all_adjacent/3,
                 get_adjacent_list/3,
                 correct_as_safe/0,
                 correct_as_unsafe/0,
                 check_sensed/2,
-				should_visit/1,
-				visited/1,
+                should_visit/1,
+                visited/1,
                 pos/2,
                 score/2,
                 ammo/1,
-				get_all_should_visit/3,
-        	senses/7,
-        	agentfacing/2,
-		step/0
+                get_all_should_visit/3,
+                senses/7,
+                agentfacing/2,
+                step/0
                     ]).
 %Obs: Pra que server esse comando module?
 %R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%
@@ -37,15 +37,15 @@
             safe/1,
             agentfacing/2,
             checked_sensed/2,
-			get_all_adjacent/3,
-			get_all_should_visit/3,
+            get_all_adjacent/3,
+            get_all_should_visit/3,
             score/2,
-			should_visit/1,
-			visited/1,
+            should_visit/1,
+            visited/1,
             ammo/1,
-      		senses/7,
-      		pos/2,
-			step/0
+            senses/7,
+            pos/2,
+            step/0
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -66,8 +66,13 @@ adjust_score( ADD ) :-
   % Gets all adjacent positions
   get_all_adjacent(Direction, Position, List ) :-
 	  findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), Adj_p ), List), !.
-	  
+<<<<<<< HEAD
+
   % Gets all should visit adjacent positions
+=======
+	  
+  % Gets all adjacent positions marked as should_visit 
+>>>>>>> 484d20ca81135969b8288dd4c077a9f67b1d6fa1
   get_all_should_visit(Direction, Position, List ) :-
 	  findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), should_visit( Adj_p )), List), !.
 
@@ -125,7 +130,7 @@ adjust_score( ADD ) :-
 		adjust_score(-1000),!
 	  ).
 
-  %These cases right below it will explain how do we check if there's any potential danger at adjacent houses.%
+  %These cases right below will explain how we check if there's any potential danger at adjacent houses.%
   %If a potential danger appear twice times on the same list we assume that's a real danger%
   %Nao aguento mais comentar as coisas, meu deus...%
   %Case: BREEZE%
@@ -153,7 +158,7 @@ adjust_score( ADD ) :-
       danger_adjacent_list(potential_monster, monster, [Head|Tail])
     ).
 
-    %This predicate will verifiy all the surrounding position given the current position of the agent.
+    %This predicate will verifiy all the surrounding positions given the current position of the agent.
     check_surrounding_current_position:-
       at(agent, Position),
       ( get_adjacent_list(_,Adj_p,Position),
