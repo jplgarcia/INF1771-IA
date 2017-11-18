@@ -66,13 +66,10 @@ adjust_score( ADD ) :-
   % Gets all adjacent positions
   get_all_adjacent(Direction, Position, List ) :-
 	  findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), Adj_p ), List), !.
-<<<<<<< HEAD
 
   % Gets all should visit adjacent positions
-=======
 	  
   % Gets all adjacent positions marked as should_visit 
->>>>>>> 484d20ca81135969b8288dd4c077a9f67b1d6fa1
   get_all_should_visit(Direction, Position, List ) :-
 	  findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), should_visit( Adj_p )), List), !.
 
@@ -250,18 +247,18 @@ kill_monster( Position ) :-
 	get_all_adjacent( _ ,Position,List ),
 	assert_stench(List ).
 
-shoot() :-
+shoot :-
 	at(agent, pos( X,Y )),
 	agentfacing( XD,YD ),
 	NX is X+XD, NY is Y+YD,
 	at(monster( NUM ),pos( NX,NY )),
 	random_between( 20,50,DAM ),
-	subtract_ammo(),
+	subtract_ammo,
 	adjust_score(-10),
 	deal_damage(monster( NUM ),DAM ),
 	check_monster_dead(monster(NUM)).
 
-subtract_ammo() :-
+subtract_ammo :-
 	ammo( QTD ),
 	NEW_QTD is QTD -1,
 	retract(ammo(_)),
@@ -271,7 +268,7 @@ subtract_ammo() :-
 	AGENT MOVEMENT
 */
 
-step() :-
+step :-
 	at(agent,pos( Xaxis,Yaxis )),
 	agentfacing( Xunit,Yunit ),
 	X is Xaxis + Xunit,
