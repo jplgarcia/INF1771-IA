@@ -67,7 +67,7 @@ adjust_score( ADD ) :-
   get_all_adjacent(Direction, Position, List ) :-
 	  findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), Adj_p ), List), !.
 	  
-  % Gets all should visit adjacent positions
+  % Gets all adjacent positions marked as should_visit 
   get_all_should_visit(Direction, Position, List ) :-
 	  findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), should_visit( Adj_p )), List), !.
 
