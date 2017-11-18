@@ -216,7 +216,7 @@ check_monster_dead( MONSTER ) :-
 %%Check if stench must persist because of any adjacent monster
 assert_stench([Head|Tail ]) :-
 	\+ lenght([Head|Tail ],0),
-	get_all_adjacent(_ , Position , List ),
+	get_all_adjacent( _ , Head , List ),
 	(
 		(
 			check_for_monster( List ),
@@ -263,7 +263,7 @@ step() :-
 	(
 		(%is new position is outside of the dungeon, "cancel" the movement
 			( X < 0;Y < 0;X > 12;Y > 12 ),
-			senses( MYX, MYY, Stench, Breeze, Shine, Impact, Scream ),
+			senses( MYX, MYY, Stench, Breeze, Shine, _, Scream ),
 			retract(senses( _, _, _, _, _, _, _ )),
 			asserta(senses( MYX, MYY, Stench, Breeze, Shine, impact, Scream )),
 			format("wall in position(~a,~a), couldn't step",[ X,Y ]),!

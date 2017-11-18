@@ -47,15 +47,15 @@ take_action() :-
 	retract(senses( _, _, _, _, _, _, _ )),
 	asserta(senses( X, Y, Stench, Breeze, Shine, no, no)) .
 
-take_action( X, Y,no, no, no, no, no ) :-
+take_action( _, _,no, no, no, no, no ) :-
 	step().
 
 %%Decides to pick up gold if seen
-take_action( X, Y, Stench, Breeze, shine, Impact, Scream ) :-
+take_action( X, Y, _, _, shine, _, _ ) :-
 	pick_gold(pos( X,Y ) ).
 
 %%Marks a position as a wall
-take_action( X, Y, Stench, Breeze, Shine, impact, Scream ) :-
+take_action( X, Y, _, _, _, impact, _ ) :-
 	agentfacing( DX,DY ),
 	NX is X+DX,NY is Y+DY,
 	(
@@ -67,45 +67,29 @@ take_action( X, Y, Stench, Breeze, Shine, impact, Scream ) :-
 		)
 	) .
 %%Treats monster death
-take_action( X, Y, Stench, Breeze, Shine, Impact, scream ) :-
+take_action( X, Y, _, _, _, _, scream ) :-
 	agentfacing( DX,DY ),
 	NX is X+DX,NY is Y+DY,
 	kill_monster( pos( NX,NY )),!.
 
-turn_to( DXIR,DYIR ) :-
-	(
-		agentfacing(DXIR,DYIR ),!
-	);
-	(
-		agentfacing(-DYIR,DXIR ),
-		turn(left),!
-	);
-	(
-		agentfacing(DYIR,-DXIR ),
-		turn(right),!
-	);
-	(
-		agentfacing(-DXIR,-DYIR ),
-		turn(right),
-		turn(right),!
-	).
+
 %%Decides wheter to step or shoot if smelled stench; prefers to walk to a safe place over steping/shooting an unsafe place
-take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
-	get_safe_adjacent_list(_ , Position, [Safe_Head|Safe_Tail ] ),
-	get_safe_adjacent_list(_ , Position, [Unsafe_Head|Unsafe_Tail ] ),
+take_action( X, Y, stench, _, _, _, _ ) :-
+	get_safe_adjacent_list(_ , pos( X,Y ), [Safe_Head|Safe_Tail ] ),
+	get_safe_adjacent_list(_ , pos( X,Y ), [Unsafe_Head|_ ] ),
 	(
 		%%CASE no safe space
 		length([Safe_Head|Safe_Tail ], 0),
 		(
 			(	%%CASE PotentialDanger then step
-				at(PotentialDanger,Unsafe_Head ),
+				at( potential_monster,Unsafe_Head ),
 				pos( XU,YU ) = Unsafe_Head,
 				DXIR = XU-X, DYIR = YU-Y,
 				turn_to( DXIR,DYIR ),
 				step(),!
 			);
 			(	%%CASE RealDanger
-				at(RealDanger,Unsafe_Head ),
+				at(realMonster,Unsafe_Head ),
 				(
 					(
 						%%If has ammo then shoot
@@ -132,14 +116,14 @@ take_action( X, Y, stench, Breeze, Shine, Impact, Scream ) :-
 	),! .
 
 %%Decides wheter to step  if felt breeze; prefers to walk to a safe place over steping to an unsafe place
-take_action( X, Y, Stench, breeze, Shine, Impact, Scream ) :-
-	get_safe_adjacent_list(_ , Position, [Safe_Head|Safe_Tail ] ),
-	get_safe_adjacent_list(_ , Position, [Unsafe_Head|Unsafe_Tail ] ),
+take_action( X, Y, _, breeze, _, _, _ ) :-
+	get_safe_adjacent_list(_ , pos( X,Y ), [ Safe_Head|Safe_Tail ] ),
+	get_safe_adjacent_list(_ , pos( X,Y ), [Unsafe_Head|_ ] ),
 	(
 		%%CASE no safe space
 		length([Safe_Head|Safe_Tail ], 0),
 		(
-			at(PotentialDanger,Unsafe_Head ),
+			at(potential_hole,Unsafe_Head ),
 			pos( XU,YU ) = Unsafe_Head,
 			DXIR = XU-X, DYIR = YU-Y,
 			turn_to( DXIR,DYIR ),
@@ -152,3 +136,20 @@ take_action( X, Y, Stench, breeze, Shine, Impact, Scream ) :-
 		turn_to( DXIR,DYIR ),
 		step(),!
 	),! .
+turn_to( DXIR,DYIR ) :-
+	(
+		agentfacing(DXIR,DYIR ),!
+	);
+	(
+		agentfacing(-DYIR,DXIR ),
+		turn(left),!
+	);
+	(
+		agentfacing(DYIR,-DXIR ),
+		turn(right),!
+	);
+	(
+		agentfacing(-DXIR,-DYIR ),
+		turn(right),
+		turn(right),!
+	).
