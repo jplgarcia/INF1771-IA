@@ -43,6 +43,24 @@ take_action() :-
 			Stench = stench
 		)
 	),
+	(
+		(
+			agentfacing( DXIR,DYIR ),
+			at(wall, pos( X+DXIR,Y+DYIR )),
+			(
+				(	
+					%%Tem parede à esquerda, vira pra direita
+					at(wall, pos( X-DYIR,Y+DXIR )),
+					turn(r)
+				);
+				(
+					%%Tem parede à direita, vira pra esquerda
+					at(wall, pos( X+DYIR,Y-DXIR )),
+					turn(l)
+				)
+			)
+		);true
+	),
 	take_action( X, Y, Stench, Breeze, Shine, Impact, Scream ),
 	retract(senses( _, _, _, _, _, _, _ )),
 	asserta(senses( X, Y, Stench, Breeze, Shine, no, no)) .
@@ -117,13 +135,14 @@ take_action( X, Y, stench, _, _, _, _ ) :-
 							\+at(realMonster,Unsafe_Head ),
 							run_from_monster(X,Y,Unsafe_Head ),!
 						)
-						%%#EDITING
 					)
 				)
 			)
 		),!
 	);
 	(	%%CASE Safe then Step
+						%%#EDITING
+		
 		pos( XU,YU ) = Safe_Head,
 		DXIR = XU-X, DYIR = YU-Y,
 		turn_to( DXIR,DYIR ),

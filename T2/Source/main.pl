@@ -12,13 +12,17 @@
                 visited/1,
                 is_adjacent/2,
                 get_adjacent/3,
+				get_all_adjacent/3,
                 get_adjacent_list/3,
                 correct_as_safe/0,
                 correct_as_unsafe/0,
                 check_sensed/2,
+				should_visit/1,
+				visited/1,
                 pos/2,
                 score/2,
                 ammo/1,
+				get_all_should_visit/3,
         	senses/7,
         	agentfacing/2,
 		step/0
@@ -27,17 +31,21 @@
 %R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%
 
 :- dynamic([
-              at/2,
-              visited/1,
-              energy/2,
-              safe/1,
-              agentfacing/2,
-              checked_sensed/2,
-              score/2,
-              ammo/1,
-      			  senses/7,
-      			  pos/2,
-		step/0
+            at/2,
+            visited/1,
+            energy/2,
+            safe/1,
+            agentfacing/2,
+            checked_sensed/2,
+			get_all_adjacent/3,
+			get_all_should_visit/3,
+            score/2,
+			should_visit/1,
+			visited/1,
+            ammo/1,
+      		senses/7,
+      		pos/2,
+			step/0
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -58,6 +66,10 @@ adjust_score( ADD ) :-
   % Gets all adjacent positions
   get_all_adjacent(Direction, Position, List ) :-
 	  findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), Adj_p ), List), !.
+	  
+  % Gets all should visit adjacent positions
+  get_all_should_visit(Direction, Position, List ) :-
+	  findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), should_visit( Adj_p )), List), !.
 
   %Verify if the two positions are adjacent.
   is_adjacent(Position1, Position2 ):-
