@@ -125,7 +125,7 @@ adjust_score( ADD ) :-
 		adjust_score(-1000),!
 	  ).
 
-  %These cases right below it will explain how do we check if there's any potential danger at adjacent houses.%
+  %These cases right below will explain how we check if there's any potential danger at adjacent houses.%
   %If a potential danger appear twice times on the same list we assume that's a real danger%
   %Nao aguento mais comentar as coisas, meu deus...%
   %Case: BREEZE%
@@ -153,7 +153,7 @@ adjust_score( ADD ) :-
       danger_adjacent_list(potential_monster, monster, [Head|Tail])
     ).
 
-    %This predicate will verifiy all the surrounding position given the current position of the agent.
+    %This predicate will verifiy all the surrounding positions given the current position of the agent.
     check_surrounding_current_position:-
       at(agent, Position),
       ( get_adjacent_list(_,Adj_p,Position),
