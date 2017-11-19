@@ -48,24 +48,31 @@ take_action :-
 			agentfacing( DXIR,DYIR ),
 			NX is X+DXIR, NY is Y+DYIR,
 			at(wall, pos( NX,NY )),
-			print("Parede a frente"),/**
+			print("Parede a frente"),%%/**
 			(
 				(	
 					%%Tem parede à esquerda, vira pra direita
-					NX is X-DYIR, NY is Y+DXIR,
-					at(wall, pos( NX, NY )),
+					NX1 is X-DYIR, NY1 is Y+DXIR,
+					at(wall, pos( NX1, NY1 )),
 					print("Parede a esquerda"),
 					turn(right)
 				);
 				(
 					%%Tem parede à direita, vira pra esquerda
-					NX is X+DYIR, NY is Y-DXIR,
-					at(wall, pos( NX,NY )),
+					NX2 is X+DYIR, NY2 is Y-DXIR,
+					at(wall, pos( NX2,NY2 )),
 					print("Parede a direita"),
+					turn(left)
+				);
+				(
+					NX1 is X-DYIR, NY1 is Y+DXIR,
+					\+ at(wall, pos( NX1, NY1 )),
+					NX2 is X+DYIR, NY2 is Y-DXIR,
+					\+ at(wall, pos( NX2,NY2 )),
 					turn(left)
 				)
 			)%%*/
-			turn(left)
+			%%turn(left)
 		);true
 	),
 	take_action( X, Y, Stench, Breeze, Shine, Impact, Scream ),
@@ -79,12 +86,12 @@ take_action( _, _,no, no, no, no, no ) :-
 take_action( X, Y, _, _, shine, _, _ ) :-
 	pick_gold(pos( X,Y )).
 
-%%Marks a position as a wall
+/**%%Marks a position as a wall
 take_action( X, Y, _, _, _, impact, _ ) :-
 	agentfacing( DX,DY ),
 	NX is X+DX,NY is Y+DY,
 	asserta(at(wall,pos( NX,NY ))) .
-
+%*/
 %%Treats monster death
 take_action( X, Y, _, _, _, _, scream ) :-
 	agentfacing( DX,DY ),

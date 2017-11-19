@@ -278,14 +278,15 @@ step :-
 	adjust_score(-1),
 	(
 		(%is new position is outside of the dungeon, "cancel" the movement
-			( X < 0;Y < 0;X > 12;Y > 12 ),
-			senses( MYX, MYY, Stench, Breeze, Shine, _, Scream ),
-			retract(senses( _, _, _, _, _, _, _ )),
-			asserta(senses( MYX, MYY, Stench, Breeze, Shine, impact, Scream )),
+			( X < 1;Y < 1;X > 12;Y > 12 ),
+			%%senses( MYX, MYY, Stench, Breeze, Shine, _, Scream ),
+			%%retract(senses( _, _, _, _, _, _, _ )),
+			%%asserta(senses( MYX, MYY, Stench, Breeze, Shine, impact, Scream )),
+			asserta(at(wall,pos( X,Y ))),
 			format("wall in position(~a,~a), couldn't step",[ X,Y ])
 		);
 		(
-			\+ ( X < 0;Y < 0;X > 12;Y > 12 ),
+			\+ ( X < 1;Y < 1;X > 12;Y > 12 ),
 			move( X,Y ),
 			format("position(~a,~a)",[ X,Y ])
 		)
