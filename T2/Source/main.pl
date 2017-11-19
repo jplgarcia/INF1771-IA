@@ -25,7 +25,8 @@
                 get_all_should_visit/3,
                 senses/7,
                 agentfacing/2,
-                step/0
+                step/0,
+				turn/1
                     ]).
 %Obs: Pra que server esse comando module?
 %R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%
@@ -45,7 +46,8 @@
             ammo/1,
             senses/7,
             pos/2,
-            step/0
+            step/0,
+			turn/1
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -280,13 +282,14 @@ step :-
 			senses( MYX, MYY, Stench, Breeze, Shine, _, Scream ),
 			retract(senses( _, _, _, _, _, _, _ )),
 			asserta(senses( MYX, MYY, Stench, Breeze, Shine, impact, Scream )),
-			format("wall in position(~a,~a), couldn't step",[ X,Y ]),!
+			format("wall in position(~a,~a), couldn't step",[ X,Y ])
 		);
 		(
+			\+ ( X < 0;Y < 0;X > 12;Y > 12 ),
 			move( X,Y ),
-			format("position(~a,~a)",[ X,Y ]),!
+			format("position(~a,~a)",[ X,Y ])
 		)
-	).
+	) .
 
 move( X,Y ) :-
 	retract(at(agent,pos( _ , _ ))),
@@ -321,7 +324,8 @@ turn( X ) :-
 			X == e;
 			X == esquerda;
 			X == cc;
-			X == counter_clockwise),	%% cc = "counter clockwise"
+			X == counter_clockwise
+		),	%% cc = "counter clockwise"
 		turn(left),!				%% "!" é para não continuar a avaliação (como um return)
 	);
 	(
@@ -330,7 +334,8 @@ turn( X ) :-
 			X == d;
 			X == direita;
 			X == c;					%% c = "clockwise"
-			X == clockwise),
+			X == clockwise
+		),
 		turn(right),!
 	).
 %------------------------------------------------
@@ -386,6 +391,30 @@ turn( X ) :-
 % DEFAULT CONFIG FOR POSITIONS
 %
 %------------------------------------------------
+    pos(1, 0).
+    pos(2, 0).
+    pos(3, 0).
+    pos(4, 0).
+    pos(5, 0).
+    pos(6, 0).
+    pos(7, 0).
+    pos(8, 0).
+    pos(9, 0).
+    pos(10, 0).
+    pos(11, 0).
+    pos(12, 0).
+    pos(0, 1).
+    pos(0, 2).
+    pos(0, 3).
+    pos(0, 4).
+    pos(0, 5).
+    pos(0, 6).
+    pos(0, 7).
+    pos(0, 8).
+    pos(0, 9).
+    pos(0, 10).
+    pos(0, 11).
+    pos(0, 12).
     pos(1, 1).
     pos(2, 1).
     pos(3, 1).
@@ -530,3 +559,27 @@ turn( X ) :-
     pos(10, 12).
     pos(11, 12).
     pos(12, 12).
+    pos(1, 13).
+    pos(2, 13).
+    pos(3, 13).
+    pos(4, 13).
+    pos(5, 13).
+    pos(6, 13).
+    pos(7, 13).
+    pos(8, 13).
+    pos(9, 13).
+    pos(10, 13).
+    pos(11, 13).
+    pos(12, 13).
+    pos(13, 1).
+    pos(13, 2).
+    pos(13, 3).
+    pos(13, 4).
+    pos(13, 5).
+    pos(13, 6).
+    pos(13, 7).
+    pos(13, 8).
+    pos(13, 9).
+    pos(13, 10).
+    pos(13, 11).
+    pos(13, 12).

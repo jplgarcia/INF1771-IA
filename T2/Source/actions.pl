@@ -6,17 +6,17 @@
 % Definitions                                    %
 %------------------------------------------------%
 :- module(acts,  [
-                take_action/7,
-				take_action/0
-                    ]).
+	take_action/7,
+	take_action/0
+]).
 
 :- use_module(main).
 :- use_module(percepts).
 
 :- dynamic([
-              take_action/7,
-				take_action/0
-                  ]).
+	take_action/7,
+	take_action/0
+]).
 
 pick_gold( POS ) :-
 	at(gold, POS ),
@@ -46,19 +46,26 @@ take_action :-
 	(
 		(
 			agentfacing( DXIR,DYIR ),
-			at(wall, pos( X+DXIR,Y+DYIR )),
+			NX is X+DXIR, NY is Y+DYIR,
+			at(wall, pos( NX,NY )),
+			print("Parede a frente"),/**
 			(
 				(	
 					%%Tem parede à esquerda, vira pra direita
-					at(wall, pos( X-DYIR,Y+DXIR )),
-					turn(r)
+					NX is X-DYIR, NY is Y+DXIR,
+					at(wall, pos( NX, NY )),
+					print("Parede a esquerda"),
+					turn(right)
 				);
 				(
 					%%Tem parede à direita, vira pra esquerda
-					at(wall, pos( X+DYIR,Y-DXIR )),
-					turn(l)
+					NX is X+DYIR, NY is Y-DXIR,
+					at(wall, pos( NX,NY )),
+					print("Parede a direita"),
+					turn(left)
 				)
-			)
+			)%%*/
+			turn(left)
 		);true
 	),
 	take_action( X, Y, Stench, Breeze, Shine, Impact, Scream ),
@@ -70,20 +77,14 @@ take_action( _, _,no, no, no, no, no ) :-
 
 %%Decides to pick up gold if seen
 take_action( X, Y, _, _, shine, _, _ ) :-
-	pick_gold(pos( X,Y ) ).
+	pick_gold(pos( X,Y )).
 
 %%Marks a position as a wall
 take_action( X, Y, _, _, _, impact, _ ) :-
 	agentfacing( DX,DY ),
 	NX is X+DX,NY is Y+DY,
-	(
-		(
-			at(wall,pos( NX,NY )),!
-		);
-		(
-			assertz(at(wall,pos( NX,NY ))),!
-		)
-	) .
+	asserta(at(wall,pos( NX,NY ))) .
+
 %%Treats monster death
 take_action( X, Y, _, _, _, _, scream ) :-
 	agentfacing( DX,DY ),
