@@ -161,20 +161,26 @@ adjust_score( ADD ) :-
     ).
 
     %This predicate will verifiy all the surrounding positions given the current position of the agent.
-    check_surrounding_current_position:-
-      at(agent, Position),
-      ( get_adjacent_list(_,Adj_p,Position),
-        ((
-          (not(should_visit(Adj_p)),
-          not(visited(Adj_p))),
-          asserta(should_visit(Adj_p)));true)
-      ),
-        (update_our_dangerous_inferences(Position, hole, realHole, potential_hole);true),
-        (update_our_dangerous_inferences(Position, monster, realMonster, potential_monster);true).
+check_surrounding_current_position:-
+	at(agent, Position),
+	( 
+		get_adjacent_list(_,Adj_p,Position ),
+		(
+			(
+				(
+					not(should_visit(Adj_p)),
+					not(visited(Adj_p))
+				),
+				asserta(should_visit(Adj_p))
+			);true
+		)
+	),
+	(update_our_dangerous_inferences(Position, hole, realHole, potential_hole);true ),
+	(update_our_dangerous_inferences(Position, monster, realMonster, potential_monster);true ).
 
-    check_sensed( X,Y ):-
-      sensed(pos(X,Y), current),
-      sensed(pos(X,Y), around).
+check_sensed( X,Y ):-
+	sensed(pos(X,Y), current),
+	sensed(pos(X,Y), around).
 
 
 	%Subtracts STRENGHT from the energy of the WHO
@@ -195,6 +201,13 @@ adjust_score( ADD ) :-
 			strength(monster(X),DAM ),
 			adjust_score( -DAM ),
 			deal_damage(agent, DAM )
+		);
+		(
+			asserta(visited( POS )),
+			(
+				retract(should_visit( POS ));
+				true
+			)
 		);
 		true .
 
