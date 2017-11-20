@@ -288,7 +288,10 @@ step :-
 			%%retract(senses( _, _, _, _, _, _, _ )),
 			%%asserta(senses( MYX, MYY, Stench, Breeze, Shine, impact, Scream )),
 			asserta(at(wall,pos( X,Y ))),
-			retract(safe(pos( X,Y ))),
+			(
+				retract(safe(pos( X,Y )));
+				true
+			),
 			format("wall in position(~a,~a), couldn't step",[ X,Y ])
 		);
 		(

@@ -119,125 +119,136 @@ take_action( X, Y, _, _, _, _, scream ) :-
 
 %%Decides wheter to step or shoot if smelled stench; prefers to walk to a safe place over steping/shooting an unsafe place
 take_action( X, Y, stench, _, _, _, _ ) :-
-	get_safe_adjacent_list(_ , pos( X,Y ), [Safe_Head|Safe_Tail ] ),
+	get_safe_adjacent_list(_ , pos( X,Y ), Safe_List ),
 	get_adjacent_list(_ , pos( X,Y ), [Unsafe_Head|Unsafe_Tail ] ),
 	(
-		%%CASE no safe space
-		length([Safe_Head|Safe_Tail ], 0),
 		(
-			(	%%CASE PotentialDanger then step
-				at( potential_monster,Unsafe_Head ),
-				pos( XU,YU ) is Unsafe_Head,
-				DXIR is XU-X, DYIR is YU-Y,
-				turn_to( DXIR,DYIR ),
-				step,!
-			);
-			(	%%CASE RealDanger
-				at(realMonster,Unsafe_Head ),
-				(
+			%%CASE no safe space
+			length(Safe_List, 0),
+			(
+				(	%%CASE PotentialDanger then step
+					at( potential_monster,Unsafe_Head ),
+					pos( XU,YU ) = Unsafe_Head,
+					DXIR is XU-X, DYIR is YU-Y,
+					turn_to( DXIR,DYIR ),
+					step,!
+				);
+				(	%%CASE RealDanger
+					at(realMonster,Unsafe_Head ),
 					(
-						%%If has ammo then shoot
-						ammo( QTD ),
-						\+ QTD < 1,
-						pos( MXU,MYU ) is Unsafe_Head,
-						MDXIR is MXU-X, MDYIR is MYU-Y,
-						turn_to( MDXIR,MDYIR ),
-						shoot,!
-					);
-					(	%%Has no ammo
-						%% If there is no monster, go there
 						(
-							[Unsafe_Head|Unsafe_Tail ] = Unsafe_Tail,
-							\+at(realMonster,Unsafe_Head ),
-							run_from_monster(X,Y,Unsafe_Head ),!
+							%%If has ammo then shoot
+							ammo( QTD ),
+							\+ QTD < 1,
+							pos( MXU,MYU ) = Unsafe_Head,
+							MDXIR is MXU-X, MDYIR is MYU-Y,
+							turn_to( MDXIR,MDYIR ),
+							shoot,!
 						);
-						(
-							[Unsafe_Head|Unsafe_Tail ] = Unsafe_Tail,
-							\+at(realMonster,Unsafe_Head ),
-							run_from_monster(X,Y,Unsafe_Head ),!
-						);
-						(
-							[Unsafe_Head|Unsafe_Tail ] = Unsafe_Tail,
-							\+at(realMonster,Unsafe_Head ),
-							run_from_monster(X,Y,Unsafe_Head ),!
+						(	%%Has no ammo
+							%% If there is no monster, go there
+							(
+								[Unsafe_Head|Unsafe_Tail ] = Unsafe_Tail,
+								\+at(realMonster,Unsafe_Head ),
+								run_from_monster(X,Y,Unsafe_Head ),!
+							);
+							(
+								[Unsafe_Head|Unsafe_Tail ] = Unsafe_Tail,
+								\+at(realMonster,Unsafe_Head ),
+								run_from_monster(X,Y,Unsafe_Head ),!
+							);
+							(
+								[Unsafe_Head|Unsafe_Tail ] = Unsafe_Tail,
+								\+at(realMonster,Unsafe_Head ),
+								run_from_monster(X,Y,Unsafe_Head ),!
+							)
 						)
 					)
 				)
-			)
+			),!
+		);
+		(	%%CASE Safe then Step to should_visit
+			\+ length( Safe_List,0),
+			get_all_should_visit( _,pos( X,Y ),Should_List ),
+			(
+				(
+					\+ length( Should_List,0 ),
+					[ Should_Head|Should_Tail ] = Should_List,
+					Where_to = Should_Head
+				);
+				(
+					length( Should_List,0 ),
+					[ Safe_Head|_ ] = Safe_List,
+					Where_to = Safe_Head
+				)
+			),
+			pos( DXU,DYU ) = Where_to,
+			NDXIR is DXU-X, NDYIR is DYU-Y,
+			turn_to( NDXIR,NDYIR ),
+			step,!
 		),!
-	);
-	(	%%CASE Safe then Step to should_visit
-		get_all_should_visit( _,pos( X,Y ),Should_List ),
-		(
-			(
-				\+ length( Should_List,0 ),
-				[ Should_Head|Should_Tail ] is Should_List,
-				Where_to is Should_Head
-			);
-			(
-				length( Should_List,0 ),
-				Where_to is Safe_Head
-			)
-		),
-		pos( DXU,DYU ) is Where_to,
-		NDXIR is DXU-X, NDYIR is DYU-Y,
-		turn_to( NDXIR,NDYIR ),
-		step,!
-	),! .
+	)	.
 
 %%Decides wheter to step  if felt breeze; prefers to walk to a safe place over steping to an unsafe place
 take_action( X, Y, _, breeze, _, _, _ ) :-
 	get_safe_adjacent_list(_ , pos( X,Y ), Safe_List ),
 	get_adjacent_list(_ , pos( X,Y ), [Unsafe_Head|_ ] ),
 	(
-		%%CASE no safe space
-		length( Safe_List,0),
 		(
-			at(potential_hole,Unsafe_Head ),
-			pos( XU,YU ) is Unsafe_Head,
-			DXIR is XU-X, DYIR is YU-Y,
-			turn_to( DXIR,DYIR ),
+			%%CASE no safe space
+			length( Safe_List,0),
+			(
+				at(potential_hole,Unsafe_Head ),
+				pos( XU,YU ) is Unsafe_Head,
+				DXIR is XU-X, DYIR is YU-Y,
+				turn_to( DXIR,DYIR ),
+				step,!
+			),!
+		);
+		(	%%CASE Safe then Step to should_visit
+			\+ length( Safe_List,0),
+			get_all_should_visit( _,pos( X,Y ),Should_List ),
+			(
+				(
+					\+ length( Should_List,0 ),
+					[ Should_Head|Should_Tail ] = Should_List,
+					Where_to = Should_Head
+				);
+				(
+					length( Should_List,0 ),
+					[ Safe_Head|_ ] = Safe_List,
+					Where_to = Safe_Head
+				)
+			),
+			pos( DXU,DYU ) = Where_to,
+			NDXIR is DXU-X, NDYIR is DYU-Y,
+			turn_to( NDXIR,NDYIR ),
 			step,!
 		),!
-	);
-	(	%%CASE Safe then Step to should_visit
-		get_all_should_visit( _,pos( X,Y ),Should_List ),
-		(
-			(
-				\+ length( Should_List,0 ),
-				[ Should_Head|Should_Tail ] is Should_List,
-				Where_to is Should_Head
-			);
-			(
-				length( Should_List,0 ),
-				[ Safe_Head|Safe_Tail ] is Safe_List,
-				Where_to is Safe_Head
-			)
-		),
-		pos( DXU,DYU ) is Where_to,
-		%%#EDITING
-		NDXIR is DXU-X, NDYIR is DYU-Y,
-		turn_to( NDXIR,NDYIR ),
-		step,!
-	),! .
+	)	.
 	
-turn_to( NDXIR,NDYIR ) :-
-	DXIR is NDXIR, DYIR is NDYIR,
+turn_to( X,Y ) :-
+	PX1 is X, PY1 is Y,
+	PX2 is - Y, PY2 is X,
+	PX3 is Y, PY3 is - X,
+	PX4 is - X, PY4 is - Y,
 	(
-		agentfacing(DXIR,DYIR ),!
-	);
-	(
-		agentfacing(-DYIR,DXIR ),
-		turn(left),!
-	);
-	(
-		agentfacing(DYIR,-DXIR ),
-		turn(right),!
-	);
-	(
-		agentfacing(-DXIR,-DYIR ),
-		turn(right),
-		turn(right),!
+		(
+			agentfacing( PX1,PY1 ),!
+		);
+		(
+			agentfacing(PX2,PY2 ),
+			turn(left),!
+		);
+		(
+			agentfacing(PX3,PY3 ),
+			turn(right),!
+		);
+		(
+			agentfacing(PX4,PY4 ),
+			turn(right),
+			turn(right),!
+		)
 	).
 run_from_monster(X,Y,Unsafe_Head ) :-
 	pos( XU,YU ) is Unsafe_Head,
