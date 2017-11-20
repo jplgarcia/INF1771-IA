@@ -164,7 +164,7 @@ adjust_score( ADD ) :-
 check_surrounding_current_position:-
 	at(agent, Position),
 	( 
-		get_adjacent_list(_,Adj_p,Position ),
+		get_adjacent_list(_, Position, Adj_p ),
 		(
 			(
 				(
