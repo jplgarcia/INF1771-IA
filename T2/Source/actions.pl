@@ -18,11 +18,6 @@
 	take_action/0
 ]).
 
-pick_gold( POS ) :-
-	at(gold, POS ),
-	adjust_score(1000),
-	retract(at(gold, POS )),
-	retract(at(shine, POS )).
 
 %generic take_action
 take_action :-
@@ -139,12 +134,23 @@ take_action( X, Y, stench, _, _, _, _ ) :-
 				length( Should_List,0 )
 			),
 			(
-				(	%%CASE PotentialDanger then step
-					at( potential_monster,Unsafe_Head ),
+				(	%%CASE PotentialDanger then step/shoot
+					(
+						at( potential_monster,Unsafe_Head ),
+						\+ at(realMonster,Unsafe_Head )
+					),
 					pos( XU,YU ) = Unsafe_Head,
 					DXIR is XU-X, DYIR is YU-Y,
 					turn_to( DXIR,DYIR ),
-					step,!
+					(
+						(
+							%%If has ammo then shoot
+							ammo( QTD ),
+							\+ QTD < 1,
+							shoot,!
+						);
+						(step,!)
+					)
 				);
 				(	%%CASE RealDanger
 					at(realMonster,Unsafe_Head ),

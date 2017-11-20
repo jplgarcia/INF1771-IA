@@ -6,7 +6,7 @@
 	what/0
 ]).
 what :- 
-	asserta(at(breeze,pos(1,3))),
+	asserta(at(stench,pos(1,3))),
 	%trace,
 	take_action.
 :- use_module(main).

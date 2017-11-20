@@ -6,51 +6,55 @@
 %Definitions
 %------------------------------------------------
 :- module(m,  [
-                at/2,
-                is_dead/1,
-                energy/2,
-                is_adjacent/2,
-                get_adjacent/3,
-                get_all_adjacent/3,
-                get_adjacent_list/3,
-                correct_as_safe/0,
-                correct_as_unsafe/0,
-                check_sensed/2,
-                should_visit/1,
-                visited/1,
-                pos/2,
-                score/2,
-                ammo/1,
-                get_all_should_visit/3,
-                senses/7,
-                agentfacing/2,
-                step/0,
-				turn/1,
-				get_safe_adjacent_list/3,
-				safe/1,
-				check_surrounding_and_current_position/0
+	at/2,
+	is_dead/1,
+	energy/2,
+	is_adjacent/2,
+	get_adjacent/3,
+	get_all_adjacent/3,
+	get_adjacent_list/3,
+	correct_as_safe/0,
+	correct_as_unsafe/0,
+	check_sensed/2,
+	should_visit/1,
+	visited/1,
+	pos/2,
+	score/2,
+	ammo/1,
+	get_all_should_visit/3,
+	senses/7,
+	agentfacing/2,
+	step/0,
+	turn/1,
+	get_safe_adjacent_list/3,
+	safe/1,
+	check_surrounding_and_current_position/0,
+	shoot/0,
+	pick_gold/1
                     ]).
 %Obs: Pra que server esse comando module?
 %R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%
 
 :- dynamic([
-            at/2,
-            visited/1,
-            energy/2,
-            safe/1,
-            agentfacing/2,
-            checked_sensed/2,
-            get_all_adjacent/3,
-            get_all_should_visit/3,
-            score/2,
-            should_visit/1,
-            ammo/1,
-            senses/7,
-            pos/2,
-            step/0,
-            turn/1,
-            get_safe_adjacent_list/3,
-			check_surrounding_and_current_position/0
+	at/2,
+	visited/1,
+	energy/2,
+	safe/1,
+	agentfacing/2,
+	checked_sensed/2,
+	get_all_adjacent/3,
+	get_all_should_visit/3,
+	score/2,
+	should_visit/1,
+	ammo/1,
+	senses/7,
+	pos/2,
+	step/0,
+	turn/1,
+	get_safe_adjacent_list/3,
+	check_surrounding_and_current_position/0,
+	shoot/0,
+	pick_gold/1
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -231,6 +235,7 @@ adjacent_maybe_monster( [Head|Tail] ) :-
 				\+ safe(Head),
 				\+ at(potential_monster,Head ),
 				\+ at( hole,Head ),
+				\+ at( realMonster,Head ),
 				asserta(at(potential_monster,Head )),
 				(retract(should_visit( Head ));true )
 			);true
@@ -302,10 +307,13 @@ deal_damage( WHO, STRENGHT ) :-
 check_safety( POS ) :-
 	(%CASE: HOLE
 		at(hole,POS ),
+		assert(realHole,POS ),
 		fall(agent)
 	);
 	(%CASE: WUMPUS
 		at(monster(X),POS ),
+		assert(realMonster,POS ),
+		(retract(at(potential_monster,POS ));true),
 		strength(monster(X),DAM ),
 		adjust_score( -DAM ),
 		deal_damage(agent, DAM )
@@ -408,6 +416,13 @@ subtract_ammo :-
 	NEW_QTD is QTD -1,
 	retract(ammo(_)),
 	asserta(ammo(NEW_QTD)).
+
+pick_gold( POS ) :-
+	at(gold, POS ),
+	adjust_score(1000),
+	(retract(at(gold, POS ));true),
+	(retract(at(shine, POS ));true),
+	check_surrounding_and_current_position .
 
 /**
 	AGENT MOVEMENT
