@@ -22,6 +22,8 @@ prolog.consult("run.pl")
 
 dimension = 12
 
+startedRunning = False
+
 #Criar mundo como uma matriz dimension x dimension (12x12)
 world = [['  ' for x in range(dimension)] for y in range(dimension)]
 
@@ -160,6 +162,11 @@ def getGoldPositions():
 # Param: nenhum
 # Return: dicionario contendo informacoes acima
 def takeAction():
+    global startedRunning
+    if not startedRunning:
+        print list(prolog.query("check_surrounding_and_current_position."))
+        startedRunning = True
+
     queryString = "take_action."
     print queryString
     print list(prolog.query(queryString))
