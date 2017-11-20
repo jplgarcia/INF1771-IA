@@ -195,7 +195,7 @@ adjust_score( ADD ) :-
 		);
 		true .
 
-fall(X) :-
+fall( agent ) :-
 	adjust_score( -1000 ) .
     %This predicate will update our dangerous inferences%
     update_our_dangerous_inferences(Position, TypeDanger, RealDanger, PotentialDanger):-
