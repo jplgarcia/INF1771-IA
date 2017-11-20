@@ -26,9 +26,9 @@
                 senses/7,
                 agentfacing/2,
                 step/0,
-				turn/1,
-				get_safe_adjacent_list/3,
-				safe/1
+				        turn/1,
+				        get_safe_adjacent_list/3,
+				        safe/1
                     ]).
 %Obs: Pra que server esse comando module?
 %R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%
@@ -49,8 +49,8 @@
             senses/7,
             pos/2,
             step/0,
-			turn/1,
-			get_safe_adjacent_list/3
+            turn/1,
+            get_safe_adjacent_list/3
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -73,8 +73,8 @@ adjust_score( ADD ) :-
 	  findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), Adj_p ), List), !.
 
   % Gets all should visit adjacent positions
-	  
-  % Gets all adjacent positions marked as should_visit 
+
+  % Gets all adjacent positions marked as should_visit
   get_all_should_visit(Direction, Position, List ) :-
 	  findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), should_visit( Adj_p )), List), !.
 
@@ -163,8 +163,8 @@ adjust_score( ADD ) :-
     %This predicate will verifiy all the surrounding positions given the current position of the agent.
 check_surrounding_current_position:-
 	at(agent, Position),
-	( 
-		get_adjacent_list(_, Position, Adj_p ),
+	(
+		get_adjacent(_, Position, Adj_p ),
 		(
 			(
 				(
