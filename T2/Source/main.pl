@@ -27,7 +27,8 @@
                 agentfacing/2,
                 step/0,
 				turn/1,
-				get_safe_adjacent_list/3
+				get_safe_adjacent_list/3,
+				safe/1
                     ]).
 %Obs: Pra que server esse comando module?
 %R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%
@@ -84,15 +85,15 @@ adjust_score( ADD ) :-
   %Returns the position adjacent to the given pos(x,y) at specific direction
     %Direction: North%
     get_adjacent(north, pos(X , NewY), pos(X , Y)):-
-        NewY is Y-1, pos(X , NewY).
+        NewY is Y+1, pos(X , NewY).
     %Direction: South%
     get_adjacent(south, pos(X , NewY), pos(X , Y)):-
-        NewY is Y+1, pos(X , NewY).
+        NewY is Y-1, pos(X , NewY).
     %Direction: East%
     get_adjacent(east, pos(NewX , Y), pos(X , Y)):-
         NewX is X+1, pos(NewX , Y).
     %Direction: West%
-    get_adjacent(south, pos(NewX , Y), pos(X , Y)):-
+    get_adjacent(west, pos(NewX , Y), pos(X , Y)):-
         NewX is X-1, pos(NewX , Y).
 
   %Return a list with all, not known to be safe, adjacent postions to the given pos(x,y)
@@ -287,6 +288,7 @@ step :-
 			%%retract(senses( _, _, _, _, _, _, _ )),
 			%%asserta(senses( MYX, MYY, Stench, Breeze, Shine, impact, Scream )),
 			asserta(at(wall,pos( X,Y ))),
+			retract(safe(pos( X,Y ))),
 			format("wall in position(~a,~a), couldn't step",[ X,Y ])
 		);
 		(

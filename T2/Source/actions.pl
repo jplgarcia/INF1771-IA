@@ -96,7 +96,8 @@ take_action :-
 	retract(senses( _, _, _, _, _, _, _ )),
 	asserta(senses( X, Y, Stench, Breeze, Shine, no, no)) ,! .
 
-take_action( _, _,no, no, no, no, no ) :-
+take_action(  X, Y,no, no, no, no, no ) :-
+	asserta(safe(pos( X, Y ))),
 	step.
 
 %%Decides to pick up gold if seen
@@ -171,15 +172,15 @@ take_action( X, Y, stench, _, _, _, _ ) :-
 			(
 				\+ length( Should_List,0 ),
 				[ Should_Head|Should_Tail ] = Should_List,
-				Where_to = Should_Head
+				Where_to is Should_Head
 			);
 			(
 				length( Should_List,0 ),
-				Where_to = Safe_Head
+				Where_to is Safe_Head
 			)
 		),
-		pos( XU,YU ) = Where_to,
-		DXIR = XU-X, DYIR = YU-Y,
+		pos( XU,YU ) is Where_to,
+		DXIR is XU-X, DYIR is YU-Y,
 		turn_to( DXIR,DYIR ),
 		step,!
 	),! .
@@ -187,7 +188,7 @@ take_action( X, Y, stench, _, _, _, _ ) :-
 %%Decides wheter to step  if felt breeze; prefers to walk to a safe place over steping to an unsafe place
 take_action( X, Y, _, breeze, _, _, _ ) :-
 	get_safe_adjacent_list(_ , pos( X,Y ), [ Safe_Head|Safe_Tail ] ),
-	get_safe_adjacent_list(_ , pos( X,Y ), [Unsafe_Head|_ ] ),
+	get_adjacent_list(_ , pos( X,Y ), [Unsafe_Head|_ ] ),
 	(
 		%%CASE no safe space
 		length([Safe_Head|Safe_Tail ], 0),
@@ -212,7 +213,8 @@ take_action( X, Y, _, breeze, _, _, _ ) :-
 				Where_to = Safe_Head
 			)
 		),
-		pos( XU,YU ) = Where_to,
+		pos( XU,YU ) is Where_to,
+		%%#EDITING
 		DXIR is XU-X, DYIR is YU-Y,
 		turn_to( DXIR,DYIR ),
 		step,!
