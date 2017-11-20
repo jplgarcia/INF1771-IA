@@ -232,7 +232,7 @@ adjacent_maybe_monster( [Head|Tail] ) :-
 				\+ at(potential_monster,Head ),
 				\+ at( hole,Head ),
 				asserta(at(potential_monster,Head )),
-				retract(should_visit( Head ))
+				(retract(should_visit( Head ));true )
 			);true
 		),
 		adjacent_maybe_monster(Tail)
@@ -248,7 +248,7 @@ adjacent_maybe_hole( [Head|Tail] ) :-
 				\+ at( potential_hole,Head ),
 				\+ at( monster(_),Head ),
 				asserta(at(potential_hole,Head )),
-				retract(should_visit( Head ))
+				(retract(should_visit( Head ));true )
 			);true
 		),
 		adjacent_maybe_hole(Tail)
@@ -276,6 +276,7 @@ check_every_adjacent([Head|Tail]) :-
 				(
 					\+ should_visit(Head),
 					\+ visited(Head),
+					\+ at( wall,Head ),
 					safe( Head ),
 					\+ at( wall,Head )
 				),
@@ -329,7 +330,7 @@ update_our_dangerous_inferences(Position, TypeDanger, RealDanger, PotentialDange
 		(
 			(
 				at(PotentialDanger, Position ),
-				retract(at(PotentialDanger, Position ))
+				(retract(at(PotentialDanger, Position ));true )
 			);true
 		)
 	);
@@ -343,10 +344,10 @@ update_our_dangerous_inferences(Position, TypeDanger, RealDanger, PotentialDange
 		),
 		(
 			(at(RealDanger,Position )),
-			retract(at(RealDanger, Position ))
+			(retract(at(RealDanger, Position ));true )
 		);
 		(
-			(at(PotentialDanger, Position )), retract(at(PotentialDanger, Position ))
+			(at(PotentialDanger, Position )), (retract(at(PotentialDanger, Position ));true )
 		)
 	).
 
@@ -423,8 +424,8 @@ step :-
 			( X < 1;Y < 1;X > 12;Y > 12 ),
 			asserta(at(wall,pos( X,Y ))),
 			(
-				retract(safe(pos( X,Y )));
-				true
+				(retract(safe(pos( X,Y )));true),
+				(retract(should_visit(pos( X,Y )));true)
 			),
 			format("wall in position(~a,~a), couldn't step",[ X,Y ])
 		);
@@ -442,7 +443,7 @@ move( X,Y ) :-
 		(
 			\+ visited(pos( X,Y )),
 			asserta(visited(pos( X,Y ))),
-			retract(should_visit(pos( X,Y )))
+			(retract(should_visit(pos( X,Y )));true )
 		);true
 	),
 	check_safety(pos( X,Y )).

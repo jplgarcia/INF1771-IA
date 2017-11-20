@@ -67,26 +67,26 @@ take_action :-
 			at(wall, pos( NX,NY )),
 			print("Parede a frente"),%%/**
 			(
-				(	
-					%%Tem parede à esquerda, vira pra direita
-					NX1 is X-DYIR, NY1 is Y+DXIR,
-					at(wall, pos( NX1, NY1 )),
-					print("Parede a esquerda"),
-					turn(right)
-				);
+				NX1 is X-DYIR, NY1 is Y+DXIR,
+				NX2 is X+DYIR, NY2 is Y-DXIR,
 				(
-					%%Tem parede à direita, vira pra esquerda
-					NX2 is X+DYIR, NY2 is Y-DXIR,
-					at(wall, pos( NX2,NY2 )),
-					print("Parede a direita"),
-					turn(left)
-				);
-				(
-					NX3 is X-DYIR, NY3 is Y+DXIR,
-					\+ at(wall, pos( NX3, NY3 )),
-					NX4 is X+DYIR, NY4 is Y-DXIR,
-					\+ at(wall, pos( NX4,NY4 )),
-					turn(right)
+					(	
+						%%Tem parede à esquerda, vira pra direita
+						at(wall, pos( NX1, NY1 )),
+						%print("Parede a esquerda"),
+						turn(right)
+					);
+					(
+						%%Tem parede à direita, vira pra esquerda
+						at(wall, pos( NX2,NY2 )),
+						%print("Parede a direita"),
+						turn(left)
+					);
+					(
+						\+ at(wall, pos( NX1,NY1 )),
+						\+ at(wall, pos( NX2,NY2 )),
+						turn(right)
+					)
 				)
 			)%%*/
 			%%turn(left)
@@ -103,25 +103,22 @@ take_action(  X, Y,no, no, no, no, no ) :-
 			(
 				\+ length( Should_List,0 ),
 				[ Should_Head|_ ] = Should_List,
-				Where_to = Should_Head
+				pos( DXU,DYU ) = Should_Head,
+				NDXIR is DXU-X, NDYIR is DYU-Y,
+				turn_to( NDXIR,NDYIR ),
+				step,!
+			);
+			(
+				length( Should_List,0 ),
+				step,!
 			);true
-		),
-		pos( DXU,DYU ) = Where_to,
-		NDXIR is DXU-X, NDYIR is DYU-Y,
-		turn_to( NDXIR,NDYIR ),
-		step
+		)
 	);true .
 
 %%Decides to pick up gold if seen
 take_action( X, Y, _, _, shine, _, _ ) :-
 	pick_gold(pos( X,Y )).
 
-/**%%Marks a position as a wall
-take_action( X, Y, _, _, _, impact, _ ) :-
-	agentfacing( DX,DY ),
-	NX is X+DX,NY is Y+DY,
-	asserta(at(wall,pos( NX,NY ))) .
-%*/
 %%Treats monster death
 take_action( X, Y, _, _, _, _, scream ) :-
 	agentfacing( DX,DY ),
@@ -133,10 +130,14 @@ take_action( X, Y, _, _, _, _, scream ) :-
 take_action( X, Y, stench, _, _, _, _ ) :-
 	get_safe_adjacent_list(_ , pos( X,Y ), Safe_List ),
 	get_adjacent_list(_ , pos( X,Y ), [Unsafe_Head|Unsafe_Tail ] ),
+	get_all_should_visit(_ , pos( X,Y ),Should_List ),
 	(
 		(
 			%%CASE no safe space
-			length(Safe_List, 0),
+			(
+				length( Safe_List,0 );
+				length( Should_List,0 )
+			),
 			(
 				(	%%CASE PotentialDanger then step
 					at( potential_monster,Unsafe_Head ),
@@ -161,17 +162,17 @@ take_action( X, Y, stench, _, _, _, _ ) :-
 							%% If there is no monster, go there
 							(
 								[Unsafe_Head|Unsafe_Tail ] = Unsafe_Tail,
-								\+at(realMonster,Unsafe_Head ),
+								\+ at(realMonster,Unsafe_Head ),
 								run_from_monster(X,Y,Unsafe_Head ),!
 							);
 							(
 								[Unsafe_Head|Unsafe_Tail ] = Unsafe_Tail,
-								\+at(realMonster,Unsafe_Head ),
+								\+ at(realMonster,Unsafe_Head ),
 								run_from_monster(X,Y,Unsafe_Head ),!
 							);
 							(
 								[Unsafe_Head|Unsafe_Tail ] = Unsafe_Tail,
-								\+at(realMonster,Unsafe_Head ),
+								\+ at(realMonster,Unsafe_Head ),
 								run_from_monster(X,Y,Unsafe_Head ),!
 							)
 						)
