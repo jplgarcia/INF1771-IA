@@ -173,7 +173,7 @@ take_action( X, Y, stench, _, _, _, _ ) :-
 			(
 				(
 					\+ length( Should_List,0 ),
-					[ Should_Head|Should_Tail ] = Should_List,
+					[ Should_Head|_ ] = Should_List,
 					Where_to = Should_Head
 				);
 				(
@@ -211,7 +211,7 @@ take_action( X, Y, _, breeze, _, _, _ ) :-
 			(
 				(
 					\+ length( Should_List,0 ),
-					[ Should_Head|Should_Tail ] = Should_List,
+					[ Should_Head|_ ] = Should_List,
 					Where_to = Should_Head
 				);
 				(

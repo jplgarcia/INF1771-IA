@@ -9,7 +9,6 @@
                 at/2,
                 is_dead/1,
                 energy/2,
-                visited/1,
                 is_adjacent/2,
                 get_adjacent/3,
                 get_all_adjacent/3,
@@ -26,9 +25,10 @@
                 senses/7,
                 agentfacing/2,
                 step/0,
-				        turn/1,
-				        get_safe_adjacent_list/3,
-				        safe/1
+				turn/1,
+				get_safe_adjacent_list/3,
+				safe/1,
+				check_surrounding_and_current_position/0
                     ]).
 %Obs: Pra que server esse comando module?
 %R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%
@@ -44,13 +44,13 @@
             get_all_should_visit/3,
             score/2,
             should_visit/1,
-            visited/1,
             ammo/1,
             senses/7,
             pos/2,
             step/0,
             turn/1,
-            get_safe_adjacent_list/3
+            get_safe_adjacent_list/3,
+			check_surrounding_and_current_position/0
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -104,6 +104,22 @@ adjust_score( ADD ) :-
   get_safe_adjacent_list(Direction, Position, List ):-
     findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), safe(Adj_p)), List), !.
 
+
+mark_adjacents_should_visit([Head|Tail ]) :-
+	(
+		\+ length([Head|Tail ],0),
+		(
+			(
+				(
+					not(should_visit(Head)),
+					not(visited(Head))
+				),
+				asserta(should_visit(Head))
+			);true
+		),
+		mark_adjacents_should_visit(Tail),!
+	);
+	true .
   %Mark each element of the list as Potential_Danger or Danger, depending on the knowledge about the position.
   danger_adjacent_list(_, _, []).
   danger_adjacent_list(Potential_Danger, Danger, [Head|Tail]):-
@@ -149,7 +165,7 @@ adjust_score( ADD ) :-
     retract(at(noises, Position)),
     get_adjacent_list(_ , Position, [Head|Tail]),
     ((length(Tail, 0), assertz(at(noises, Head)));
-      danger_adjacent_list(potential_monster, monster, [Head|Tail])
+      danger_adjacent_list(potential_monster, monster(_), [Head|Tail])
     ).
   %Case: STENCH%
   check_stench(stench, Position):-
@@ -157,74 +173,170 @@ adjust_score( ADD ) :-
     retract(at(stench, Position)),
     get_adjacent_list(_, Position, [Head|Tail]),
     ((length(Tail, 0), assertz(at(stench, Head)));
-      danger_adjacent_list(potential_monster, monster, [Head|Tail])
+      danger_adjacent_list(potential_monster, monster(_), [Head|Tail])
     ).
 
     %This predicate will verifiy all the surrounding positions given the current position of the agent.
-check_surrounding_current_position:-
+check_surrounding_and_current_position:-
 	at(agent, Position),
 	(
-		get_adjacent(_, Position, Adj_p ),
+		(
+			get_all_adjacent( _, Position, Adj_p ),
+			(
+				(
+					(
+						\+ at(stench,Position ),
+						\+ at(breeze,Position )
+					),
+					every_adjacent_safe( Adj_p )
+				);true
+			),
+			(
+				(
+					at( stench,Position ),
+					adjacent_maybe_monster(Adj_p)
+				);true
+			),
+			(
+				(
+					at( breeze,Position ),
+					adjacent_maybe_hole(Adj_p)
+				);true
+			),
+			(
+				(
+					\+ at( monster(_),Position ),
+					\+ safe( Position ),
+					assert(safe( Position ))
+				);true
+			),
+			(
+				(
+					\+ at( hole,Position ),
+					\+ safe( Position ),
+					assert(safe( Position ))
+				);true
+			),
+			check_every_adjacent(Adj_p)
+		);true
+	).
+	
+	
+adjacent_maybe_monster( [Head|Tail] ) :-
+	(
+		\+ length( [Head|Tail ],0 ),
+		(
+			\+ safe(Head),
+			\+ at(potential_monster,Head ),
+			\+ at( hole,Head ),
+			asserta(at(potential_monster,Head ))
+		),
+		adjacent_maybe_monster(Tail)
+	);true .
+
+%Marks every adjacent as potential_hole if they aren't already
+adjacent_maybe_hole( [Head|Tail] ) :-
+	(
+		\+ length( [Head|Tail ],0 ),
+		(
+			\+ safe(Head),
+			\+ at( potential_hole,Head ),
+			\+ at( monster(_),Head ),
+			asserta(at(potential_hole,Head ))
+		),
+		adjacent_maybe_hole(Tail)
+	);true .
+	
+%Marks every adjacent as safe if they aren't already
+every_adjacent_safe([Head|Tail]) :-
+	(
+		\+ length( [Head|Tail ],0 ),
+		(
+			\+ safe(Head),
+			asserta(safe(Head))
+		),
+		every_adjacent_safe(Tail)
+	);true .
+	
+check_every_adjacent([Head|Tail]) :-
+	(
+		\+ length( [Head|Tail ],0 ),
 		(
 			(
 				(
-					not(should_visit(Adj_p)),
-					not(visited(Adj_p))
+					not(should_visit(Head)),
+					not(visited(Head))
 				),
-				asserta(should_visit(Adj_p))
+				asserta(should_visit(Head))
 			);true
-		)
-	),
-	(update_our_dangerous_inferences(Position, hole, realHole, potential_hole);true ),
-	(update_our_dangerous_inferences(Position, monster, realMonster, potential_monster);true ).
+		),
+		check_every_adjacent(Tail)
+	);true .
 
 check_sensed( X,Y ):-
 	sensed(pos(X,Y), current),
 	sensed(pos(X,Y), around).
 
 
-	%Subtracts STRENGHT from the energy of the WHO
-	deal_damage( WHO, STRENGHT ) :-
-		energy( WHO, CURRENT ),
-		NEW is CURRENT-STRENGHT,
-		retract(energy( WHO, _ )),
-		asserta(energy( WHO, NEW )).
+%Subtracts STRENGHT from the energy of the WHO
+deal_damage( WHO, STRENGHT ) :-
+	energy( WHO, CURRENT ),
+	NEW is CURRENT-STRENGHT,
+	retract(energy( WHO, _ )),
+	asserta(energy( WHO, NEW )).
 
-	%Checks agent safety after STEPING
-	check_safety( POS ) :-
-		(%CASE: HOLE
-			at(hole,POS ),
-			fall(agent)
-		);
-		(%CASE: WUMPUS
-			at(monster(X),POS ),
-			strength(monster(X),DAM ),
-			adjust_score( -DAM ),
-			deal_damage(agent, DAM )
-		);
-		(
-			asserta(visited( POS )),
-			(
-				retract(should_visit( POS ));
-				true
-			)
-		);
-		true .
+%Checks agent safety after STEPING
+check_safety( POS ) :-
+	(%CASE: HOLE
+		at(hole,POS ),
+		fall(agent)
+	);
+	(%CASE: WUMPUS
+		at(monster(X),POS ),
+		strength(monster(X),DAM ),
+		adjust_score( -DAM ),
+		deal_damage(agent, DAM )
+	);
+	check_surrounding_and_current_position
+	;true .
 
 fall( agent ) :-
 	adjust_score( -1000 ) .
-    %This predicate will update our dangerous inferences%
-    update_our_dangerous_inferences(Position, TypeDanger, RealDanger, PotentialDanger):-
-      ( at(TypeDanger, Position)),
-        ((not(at(RealDanger,Position)),
-          asserta(at(RealDanger, Position)));true),
-        (at(PotentialDanger, Position), retract(at(PotentialDanger, Position))
-      );
-      ( not(at(TypeDanger, Position)),
-        (not(safe(Position)), asserta(safe(Position)); true),
-        ((at(RealDanger,Position)), retract(at(RealDanger, Position)));
-        ((at(PotentialDanger, Position)), retract(at(PotentialDanger, Position)))
-        ).
+
+%This predicate will update our dangerous inferences%
+update_our_dangerous_inferences(Position, TypeDanger, RealDanger, PotentialDanger):-
+	(
+		at(TypeDanger, Position ),
+		(
+			(
+				not(at(RealDanger,Position )),
+				asserta(at(RealDanger, Position ))
+			);
+			true
+		),
+		(
+			(
+				at(PotentialDanger, Position ),
+				retract(at(PotentialDanger, Position ))
+			);true
+		)
+	);
+	( 
+		\+ at(TypeDanger, Position ),
+		(
+			(
+				not(safe(Position)),
+				asserta(safe(Position))
+			);true
+		),
+		(
+			(at(RealDanger,Position )),
+			retract(at(RealDanger, Position ))
+		);
+		(
+			(at(PotentialDanger, Position )), retract(at(PotentialDanger, Position ))
+		)
+	).
 
 %%Checks for monster
 check_for_monster([Head|Tail ]):-
@@ -297,9 +409,6 @@ step :-
 	(
 		(%is new position is outside of the dungeon, "cancel" the movement
 			( X < 1;Y < 1;X > 12;Y > 12 ),
-			%%senses( MYX, MYY, Stench, Breeze, Shine, _, Scream ),
-			%%retract(senses( _, _, _, _, _, _, _ )),
-			%%asserta(senses( MYX, MYY, Stench, Breeze, Shine, impact, Scream )),
 			asserta(at(wall,pos( X,Y ))),
 			(
 				retract(safe(pos( X,Y )));
@@ -317,6 +426,12 @@ step :-
 move( X,Y ) :-
 	retract(at(agent,pos( _ , _ ))),
 	assertz(at(agent,pos( X,Y ))),
+	(
+		(
+			\+ visited(pos( X,Y )),
+			asserta(visited(pos( X,Y )))
+		);true
+	),
 	check_safety(pos( X,Y )).
 
 turn(right) :-
@@ -377,6 +492,9 @@ turn( X ) :-
 
     %By definition the agent always starts on the position [1,1]%
     at(agent, pos(1,1)).
+	
+    %By definition the starting position is safe%
+	safe(pos(1,1)).
 
     %By definition the agent always starts with 100 points of life %
     energy(agent, 100).

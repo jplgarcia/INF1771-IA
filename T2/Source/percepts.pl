@@ -65,7 +65,7 @@ sixth_sense(retract(on_hole )):-
   at(agent, Position ),
   not(at(hole, Position )).
 
-sixth_sense(check_surrounding_current_position ):-
+sixth_sense(check_surrounding_and_current_position ):-
   at(agent,Position ),
   not(sensed(Position, current )),
   asserta(sensed(Position, current )).
