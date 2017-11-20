@@ -195,8 +195,11 @@ adjust_score( ADD ) :-
 		);
 		true .
 
+<<<<<<< HEAD
 fall( agent ) :-
 	adjust_score( -1000 ) .
+=======
+>>>>>>> parent of 73b4648... Ta começando a ir
     %This predicate will update our dangerous inferences%
     update_our_dangerous_inferences(Position, TypeDanger, RealDanger, PotentialDanger):-
       ( at(TypeDanger, Position)),
