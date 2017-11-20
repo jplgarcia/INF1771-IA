@@ -82,11 +82,11 @@ take_action :-
 					turn(left)
 				);
 				(
-					NX1 is X-DYIR, NY1 is Y+DXIR,
-					\+ at(wall, pos( NX1, NY1 )),
-					NX2 is X+DYIR, NY2 is Y-DXIR,
-					\+ at(wall, pos( NX2,NY2 )),
-					turn(left)
+					NX3 is X-DYIR, NY3 is Y+DXIR,
+					\+ at(wall, pos( NX3, NY3 )),
+					NX4 is X+DYIR, NY4 is Y-DXIR,
+					\+ at(wall, pos( NX4,NY4 )),
+					turn(right)
 				)
 			)%%*/
 			%%turn(left)
@@ -97,8 +97,20 @@ take_action :-
 	asserta(senses( X, Y, Stench, Breeze, Shine, no, no)) ,! .
 
 take_action(  X, Y,no, no, no, no, no ) :-
-	asserta(safe(pos( X, Y ))),
-	step.
+	(
+		get_all_should_visit( _,pos( X,Y ),Should_List ),
+		(
+			(
+				\+ length( Should_List,0 ),
+				[ Should_Head|_ ] = Should_List,
+				Where_to = Should_Head
+			);true
+		),
+		pos( DXU,DYU ) = Where_to,
+		NDXIR is DXU-X, NDYIR is DYU-Y,
+		turn_to( NDXIR,NDYIR ),
+		step
+	);true .
 
 %%Decides to pick up gold if seen
 take_action( X, Y, _, _, shine, _, _ ) :-
@@ -195,7 +207,7 @@ take_action( X, Y, _, breeze, _, _, _ ) :-
 	get_adjacent_list(_ , pos( X,Y ), [Unsafe_Head|_ ] ),
 	(
 		(
-			%%CASE no safe space
+			%%CAS E no safe space
 			length( Safe_List,0),
 			(
 				at(potential_hole,Unsafe_Head ),
@@ -238,11 +250,11 @@ turn_to( X,Y ) :-
 		);
 		(
 			agentfacing(PX2,PY2 ),
-			turn(left),!
+			turn(right),!
 		);
 		(
 			agentfacing(PX3,PY3 ),
-			turn(right),!
+			turn(left),!
 		);
 		(
 			agentfacing(PX4,PY4 ),

@@ -105,6 +105,7 @@ adjust_score( ADD ) :-
     findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), safe(Adj_p)), List), !.
 
 
+/**
 mark_adjacents_should_visit([Head|Tail ]) :-
 	(
 		\+ length([Head|Tail ],0),
@@ -119,7 +120,7 @@ mark_adjacents_should_visit([Head|Tail ]) :-
 		),
 		mark_adjacents_should_visit(Tail),!
 	);
-	true .
+	true .%%*/
   %Mark each element of the list as Potential_Danger or Danger, depending on the knowledge about the position.
   danger_adjacent_list(_, _, []).
   danger_adjacent_list(Potential_Danger, Danger, [Head|Tail]):-
@@ -226,10 +227,13 @@ adjacent_maybe_monster( [Head|Tail] ) :-
 	(
 		\+ length( [Head|Tail ],0 ),
 		(
-			\+ safe(Head),
-			\+ at(potential_monster,Head ),
-			\+ at( hole,Head ),
-			asserta(at(potential_monster,Head ))
+			(
+				\+ safe(Head),
+				\+ at(potential_monster,Head ),
+				\+ at( hole,Head ),
+				asserta(at(potential_monster,Head )),
+				retract(should_visit( Head ))
+			);true
 		),
 		adjacent_maybe_monster(Tail)
 	);true .
@@ -239,10 +243,13 @@ adjacent_maybe_hole( [Head|Tail] ) :-
 	(
 		\+ length( [Head|Tail ],0 ),
 		(
-			\+ safe(Head),
-			\+ at( potential_hole,Head ),
-			\+ at( monster(_),Head ),
-			asserta(at(potential_hole,Head ))
+			(
+				\+ safe(Head),
+				\+ at( potential_hole,Head ),
+				\+ at( monster(_),Head ),
+				asserta(at(potential_hole,Head )),
+				retract(should_visit( Head ))
+			);true
 		),
 		adjacent_maybe_hole(Tail)
 	);true .
@@ -252,8 +259,11 @@ every_adjacent_safe([Head|Tail]) :-
 	(
 		\+ length( [Head|Tail ],0 ),
 		(
-			\+ safe(Head),
-			asserta(safe(Head))
+			(
+				\+ safe( Head ),
+				\+ at( wall,Head ),
+				asserta(safe(Head))
+			);true
 		),
 		every_adjacent_safe(Tail)
 	);true .
@@ -264,8 +274,10 @@ check_every_adjacent([Head|Tail]) :-
 		(
 			(
 				(
-					not(should_visit(Head)),
-					not(visited(Head))
+					\+ should_visit(Head),
+					\+ visited(Head),
+					safe( Head ),
+					\+ at( wall,Head )
 				),
 				asserta(should_visit(Head))
 			);true
@@ -429,7 +441,8 @@ move( X,Y ) :-
 	(
 		(
 			\+ visited(pos( X,Y )),
-			asserta(visited(pos( X,Y )))
+			asserta(visited(pos( X,Y ))),
+			retract(should_visit(pos( X,Y )))
 		);true
 	),
 	check_safety(pos( X,Y )).
