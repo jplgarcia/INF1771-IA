@@ -26,7 +26,8 @@
                 senses/7,
                 agentfacing/2,
                 step/0,
-				turn/1
+				turn/1,
+				get_safe_adjacent_list/3
                     ]).
 %Obs: Pra que server esse comando module?
 %R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%
@@ -47,7 +48,8 @@
             senses/7,
             pos/2,
             step/0,
-			turn/1
+			turn/1,
+			get_safe_adjacent_list/3
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -212,7 +214,7 @@ fall( agent ) :-
 
 %%Checks for monster
 check_for_monster([Head|Tail ]):-
-	\+ lenght([Head|Tail ], 0),
+	\+ length([Head|Tail ], 0),
 	(
 		at(monster(_), Head );
 		check_for_monster(Tail)
@@ -233,7 +235,7 @@ check_monster_dead( MONSTER ) :-
 
 %%Check if stench must persist because of any adjacent monster
 assert_stench([Head|Tail ]) :-
-	\+ lenght([Head|Tail ],0),
+	\+ length([Head|Tail ],0),
 	get_all_adjacent( _ , Head , List ),
 	(
 		(

@@ -27,21 +27,38 @@ pick_gold( POS ) :-
 %generic take_action
 take_action :-
 	senses( _,_,_,_,_,Impact,Scream ),
-	Shine = no,Breeze = no,Stench = no,
 	at(agent,pos( X,Y )),
 	(
 		(
-			at(gold, pos( X,Y )),
-			Shine = shine
-		);
+			(
+				at(gold, pos( X,Y )),
+				Shine = shine
+			);
+			(
+				\+ at(gold, pos( X,Y )),
+				Shine = no
+			)
+		),
 		(
-			at(breeze, pos( X,Y )),
-			Breeze = breeze
-		);
+			(
+				at(breeze, pos( X,Y )),
+				Breeze = breeze
+			);
+			(
+				\+ at(breeze, pos( X,Y )),
+				Breeze = no
+			)
+		),
 		(
-			at(stench, pos( X,Y )),
-			Stench = stench
-		);true
+			(
+				at(stench, pos( X,Y )),
+				Stench = stench
+			);
+			(
+				\+ at(stench, pos( X,Y )),
+				Stench = no
+			)
+		)
 	),
 	(
 		(
@@ -77,7 +94,7 @@ take_action :-
 	),
 	take_action( X, Y, Stench, Breeze, Shine, Impact, Scream ),
 	retract(senses( _, _, _, _, _, _, _ )),
-	asserta(senses( X, Y, Stench, Breeze, Shine, no, no)) .
+	asserta(senses( X, Y, Stench, Breeze, Shine, no, no)) ,! .
 
 take_action( _, _,no, no, no, no, no ) :-
 	step.
@@ -102,7 +119,7 @@ take_action( X, Y, _, _, _, _, scream ) :-
 %%Decides wheter to step or shoot if smelled stench; prefers to walk to a safe place over steping/shooting an unsafe place
 take_action( X, Y, stench, _, _, _, _ ) :-
 	get_safe_adjacent_list(_ , pos( X,Y ), [Safe_Head|Safe_Tail ] ),
-	get_safe_adjacent_list(_ , pos( X,Y ), [Unsafe_Head|Unsafe_Tail ] ),
+	get_adjacent_list(_ , pos( X,Y ), [Unsafe_Head|Unsafe_Tail ] ),
 	(
 		%%CASE no safe space
 		length([Safe_Head|Safe_Tail ], 0),
@@ -110,7 +127,7 @@ take_action( X, Y, stench, _, _, _, _ ) :-
 			(	%%CASE PotentialDanger then step
 				at( potential_monster,Unsafe_Head ),
 				pos( XU,YU ) = Unsafe_Head,
-				DXIR = XU-X, DYIR = YU-Y,
+				DXIR is XU-X, DYIR is YU-Y,
 				turn_to( DXIR,DYIR ),
 				step,!
 			);
@@ -152,12 +169,12 @@ take_action( X, Y, stench, _, _, _, _ ) :-
 		get_all_should_visit( _,pos( X,Y ),Should_List ),
 		(
 			(
-				\+ lenght( Should_List,0 ),
+				\+ length( Should_List,0 ),
 				[ Should_Head|Should_Tail ] = Should_List,
 				Where_to = Should_Head
 			);
 			(
-				lenght( Should_List,0 ),
+				length( Should_List,0 ),
 				Where_to = Safe_Head
 			)
 		),
@@ -186,22 +203,23 @@ take_action( X, Y, _, breeze, _, _, _ ) :-
 		get_all_should_visit( _,pos( X,Y ),Should_List ),
 		(
 			(
-				\+ lenght( Should_List,0 ),
+				\+ length( Should_List,0 ),
 				[ Should_Head|Should_Tail ] = Should_List,
 				Where_to = Should_Head
 			);
 			(
-				lenght( Should_List,0 ),
+				length( Should_List,0 ),
 				Where_to = Safe_Head
 			)
 		),
 		pos( XU,YU ) = Where_to,
-		DXIR = XU-X, DYIR = YU-Y,
+		DXIR is XU-X, DYIR is YU-Y,
 		turn_to( DXIR,DYIR ),
 		step,!
 	),! .
 	
-turn_to( DXIR,DYIR ) :-
+turn_to( NDXIR,NDYIR ) :-
+	DXIR is NDXIR, DYIR is NDYIR,
 	(
 		agentfacing(DXIR,DYIR ),!
 	);
@@ -220,6 +238,6 @@ turn_to( DXIR,DYIR ) :-
 	).
 run_from_monster(X,Y,Unsafe_Head ) :-
 	pos( XU,YU ) = Unsafe_Head,
-	DXIR = XU-X, DYIR = YU-Y,
+	DXIR is XU-X, DYIR is YU-Y,
 	turn_to( DXIR,DYIR ),
 	step,!.
