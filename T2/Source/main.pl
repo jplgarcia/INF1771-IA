@@ -88,17 +88,21 @@ adjust_score( ADD ) :-
 
   %Returns the position adjacent to the given pos(x,y) at specific direction
     %Direction: North%
-    get_adjacent(north, pos(X , NewY), pos(X , Y)):-
-        NewY is Y+1, pos(X , NewY).
+    get_adjacent(north, pos(NewX , NewY), pos(X , Y)):-
+		agentfacing( XD,YD ),
+        NewX is X+XD,NewY is Y+YD, pos(NewX , NewY).
     %Direction: South%
-    get_adjacent(south, pos(X , NewY), pos(X , Y)):-
-        NewY is Y-1, pos(X , NewY).
+    get_adjacent(south, pos(NewX , NewY), pos(X , Y)):-
+		agentfacing( XD,YD ),
+        NewX is X-XD,NewY is Y-YD, pos(NewX , NewY).
     %Direction: East%
-    get_adjacent(east, pos(NewX , Y), pos(X , Y)):-
-        NewX is X+1, pos(NewX , Y).
+    get_adjacent(east, pos(NewX , NewY), pos(X , Y)):-
+		agentfacing( XD,YD ),
+        NewX is X+YD,NewY is Y-XD, pos(NewX , NewY).
     %Direction: West%
-    get_adjacent(west, pos(NewX , Y), pos(X , Y)):-
-        NewX is X-1, pos(NewX , Y).
+    get_adjacent(west, pos(NewX , NewY), pos(X , Y)):-
+		agentfacing( XD,YD ),
+        NewX is X-YD,NewY is Y+XD, pos(NewX , NewY).
 
   %Return a list with all, not known to be safe, adjacent postions to the given pos(x,y)
   get_adjacent_list(Direction, Position, List ):-
