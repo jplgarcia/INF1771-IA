@@ -7,7 +7,9 @@
 %------------------------------------------------%
 :- module(acts,  [
 	take_action/7,
-	take_action/0
+	take_action/0,
+	tie_breaker/1,
+	turn_tie/0
 ]).
 
 :- use_module(main).
@@ -15,7 +17,9 @@
 
 :- dynamic([
 	take_action/7,
-	take_action/0
+	take_action/0,
+	tie_breaker/1,
+	turn_tie/0
 ]).
 
 
@@ -91,6 +95,13 @@ take_action :-
 	retract(senses( _, _, _, _, _, _, _ )),
 	asserta(senses( X, Y, Stench, Breeze, Shine, no, no)) ,! .
 
+tie_breaker(1).
+turn_tie :-
+	tie_breaker( TIE ),
+	NTIE is - TIE,
+	(retract(tie_breaker(_));true ),
+	asserta(tie_breaker( NTIE )) .
+	
 take_action(  X, Y,no, no, no, no, no ) :-
 	(
 		get_all_should_visit( _,pos( X,Y ),Should_List ),
@@ -105,6 +116,23 @@ take_action(  X, Y,no, no, no, no, no ) :-
 			);
 			(
 				length( Should_List,0 ),
+				(
+					(
+						tie_breaker( TIE ),
+						get_all_walls(_,pos( X,Y ),WALLS ),
+						\+ length(WALLS,2),
+						(
+							(
+								TIE > 0,
+								turn(left)
+							);
+							(
+								TIE < 0,
+								turn(right)
+							);true
+						)
+					);true
+				),
 				step,!
 			);true
 		)
