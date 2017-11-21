@@ -190,39 +190,41 @@ check_surrounding_and_current_position:-
 			(
 				(
 					(
-						\+ at(stench,Position ),
-						\+ at(breeze,Position )
-					),
-					every_adjacent_safe( Adj_p )
-				);true
-			),
-			(
+						(
+							\+ at(stench,Position ),
+							\+ at(breeze,Position )
+						),
+						every_adjacent_safe( Adj_p )
+					);true
+				),
 				(
-					at( stench,Position ),
-					adjacent_maybe_monster(Adj_p)
-				);true
-			),
-			(
+					(
+						at( stench,Position ),
+						adjacent_maybe_monster(Adj_p)
+					);true
+				),
 				(
-					at( breeze,Position ),
-					adjacent_maybe_hole(Adj_p)
-				);true
-			),
-			(
+					(
+						at( breeze,Position ),
+						adjacent_maybe_hole(Adj_p)
+					);true
+				),
 				(
-					\+ at( monster(_),Position ),
-					\+ safe( Position ),
-					assert(safe( Position ))
-				);true
-			),
-			(
+					(
+						\+ at( monster(_),Position ),
+						\+ safe( Position ),
+						assert(safe( Position ))
+					);true
+				),
 				(
-					\+ at( hole,Position ),
-					\+ safe( Position ),
-					assert(safe( Position ))
-				);true
-			),
-			check_every_adjacent(Adj_p)
+					(
+						\+ at( hole,Position ),
+						\+ safe( Position ),
+						assert(safe( Position ))
+					);true
+				),
+				check_every_adjacent(Adj_p)
+			)
 		);true
 	).
 	
@@ -236,8 +238,8 @@ adjacent_maybe_monster( [Head|Tail] ) :-
 				\+ at(potential_monster,Head ),
 				\+ at( hole,Head ),
 				\+ at( realMonster,Head ),
-				asserta(at(potential_monster,Head )),
-				(retract(should_visit( Head ));true )
+				%(retract(should_visit( Head ));true ),
+				asserta(at(potential_monster,Head ))
 			);true
 		),
 		adjacent_maybe_monster(Tail)
@@ -252,8 +254,8 @@ adjacent_maybe_hole( [Head|Tail] ) :-
 				\+ safe(Head),
 				\+ at( potential_hole,Head ),
 				\+ at( monster(_),Head ),
-				asserta(at(potential_hole,Head )),
-				(retract(should_visit( Head ));true )
+				%(retract(should_visit( Head ));true ),
+				asserta(at(potential_hole,Head ))
 			);true
 		),
 		adjacent_maybe_hole(Tail)
@@ -279,10 +281,8 @@ check_every_adjacent([Head|Tail]) :-
 		(
 			(
 				(
-					\+ should_visit(Head),
 					\+ visited(Head),
-					\+ at( wall,Head ),
-					safe( Head ),
+					%safe( Head ),%%#EDITING
 					\+ at( wall,Head )
 				),
 				asserta(should_visit(Head))
@@ -307,13 +307,24 @@ deal_damage( WHO, STRENGHT ) :-
 check_safety( POS ) :-
 	(%CASE: HOLE
 		at(hole,POS ),
-		assert(realHole,POS ),
+		(
+			(
+				\+ at(realHole,POS ),
+				assert(at(realHole,POS )),
+				(retract(at( potential_hole,POS ));true )
+			);true
+		),
 		fall(agent)
 	);
 	(%CASE: WUMPUS
 		at(monster(X),POS ),
-		assert(realMonster,POS ),
-		(retract(at(potential_monster,POS ));true),
+		(
+			(
+				\+ at(realMonster,POS ),
+				assert(at(realMonster,POS )),
+				(retract(at( potential_monster,POS ));true )
+			);true
+		),
 		strength(monster(X),DAM ),
 		adjust_score( -DAM ),
 		deal_damage(agent, DAM )
@@ -376,7 +387,9 @@ check_monster_dead( MONSTER ) :-
 			senses( MYX, MYY, Stench, Breeze, Shine, Impact, scream ),
 			retract(senses( _, _, _, _, _, _, _ )),
 			asserta(senses( MYX, MYY, Stench, Breeze, Shine, Impact, scream )),
-			retract(at( MONSTER, _ ))
+			at( MONSTER, Position ),
+			retract(at( MONSTER, _ )),
+			(retract(at(realMonster, Position ));true )
 		);true
 	).
 
@@ -390,15 +403,16 @@ assert_stench([Head|Tail ]) :-
 			assert_stench( Tail ),!
 		);
 		(	%%If there is no monster, retract the stench
-			retract(at(stench,Head )),
+			retract(at(stench,Head );true ),
 			assert_stench(Tail),!
 		)
 	) .
 %%Kills_monster at position
 kill_monster( Position ) :-
-	retract(at(monster(_), Position )),
+	(retract(at(monster(_), Position ));true ),
+	(retract(at(realMonster, Position ));true ),
 	get_all_adjacent( _ ,Position,List ),
-	assert_stench(List ).
+	assert_stench( List ).
 
 shoot :-
 	at(agent, pos( X,Y )),

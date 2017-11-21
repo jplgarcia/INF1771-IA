@@ -60,7 +60,7 @@ take_action :-
 			agentfacing( DXIR,DYIR ),
 			NX is X+DXIR, NY is Y+DYIR,
 			at(wall, pos( NX,NY )),
-			print("Parede a frente"),%%/**
+			%print("Parede a frente"),%%/**
 			(
 				NX1 is X-DYIR, NY1 is Y+DXIR,
 				NX2 is X+DYIR, NY2 is Y-DXIR,
@@ -218,7 +218,7 @@ take_action( X, Y, _, breeze, _, _, _ ) :-
 			length( Safe_List,0),
 			(
 				at(potential_hole,Unsafe_Head ),
-				pos( XU,YU ) is Unsafe_Head,
+				pos( XU,YU ) = Unsafe_Head,
 				DXIR is XU-X, DYIR is YU-Y,
 				turn_to( DXIR,DYIR ),
 				step,!
