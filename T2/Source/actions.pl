@@ -187,21 +187,9 @@ take_action( X, Y, stench, _, _, _, _ ) :-
 			),!
 		);
 		(	%%CASE Safe then Step to should_visit
-			\+ length( Safe_List,0),
-			get_all_should_visit( _,pos( X,Y ),Should_List ),
-			(
-				(
-					\+ length( Should_List,0 ),
-					[ Should_Head|_ ] = Should_List,
-					Where_to = Should_Head
-				);
-				(
-					length( Should_List,0 ),
-					[ Safe_Head|_ ] = Safe_List,
-					Where_to = Safe_Head
-				)
-			),
-			pos( DXU,DYU ) = Where_to,
+			\+ length( Safe_List,0 ),
+			[ Safe_Head|_ ] = Safe_List,
+			pos( DXU,DYU ) = Safe_Head,
 			NDXIR is DXU-X, NDYIR is DYU-Y,
 			turn_to( NDXIR,NDYIR ),
 			step,!

@@ -283,7 +283,8 @@ check_every_adjacent([Head|Tail]) :-
 				(
 					\+ visited(Head),
 					%safe( Head ),%%#EDITING
-					\+ at( wall,Head )
+					\+ at( wall,Head ),
+					\+ should_visit(Head)
 				),
 				asserta(should_visit(Head))
 			);true
@@ -451,9 +452,19 @@ step :-
 	(
 		(%is new position is outside of the dungeon, "cancel" the movement
 			( X < 1;Y < 1;X > 12;Y > 12 ),
-			asserta(at(wall,pos( X,Y ))),
 			(
-				(retract(safe(pos( X,Y )));true),
+				(
+					\+ at(wall,pos( X,Y )),
+					asserta(at(wall,pos( X,Y )))
+				);true
+			),
+			(
+				(
+					(
+						\+ safe(pos( X,Y )),
+						asserta(safe(pos( X,Y )))
+					);true
+				),
 				(retract(should_visit(pos( X,Y )));true)
 			),
 			format("wall in position(~a,~a), couldn't step",[ X,Y ])
