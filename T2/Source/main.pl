@@ -254,7 +254,8 @@ adjacent_maybe_hole( [Head|Tail] ) :-
 				\+ safe(Head),
 				\+ at( potential_hole,Head ),
 				\+ at( monster(_),Head ),
-				%(retract(should_visit( Head ));true ),
+			%comenta linha de baixo se quiser que n evite buracos
+				(retract(should_visit( Head ));true ),
 				asserta(at(potential_hole,Head ))
 			);true
 		),

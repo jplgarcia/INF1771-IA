@@ -200,10 +200,13 @@ take_action( X, Y, stench, _, _, _, _ ) :-
 take_action( X, Y, _, breeze, _, _, _ ) :-
 	get_safe_adjacent_list(_ , pos( X,Y ), Safe_List ),
 	get_adjacent_list(_ , pos( X,Y ), [Unsafe_Head|_ ] ),
+	get_all_should_visit( _,pos( X,Y ),Should_List ),
 	(
 		(
 			%%CAS E no safe space
 			length( Safe_List,0),
+			%comenta linha de baixo se quiser que n evite buracos
+			length( Should_List,0 ),
 			(
 				at(potential_hole,Unsafe_Head ),
 				pos( XU,YU ) = Unsafe_Head,
@@ -214,7 +217,6 @@ take_action( X, Y, _, breeze, _, _, _ ) :-
 		);
 		(	%%CASE Safe then Step to should_visit
 			\+ length( Safe_List,0),
-			get_all_should_visit( _,pos( X,Y ),Should_List ),
 			(
 				(
 					\+ length( Should_List,0 ),
