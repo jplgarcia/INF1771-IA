@@ -204,7 +204,7 @@ take_action( X, Y, _, breeze, _, _, _ ) :-
 	(
 		(
 			%%CAS E no safe space
-			length( Safe_List,0),
+			length( Safe_List,0 ),
 			%comenta linha de baixo se quiser que n evite buracos
 			length( Should_List,0 ),
 			(

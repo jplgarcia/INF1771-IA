@@ -285,7 +285,10 @@ check_every_adjacent([Head|Tail]) :-
 					\+ visited(Head),
 					%safe( Head ),%%#EDITING
 					\+ at( wall,Head ),
-					\+ should_visit(Head)
+					\+ should_visit(Head),
+			%comenta as duas linhas de baixo se quiser que n evite buracos
+					\+ at(potential_hole,Head ),
+					\+ at(realHole,Head )
 				),
 				asserta(should_visit(Head))
 			);true
