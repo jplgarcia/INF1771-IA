@@ -91,10 +91,6 @@ adjust_score( ADD ) :-
     get_adjacent(north, pos(NewX , NewY), pos(X , Y)):-
 		agentfacing( XD,YD ),
         NewX is X+XD,NewY is Y+YD, pos(NewX , NewY).
-    %Direction: South%
-    get_adjacent(south, pos(NewX , NewY), pos(X , Y)):-
-		agentfacing( XD,YD ),
-        NewX is X-XD,NewY is Y-YD, pos(NewX , NewY).
     %Direction: East%
     get_adjacent(east, pos(NewX , NewY), pos(X , Y)):-
 		agentfacing( XD,YD ),
@@ -103,6 +99,10 @@ adjust_score( ADD ) :-
     get_adjacent(west, pos(NewX , NewY), pos(X , Y)):-
 		agentfacing( XD,YD ),
         NewX is X-YD,NewY is Y+XD, pos(NewX , NewY).
+    %Direction: South%
+    get_adjacent(south, pos(NewX , NewY), pos(X , Y)):-
+		agentfacing( XD,YD ),
+        NewX is X-XD,NewY is Y-YD, pos(NewX , NewY).
 
   %Return a list with all, not known to be safe, adjacent postions to the given pos(x,y)
   get_adjacent_list(Direction, Position, List ):-
