@@ -30,8 +30,7 @@
 	safe/1,
 	check_surrounding_and_current_position/0,
 	shoot/0,
-	pick_gold/1,
-	get_all_walls/3
+	pick_gold/1
                     ]).
 %Obs: Pra que server esse comando module?
 %R: Serve para modularizar e exportar os predicados que vamos usar em outros modulos.%
@@ -55,8 +54,7 @@
 	get_safe_adjacent_list/3,
 	check_surrounding_and_current_position/0,
 	shoot/0,
-	pick_gold/1,
-	get_all_walls/3
+	pick_gold/1
                   ]).
 %Obs: Pra que server esse comando dynamic?
 %R: Vai falar pro prolog que certos predicados são mutáveis em tempo de execução.%
@@ -83,10 +81,6 @@ adjust_score( ADD ) :-
   % Gets all adjacent positions marked as should_visit
   get_all_should_visit(Direction, Position, List ) :-
 	  findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), should_visit( Adj_p )), List), !.
-
-% Gets all adjacent positions marked as walls
-  get_all_walls(Direction, Position, List ) :-
-	  findall(Adj_p, (get_adjacent(Direction, Adj_p, Position ), at(wall,Adj_p )), List), !.
 
   %Verify if the two positions are adjacent.
   is_adjacent(Position1, Position2 ):-
