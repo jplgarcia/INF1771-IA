@@ -120,7 +120,7 @@ take_action(  X, Y,no, no, no, no, no ) :-
 					(
 						tie_breaker( TIE ),
 						get_all_walls(_,pos( X,Y ),WALLS ),
-						\+ length(WALLS,2),
+						length(WALLS,0),
 						(
 							(
 								TIE > 0,
