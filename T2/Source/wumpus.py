@@ -1,8 +1,11 @@
 from pyswip import Prolog
-import monster
-import agent
 import random
 import os
+
+cwd = os.getcwd()
+filename = cwd + "/log"
+file = open(filename, 'w')
+
 
 # Descricao: busca aleatoriamente uma posicao vaga no mundo
 # Uma posicao vaga nao esta ocupada por nada
@@ -74,33 +77,48 @@ def fillMap(world) :
             pos_x = pos_x+1
             if item == 'PC':
                 prolog.assertz("at(hole, pos("+str(pos_x+1)+","+str(pos_y+1)+"))")
+                file.write("assertz: at(hole, pos("+str(pos_x+1)+","+str(pos_y+1)+"))\n")
                 if (pos_x < 11):
                     prolog.assertz("at(breeze, pos(" + str(pos_x + 2) + "," + str(pos_y + 1) + "))")
+                    file.write("assertz: at(breeze, pos(" + str(pos_x + 2) + "," + str(pos_y + 1) + "))\n")
                 if (pos_x > 0):
                     prolog.assertz("at(breeze, pos(" + str(pos_x) + "," + str(pos_y + 1) + "))")
+                    file.write("assertz: at(breeze, pos(" + str(pos_x) + "," + str(pos_y + 1) + "))\n")
                 if (pos_y < 11):
                     prolog.assertz("at(breeze, pos(" + str(pos_x + 1) + "," + str(pos_y + 2) + "))")
+                    file.write("assertz: at(breeze, pos(" + str(pos_x + 1) + "," + str(pos_y + 2) + "))\n")
                 if (pos_y > 0):
                     prolog.assertz("at(breeze, pos(" + str(pos_x + 1) + "," + str(pos_y) + "))")
+                    file.write("assertz: at(breeze, pos(" + str(pos_x + 1) + "," + str(pos_y) + "))\n")
             elif item == 'M1' or item == 'M2' or item == 'M3' or item == 'M4':
                 if item == 'M1':
                     prolog.assertz("at(monster(1), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+                    file.write("assertz: at(monster(1), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))\n")
                 elif item == 'M2':
                     prolog.assertz("at(monster(2), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+                    file.write("assertz: at(monster(2), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))\n")
                 elif item == 'M3':
                     prolog.assertz("at(monster(3), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+                    file.write("assertz: at(monster(3), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))\n")
                 elif item == 'M4':
                     prolog.assertz("at(monster(4), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+                    file.write("assertz: at(monster(4), pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))\n")
                 if (pos_x < 11):
                     prolog.assertz("at(stench, pos(" + str(pos_x + 2) + "," + str(pos_y + 1) + "))")
+                    file.write("assertz: at(stench, pos(" + str(pos_x + 2) + "," + str(pos_y + 1) + "))\n")
                 if (pos_x > 0):
                     prolog.assertz("at(stench, pos(" + str(pos_x) + "," + str(pos_y + 1) + "))")
+                    file.write("assertz: at(stench, pos(" + str(pos_x) + "," + str(pos_y + 1) + "))\n")
                 if (pos_y < 11):
                     prolog.assertz("at(stench, pos(" + str(pos_x + 1) + "," + str(pos_y + 2) + "))")
+                    file.write("assertz: at(stench, pos(" + str(pos_x + 1) + "," + str(pos_y + 2) + "))\n")
                 if (pos_y > 0):
                     prolog.assertz("at(stench, pos(" + str(pos_x + 1) + "," + str(pos_y) + "))")
+                    file.write("assertz: at(stench, pos(" + str(pos_x + 1) + "," + str(pos_y) + "))\n")
             elif item == 'GD':
                 prolog.assertz("at(gold, pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))")
+                file.write("assertz: at(gold, pos(" + str(pos_x + 1) + "," + str(pos_y + 1) + "))\n")
+
 
 #Chamada da funcao fillMap para preencher o prolog com as informacoes antes colocadas na matriz
 fillMap(world)
@@ -115,6 +133,7 @@ for line in world:
 # Return: lista com tuplas(X,Y,N) onde x,y sao posicoes cartesianas e n o identificador do monstro
 def getMonsterPositions():
     prologMonsterList = list(prolog.query("at(monster(N),pos(X,Y))"))
+    file.write("query: at(monster(N),pos(X,Y))\n")
     monsterList = []
     for monster in prologMonsterList:
         monsterList.append((monster['X'],monster['Y'],monster['N']))
@@ -127,6 +146,7 @@ def getMonsterPositions():
 # Return: lista com tuplas(X,Y) onde x,y sao posicoes cartesianas
 def getHolePositions():
     prologHoleList = list(prolog.query("at(hole,pos(X,Y))"))
+    file.write("query: at(hole,pos(X,Y))\n")
     holeList = []
     for hole in prologHoleList:
         holeList.append((hole['X'], hole['Y']))
@@ -139,6 +159,7 @@ def getHolePositions():
 # Return: lista com tuplas(X,Y) onde x,y sao posicoes cartesianas
 def getGoldPositions():
     prologGoldList = list(prolog.query("at(gold,pos(X,Y))"))
+    file.write("query: at(gold,pos(X,Y))\n")
     goldList = []
     for gold in prologGoldList:
         goldList.append((gold['X'], gold['Y']))
@@ -165,25 +186,37 @@ def takeAction():
     global startedRunning
     if not startedRunning:
         print list(prolog.query("check_surrounding_and_current_position."))
+        file.write("query: check_surrounding_and_current_position.\n")
         startedRunning = True
 
     queryString = "take_action."
     print queryString
-    print list(prolog.query(queryString))
+    print bool(list(prolog.query(queryString)))
+    file.write("query: take_action.\n")
 
     #pega informacao do prolog sobre o agente
     pScore = list(prolog.query("score(agent, X)"))
+    file.write("query: score(agent, X)\n")
     pEnergy = list(prolog.query("energy(agent, X)"))
+    file.write("query: energy(agent, X)\n")
     pAmmo = list(prolog.query("ammo(X)"))
+    file.write("query: ammo(X)\n")
     pPosition = list(prolog.query("at(agent,pos(X,Y))"))
+    file.write("query: at(agent,pos(X,Y))\n")
     pFacing = list(prolog.query("agentfacing(X, Y)"))
+    file.write("query: agentfacing(X, Y)\n")
     pGoldList = list(prolog.query("at(gold, pos(X,Y))"))
+    file.write("query: at(gold, pos(X,Y))\n")
 
     #pega informacao do prolog sobre os monstros
     pMonster1Energy = list(prolog.query("energy(monster(01), X)"))
+    file.write("query: energy(monster(01), X)\n")
     pMonster2Energy = list(prolog.query("energy(monster(02), X)"))
+    file.write("query: energy(monster(02), X)\n")
     pMonster3Energy = list(prolog.query("energy(monster(03), X)"))
+    file.write("query: energy(monster(03), X)\n")
     pMonster4Energy = list(prolog.query("energy(monster(04), X)"))
+    file.write("query: energy(monster(04), X)\n")
 
     score = pScore[0]['X']
     energy = pEnergy[0]['X']
@@ -205,6 +238,3 @@ def takeAction():
     gameData = {'score': score, 'energy': energy, 'ammo': ammo, 'position': position, 'facing': facing,'goldList': goldlist  , 'monster1':monster1Energy, 'monster2': monster2Energy, 'monster3': monster3Energy, 'monster4':monster4Energy}
 
     return gameData
-
-
-print list(prolog.query("at(Name,pos(X,Y))"))

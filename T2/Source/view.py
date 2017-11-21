@@ -242,57 +242,70 @@ def retrieveGold ( x, y ) : #tira ouro da posicao onde o agente recolheu
 # Return: none
 def movement () : #executa os movimentos da agente
     #acessar o arquivo wumpus.py que acessa o prolog para determinar movimentos
-    gameData = wumpus.takeAction()
+    #while(True):
+        gameData = wumpus.takeAction()
 
-    score = gameData['score']
-    energy = gameData['energy']
-    position = gameData['position']
-    facing = gameData['facing']
-    ammo = gameData['ammo']
-    goldList = gameData['goldList']
+        score = gameData['score']
+        energy = gameData['energy']
+        position = gameData['position']
+        facing = gameData['facing']
+        ammo = gameData['ammo']
+        goldList = gameData['goldList']
 
-    monster1Energy = gameData['monster1']
-    monster2Energy = gameData['monster2']
-    monster3Energy = gameData['monster3']
-    monster4Energy = gameData['monster4']
+        monster1Energy = gameData['monster1']
+        monster2Energy = gameData['monster2']
+        monster3Energy = gameData['monster3']
+        monster4Energy = gameData['monster4']
 
-    print "score: " + str(score)
-    print "energy: " + str(energy)
-    print "ammo: " + str(ammo)
-    print "position: " + str(position)
-    print "facing: " + str(facing)
-    print "goldList: " + str(goldList)
+        print "score: " + str(score)
+        print "energy: " + str(energy)
+        print "ammo: " + str(ammo)
+        print "position: " + str(position)
+        print "facing: " + str(facing)
+        print "goldList: " + str(goldList)
 
-    print "monster 1: " + str(monster1Energy)
-    print "monster 2: " + str(monster2Energy)
-    print "monster 3: " + str(monster3Energy)
-    print "monster 4: " + str(monster4Energy)
+        print "monster 1: " + str(monster1Energy)
+        print "monster 2: " + str(monster2Energy)
+        print "monster 3: " + str(monster3Energy)
+        print "monster 4: " + str(monster4Energy)
 
-    facingDirection = "North"
-    if facing == (1,0):
-        facingDirection = "East"
-    elif facing == (-1,0):
-        facingDirection = "West"
-    elif facing == (0,1):
         facingDirection = "North"
-    elif facing == (0,-1):
-        facingDirection = "South"
+        if facing == (1,0):
+            facingDirection = "East"
+        elif facing == (-1,0):
+            facingDirection = "West"
+        elif facing == (0,1):
+            facingDirection = "North"
+        elif facing == (0,-1):
+            facingDirection = "South"
 
-    updateAgentPoints(score)
-    updateAgentEnergy(energy)
-    updateAmmo(ammo)
-    updateMonsterEnergy(monster1Energy, 1)
-    updateMonsterEnergy(monster2Energy, 2)
-    updateMonsterEnergy(monster3Energy, 3)
-    updateMonsterEnergy(monster4Energy, 4)
+        updateAgentPoints(score)
+        updateAgentEnergy(energy)
+        updateAmmo(ammo)
+        updateMonsterEnergy(monster1Energy, 1)
+        updateMonsterEnergy(monster2Energy, 2)
+        updateMonsterEnergy(monster3Energy, 3)
+        updateMonsterEnergy(monster4Energy, 4)
 
-    if position in baseGoldList:
-        (x,y) = position
-        retrieveGold(x,y)
+        if position in baseGoldList:
+            (x,y) = position
+            retrieveGold(x,y)
 
-    changeDirection(facingDirection, position)
-    boardCanvas.update()
-    infoCanvas.update()
+        changeDirection(facingDirection, position)
+        #boardCanvas.update()
+        #infoCanvas.update()
+        master.update()
+
+        time.sleep(0.25)
+
+        if energy <= 0 :
+            popUpMsg("You Lost!")
+            #break
+
+        if score > 0 and position == (1,1):
+            popUpMsg("You Won!")
+            #break
+
 
 # Descricao: Atualiza a label pontos da agente
 # Param: value: novo valor de pontos a ser estabelecido
