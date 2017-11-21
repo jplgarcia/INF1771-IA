@@ -242,7 +242,7 @@ def retrieveGold ( x, y ) : #tira ouro da posicao onde o agente recolheu
 # Return: none
 def movement () : #executa os movimentos da agente
     #acessar o arquivo wumpus.py que acessa o prolog para determinar movimentos
-    #while(True):
+    while(True):
         gameData = wumpus.takeAction()
 
         score = gameData['score']
@@ -300,11 +300,11 @@ def movement () : #executa os movimentos da agente
 
         if energy <= 0 :
             popUpMsg("You Lost!")
-            #break
+            break
 
         if score > 0 and position == (1,1):
             popUpMsg("You Won!")
-            #break
+            break
 
 
 # Descricao: Atualiza a label pontos da agente
