@@ -169,6 +169,7 @@ def getGoldPositions():
 # Em seguida busca um conjunto de informacoes do prolog, faz o parse delas para um dicionario
 # Devolte esse dicionario como resultado da funcao
 # {
+#   'dead': booleano se o agente morreu
 #   'score': pontuacao do personagem/agente/mulhermaravilha,
 #   'energy': ponto de energia do personegem/agente/mulhermaravilha,
 #   'ammo': municao restante usada para atacar monstros,
@@ -195,6 +196,8 @@ def takeAction():
     file.write("query: take_action.\n")
 
     #pega informacao do prolog sobre o agente
+    pIsDead = bool(list(prolog.query("is_dead(agent)")))
+    file.write("query: is_dead(agent)\n")
     pScore = list(prolog.query("score(agent, X)"))
     file.write("query: score(agent, X)\n")
     pEnergy = list(prolog.query("energy(agent, X)"))
@@ -218,6 +221,7 @@ def takeAction():
     pMonster4Energy = list(prolog.query("energy(monster(04), X)"))
     file.write("query: energy(monster(04), X)\n")
 
+    dead = pIsDead
     score = pScore[0]['X']
     energy = pEnergy[0]['X']
     position = (pPosition[0]['X'], pPosition[0]['Y'])
@@ -235,6 +239,6 @@ def takeAction():
     monster4Energy = pMonster4Energy[0]['X']
 
     #junta os dados para enviar para view.py
-    gameData = {'score': score, 'energy': energy, 'ammo': ammo, 'position': position, 'facing': facing,'goldList': goldlist  , 'monster1':monster1Energy, 'monster2': monster2Energy, 'monster3': monster3Energy, 'monster4':monster4Energy}
+    gameData = {'score': score, 'energy': energy, 'ammo': ammo, 'position': position, 'facing': facing,'goldList': goldlist  , 'monster1':monster1Energy, 'monster2': monster2Energy, 'monster3': monster3Energy, 'monster4':monster4Energy, 'dead':dead}
 
     return gameData

@@ -111,6 +111,7 @@ labelM4NumDamage.grid ( row = 19 + baseRow, column = 2 , sticky = "W", padx=(0,0
 boardCanvas = Canvas ( master, width = 500, height = 550) #tamanho do tabuleiro
 rectSize = 40 #cada casa do tabuleiro tem 40 x 40 px
 baseGoldList = []
+baseHoleList = []
 
 # Descricao: insere as imagens dos monstros no boardCanvas a partir de uma lista com tuplas
 # tupla x,y,id definem coordenada cartesianas x,y e identificador do monstro
@@ -136,9 +137,10 @@ def insertMonsters ( monsterList ) :
 # Param: holeList - lista com tuplas (x,y)
 # Return: none
 def insertHoles ( holeList ) : #funcao que insere buracos no tabuleiro baseado nas casas sorteadas
-
+    global baseHoleList
     for hole in holeList:
         ( x , y ) = hole
+        baseHoleList.append((x,y))
         # posicoes no tabuleiro sao de 0 a 11, e as recebidas de 1 a 12
         imagesprite = boardCanvas.create_image ( 30 + rectSize * (x - 1), 20 + rectSize * (12 - (y - 1)), image = imageHole )
 
@@ -245,6 +247,7 @@ def movement () : #executa os movimentos da agente
     while(True):
         gameData = wumpus.takeAction()
 
+        dead = gameData['dead']
         score = gameData['score']
         energy = gameData['energy']
         position = gameData['position']
@@ -291,6 +294,10 @@ def movement () : #executa os movimentos da agente
             (x,y) = position
             retrieveGold(x,y)
 
+        if position in baseHoleList:
+            popUpMsg("You Lost!")
+            break
+
         changeDirection(facingDirection, position)
         #boardCanvas.update()
         #infoCanvas.update()
@@ -298,7 +305,7 @@ def movement () : #executa os movimentos da agente
 
         time.sleep(0.25)
 
-        if energy <= 0 :
+        if energy <= 0 or dead:
             popUpMsg("You Lost!")
             break
 
