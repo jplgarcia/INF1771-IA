@@ -309,7 +309,7 @@ def movement () : #executa os movimentos da agente
             popUpMsg("You Lost!")
             break
 
-        if score > 0 and position == (1,1):
+        if (score > 0 or score < 10)and position == (1,1):
             popUpMsg("You Won!")
             break
 
