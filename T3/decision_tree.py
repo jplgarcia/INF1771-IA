@@ -4,12 +4,9 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import accuracy_score
 from scipy import  io
 
-treino = io.mmread("train.mtx")
+#treino = io.mmread("train.mtx")
+#teste = io.mmread("test.mtx")
 
-teste = io.mmread("test.mtx")
-
-Xtreino = pd.read_csv('treino.csv')
-Xteste = pd.read_csv('teste.csv')
 Xtreino = pd.read_csv('treino.csv')
 Xteste = pd.read_csv('teste.csv')
 
