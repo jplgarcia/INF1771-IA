@@ -34,6 +34,9 @@ teste = countvec.transform(Xteste.Reviews)
 # io.mmwrite("test.mtx", teste)
 Odds = generateOddNumbers(260, 290, 30)
 size = len(Odds)
+sizeNeigh = len(Odds)
+accMax = 0
+kMax = 0
 while(size > 0):
     file = open("resultados_3.txt", "a")
     k = Odds.pop()
@@ -43,10 +46,19 @@ while(size > 0):
     ypred = knn.predict(teste)
 
     acc = accuracy_score(Xteste.Positive, ypred)
+
+    if(acc > accMax):
+        kMax = k
+        accMax = acc
     k = str(k)
     acc = str(acc)
     print "Resultado: " + k + " - " + acc
     size = size - 1
-    resultado = "K: " + k + " - " + acc
+    resultado = "K: " + k + " - " + acc + "\n"
     file.write(resultado)
     file.close()
+
+file = open("resultados_3.txt", "a")
+resultadoMax = "Tamanho da Vizinhanca:  " + str(sizeNeigh)+ " " + "K: " + str(kMax)+ " " + "Acc: " + str(accMax) + "\n"
+file.write(resultadoMax)
+file.close()
