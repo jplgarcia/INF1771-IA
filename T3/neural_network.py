@@ -11,7 +11,7 @@ treino = countvec.fit_transform(Xtreino.Reviews) # Gera bag of words com palavra
 
 teste = countvec.transform(Xteste.Reviews)
 
-hls = (10,7,7,4)
+hls = (10,7,5,4)
 clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=hls, random_state=1)
 clf = clf.fit(treino, Xtreino.Positive)
 
