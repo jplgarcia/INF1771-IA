@@ -12,7 +12,7 @@ from random import randint
 def generateOddNumbers(start, end, qtdOfOdds):
     Odds = []
     while (qtdOfOdds > 0):
-        randNumber = randint(start*qtdOfOdds, end/qtdOfOdds)
+        randNumber = randint(start, end)
         if(randNumber % 2 == 0):
             randNumber = randNumber + 1
             Odds.append(randNumber)
@@ -32,10 +32,10 @@ teste = countvec.transform(Xteste.Reviews)
 
 # io.mmwrite("train.mtx", treino)
 # io.mmwrite("test.mtx", teste)
-Odds = generateOddNumbers(10, 13579, 20)
+Odds = generateOddNumbers(260, 290, 30)
 size = len(Odds)
 while(size > 0):
-    file = open("resultados.txt", "a")
+    file = open("resultados_3.txt", "a")
     k = Odds.pop()
     knn = KNeighborsClassifier(n_neighbors=k)
     knn.fit(treino,Xtreino.Positive)
