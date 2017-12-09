@@ -1,0 +1,11 @@
+
+Neural Network: - 0.86164
+Neural Network: - 0.8602
+Neural Network: - 0.863 hidden_layer_sizes=(50,10)
+Neural Network: - 0.5 hidden_layer_sizes=(10, 5, 5, 4)
+Neural Network: - 0.85804 hidden_layer_sizes=(5, 5, 5, 4)
+Neural Network: - 0.86552 hidden_layer_sizes=(10, 5, 4)
+Neural Network: - 0.5 hidden_layer_sizes=(10, 5, 5, 4)
+Neural Network: - 0.86508 hidden_layer_sizes=(10, 5, 5, 4, 4)
+Neural Network: - 0.85832 hidden_layer_sizes=(15, 10, 5, 5, 4)
+Neural Network: - 0.865 hidden_layer_sizes=(10, 7, 7, 4)
