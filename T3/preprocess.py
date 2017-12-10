@@ -2,7 +2,7 @@ import string
 import os
 import pandas as pd
 
-# Description: Carrega os nomes das reviews contidos numa pagina
+# Description: Carrega os nomes das reviews contidos num diretorio
 # param: part: 1 para conjunto de treino, 2 para conjunto teste
 # param: isPositive: True se eh do conjunto positivo ou False do negativo
 # returns: lista contendo strings de nomes dos arquivos
