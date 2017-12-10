@@ -17,19 +17,6 @@ def loadFileNames(part,isPositive):
 
     return fileList
 
-#carrega lista de stopwords
-def loadStopwords():
-    #abre arquivos de stopwords
-    cwd = os.getcwd()
-    file = open(cwd+"/stopwords.txt")
-    stopwordsSet = set([])
-    #para cada palavra adiciona ao set de stopwords
-    for line in file:
-        line = line.strip().upper()
-        stopwordsSet.add(line)
-
-    return stopwordsSet
-
 # Description: Carrega uma review e remove quebra de linhas por paragrafos
 # param: part: 1 para conjunto de treino, 2 para conjunto teste
 # param: isPositive: True se eh do conjunto positivo ou False do negativo
@@ -50,7 +37,7 @@ def loadReview(part, isPositive, filename):
     return fullreview
 
 # Description: Load review list and postive or negative list
-# part 1 = train 2 = test
+# param: part: 1 = conjunto de treino 2 = conjunto de teste
 # Returns (reviewList, negpos)
 # reviewList: contains the text of the reviews
 # negpos: contaisn a list o the same size as the reviewList
@@ -80,72 +67,17 @@ def loadReviewList(part):
 
     return (reviewList, negpos)
 
-#remove stop words e coloca review em uppercase e transforma num array
-def cleanReview(review, stopwords):
-    #Transforma tudo em maiuscula
-    uppercaseReview = review.upper()
-    #remove pontuacao
-    uppercaseReview = "".join(l for l in uppercaseReview if l not in string.punctuation)
-    #cria set com palavras da review
-    reviewWords = uppercaseReview.split()
-
-    #remove stopwords dessa lista
-    cleanWords = []
-    for word in reviewWords:
-        if word not in stopwords:
-            cleanWords.add(word)
-
-    return cleanWords
-
-#cria um set a partir de uma lista
-def setFromList(wordsList):
-    wordSet = set([])
-    for word in wordsList:
-        wordSet.add(word)
-
-#carrega a lista de reviews
-def loadCleanReviewList(part, isPositive):
-    print "Loading file names..."
-    fileList = loadFileNames(part, isPositive)
-    print "File names loaded!"
-    print "Loading stopwords"
-    stopwords = loadStopwords()
-    print "Stopwords loaded!"
-
-    numOfFiles = len(fileList)
-    currentFile = 0.0
-    reviewList = []
-    for name in fileList:
-        percentage = float((currentFile+1)/numOfFiles * 100.0)
-        review = loadReview(part,isPositive, name)
-        cleanedReview = cleanReview(review, stopwords)
-        reviewList.append(cleanedReview)
-        print (str(percentage) + "% :::::: Review: " + name + " Added to set!")
-        currentFile = currentFile + 1
-    return reviewList
-
-#Cria uma lista de palavras positivas apartir de um conjunto de reviews
-def createSetOfWords(setOfReviews):
-    wordSet = set([])
-    for subset in setOfReviews:
-        for word in subset:
-            wordSet.add(word)
-    return wordSet
-
-#Criar dois sets de palavras apenas exclusivas a partir de dois sets de palavras nao exclusivas
-def makeExclusiveWordSets(positiveSet, negativeSet):
-    newPositiveSet = set(positiveSet)
-    newNegativeSet = set(negativeSet)
-    for word in positiveSet:
-        if word in negativeSet:
-            newNegativeSet.remove(word)
-            newPositiveSet.remove(word)
-
-    return(newPositiveSet, newNegativeSet)
-
+# Carrega reviews positivas e negativas
 (reviewList, isPositiveList) = loadReviewList(1)
 (reviewListTest, isPositiveListTest) = loadReviewList(2)
 
+# Gera um data frame da matriz no modelo
+#                                              Reviews  Positive
+# 0  Based on an actual story, John Boorman shows t...      True
+# 1  This is a gem. As a Film Four production - the...      True
+# 2  I really like this show. It has drama, romance...      True
+# 3  This is the best 3-D experience Disney has at ...      True
+# 4  Of the Korean movies I've seen, only three had...      True
 print "Numero total de reviews carregadas: " + str(len(reviewList))
 Xtreino = pd.DataFrame()
 Xteste = pd.DataFrame()
@@ -156,5 +88,6 @@ Xtreino['Positive'] = pd.Series(isPositiveList)
 Xteste['Reviews'] = pd.Series(reviewListTest)
 Xteste['Positive'] = pd.Series(isPositiveListTest)
 
+# Gera arquivos de CSV para salvar formato da matriz
 Xteste.to_csv('teste.csv', index = False)
 Xtreino.to_csv('treino.csv', index = False)

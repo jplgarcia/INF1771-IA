@@ -1,2 +1,4 @@
-
-Decision Tree: - 0.73024
+Decision Tree:
+Resultado: 0.73084
+Tempo de treinamento: 30.5638260841s
+Tempo de classificacao: 84.1045188904s

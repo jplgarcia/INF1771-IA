@@ -1,6 +1,6 @@
-from sklearn import tree
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import BernoulliNB
 from sklearn.metrics import accuracy_score
 import time
 
@@ -25,10 +25,10 @@ trainingTime = time.time() - trainingStartTime
 #### Inicio do algoritimo
 runningStartTime = time.time()
 # Escolhe algoritimo a ser utilizado
-clf = tree.DecisionTreeClassifier()
-clf = clf.fit(treino, Xtreino.Positive)
+nb = BernoulliNB()
+nb = nb.fit(treino, Xtreino.Positive)
 # Preve as repostas para o caso de teste
-ypred = clf.predict(teste)
+ypred = nb.predict(teste)
 #### Fim do algoritimo
 runningTime = time.time() - runningStartTime
 
@@ -38,11 +38,12 @@ acc = accuracy_score(Xteste.Positive, ypred)
 accuracy = str(acc)
 
 # Arquivo de saida
-file = open("resultados_decision_tree.txt", "w")
+file = open("resultados_bernoulli_naive_bayes.txt", "w")
 print "Resultado: " + accuracy
 print "Tempo de treinamento: " + str(trainingTime) + "s"
 print "Tempo de classificacao: " + str(runningTime) + "s"
-file.write("Decision Tree:")
+
+file.write("Bernoulli Naive Bayes:")
 file.write("\nResultado: " + accuracy)
 file.write("\nTempo de treinamento: " + str(trainingTime) + "s")
 file.write("\nTempo de classificacao: " + str(runningTime) + "s")
